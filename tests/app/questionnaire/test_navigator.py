@@ -2,6 +2,7 @@ import unittest
 
 from app.questionnaire.navigator import Navigator
 from app.schema_loader.schema_loader import load_schema_file
+from app.data_model.answer_store import Answer, AnswerStore
 
 
 class TestNavigator(unittest.TestCase):
@@ -34,22 +35,32 @@ class TestNavigator(unittest.TestCase):
             "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"
         ]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side",
-            "2e0989b8-5185-4ba6-b73f-c126e3a06ba7": "No"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answer_2 = Answer(
+            block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
+            answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="No",
+        )
+
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
 
         current_block_id = expected_path[1]
         expected_next_block_id = expected_path[2]
 
-        navigator = Navigator(survey)
-        actual_next_block_id = navigator.get_next_location(answers, current_block_id)
+        navigator = Navigator(survey, answers)
+        actual_next_block_id = navigator.get_next_location(current_block_id)
 
         self.assertEqual(actual_next_block_id, expected_next_block_id)
 
         current_block_id = expected_path[2]
         expected_next_block_id = expected_path[3]
-        actual_next_block_id = navigator.get_next_location(answers, current_block_id)
+        actual_next_block_id = navigator.get_next_location(current_block_id)
 
         self.assertEqual(actual_next_block_id, expected_next_block_id)
 
@@ -65,23 +76,33 @@ class TestNavigator(unittest.TestCase):
             "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"
         ]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Dark Side",
-            "pel989b8-5185-4ba6-b73f-c126e3a06ba7": "Can I be a pain and have a goodies ship"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Dark Side"
+        )
+        answer_2 = Answer(
+            block_id="923ccc84-9d47-4a02-8ebc-1e9d14fcf10b",
+            answer_id="pel989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="Can I be a pain and have a goodies ship",
+        )
+
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
 
         current_block_id = expected_path[3]
         expected_previous_block_id = expected_path[2]
 
-        navigator = Navigator(survey)
-        actual_previous_block_id = navigator.get_previous_location(answers, current_block_id)
+        navigator = Navigator(survey, answers)
+        actual_previous_block_id = navigator.get_previous_location(current_block_id)
 
         self.assertEqual(actual_previous_block_id, expected_previous_block_id)
 
         current_block_id = expected_path[2]
         expected_previous_block_id = expected_path[1]
 
-        actual_previous_block_id = navigator.get_previous_location(answers, current_block_id)
+        actual_previous_block_id = navigator.get_previous_location(current_block_id)
 
         self.assertEqual(actual_previous_block_id, expected_previous_block_id)
 
@@ -121,13 +142,23 @@ class TestNavigator(unittest.TestCase):
             "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"
         ]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side",
-            "2e0989b8-5185-4ba6-b73f-c126e3a06ba7": "No"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answer_2 = Answer(
+            block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
+            answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="No",
+        )
 
-        navigator = Navigator(survey)
-        routing_path = navigator.get_routing_path(answers)
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
+
+        navigator = Navigator(survey, answers)
+        routing_path = navigator.get_routing_path()
 
         self.assertEqual(routing_path, expected_path)
 
@@ -143,13 +174,23 @@ class TestNavigator(unittest.TestCase):
             "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"
         ]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Dark Side",
-            "pel989b8-5185-4ba6-b73f-c126e3a06ba7": "Can I be a pain and have a goodies ship"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Dark Side"
+        )
+        answer_2 = Answer(
+            block_id="923ccc84-9d47-4a02-8ebc-1e9d14fcf10b",
+            answer_id="pel989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="Can I be a pain and have a goodies ship",
+        )
 
-        navigator = Navigator(survey)
-        routing_path = navigator.get_routing_path(answers)
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
+
+        navigator = Navigator(survey, answers)
+        routing_path = navigator.get_routing_path()
 
         self.assertEqual(routing_path, expected_path)
 
@@ -167,14 +208,24 @@ class TestNavigator(unittest.TestCase):
         current_block_id = expected_path[2]
         expected_previous_block_id = expected_path[1]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side",
-            "2e0989b8-5185-4ba6-b73f-c126e3a06ba7": "No"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answer_2 = Answer(
+            block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
+            answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="No",
+        )
 
-        navigator = Navigator(survey)
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
 
-        self.assertEqual(navigator.get_previous_location(answers, current_block_id), expected_previous_block_id)
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual(navigator.get_previous_location(current_block_id), expected_previous_block_id)
 
     def test_get_next_location_introduction(self):
         survey = load_schema_file("0_star_wars.json")
@@ -188,21 +239,31 @@ class TestNavigator(unittest.TestCase):
     def test_get_next_location_summary(self):
         survey = load_schema_file("0_star_wars.json")
 
-        navigator = Navigator(survey)
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answer_2 = Answer(
+            block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
+            answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="No",
+        )
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side",
-            "2e0989b8-5185-4ba6-b73f-c126e3a06ba7": "No"
-        }
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
+
+        navigator = Navigator(survey, answers)
 
         current_location_id = 'an3b74d1-b687-4051-9634-a8f9ce10ard'
-        next_location_id = navigator.get_next_location(answers, current_location_id)
+        next_location_id = navigator.get_next_location(current_location_id)
         expected_next_location_id = '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'
 
         self.assertEqual(expected_next_location_id, next_location_id)
 
         current_location_id = '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'
-        next_location_id = navigator.get_next_location(answers, current_location_id)
+        next_location_id = navigator.get_next_location(current_location_id)
         expected_next_location_id = 'summary'
 
         self.assertEqual(expected_next_location_id, next_location_id)
@@ -218,7 +279,6 @@ class TestNavigator(unittest.TestCase):
 
     def test_get_previous_location_conditional(self):
         survey = load_schema_file("0_star_wars.json")
-        navigator = Navigator(survey)
 
         expected_path = [
             "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
@@ -231,21 +291,32 @@ class TestNavigator(unittest.TestCase):
         current_location_id = expected_path[2]
         expected_previous_location_id = expected_path[1]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side",
-            "2e0989b8-5185-4ba6-b73f-c126e3a06ba7": "No"
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answer_2 = Answer(
+            block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
+            answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
+            value="No",
+        )
 
-        self.assertEqual(navigator.get_previous_location(answers, current_location_id), expected_previous_location_id)
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
+
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual(navigator.get_previous_location(current_location_id), expected_previous_location_id)
 
         current_location_id = expected_path[0]
         expected_previous_location_id = 'introduction'
 
-        self.assertEqual(navigator.get_previous_location(answers, current_location_id), expected_previous_location_id)
+        self.assertEqual(navigator.get_previous_location(current_location_id), expected_previous_location_id)
 
     def test_next_location_goto_summary(self):
         survey = load_schema_file("0_star_wars.json")
-        navigator = Navigator(survey)
 
         expected_path = [
             'introduction',
@@ -253,23 +324,24 @@ class TestNavigator(unittest.TestCase):
             'summary'
         ]
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "I prefer Star Trek"
-        }
+        answer = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="I prefer Star Trek",
+        )
+        answers = AnswerStore()
+        answers.add(answer)
+        navigator = Navigator(survey, answers)
 
         current_location_id = expected_path[1]
         expected_next_location_id = expected_path[2]
 
-        next_location_id = navigator.get_next_location(answers, current_location_id)
+        next_location_id = navigator.get_next_location(current_location_id)
 
         self.assertEqual(next_location_id, expected_next_location_id)
 
     def test_next_location_empty_routing_rules(self):
         survey = load_schema_file("test_checkbox.json")
-        navigator = Navigator(survey)
-
-        # Force some empty routing rules
-        navigator.blocks[0]['routing_rules'] = []
 
         expected_path = [
           'introduction',
@@ -278,24 +350,126 @@ class TestNavigator(unittest.TestCase):
           'summary'
         ]
 
-        answers = {
-          "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Cheese",
-          "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23": "deep pan",
-        }
+        answer_1 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Cheese",
+        )
+        answer_2 = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc1",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23",
+            value="deep pan",
+        )
+        answers = AnswerStore()
+        answers.add(answer_1)
+        answers.add(answer_2)
+
+        navigator = Navigator(survey, answers)
+
+        # Force some empty routing rules
+        navigator.survey_json['groups'][0]['blocks'][0]['routing_rules'] = []
 
         current_location_id = expected_path[1]
         expected_next_location_id = expected_path[2]
 
-        next_location_id = navigator.get_next_location(answers, current_location_id)
+        next_location_id = navigator.get_next_location(current_location_id)
 
         self.assertEqual(next_location_id, expected_next_location_id)
 
     def test_interstitial_post_blocks(self):
         survey = load_schema_file("0_star_wars.json")
-        navigator = Navigator(survey)
 
-        answers = {
-            "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c": "Light Side"
-        }
+        answer = Answer(
+            block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+            value="Light Side"
+        )
+        answers = AnswerStore()
+        answers.add(answer)
 
-        self.assertFalse('summary' in navigator.get_location_path(answers))
+        navigator = Navigator(survey, answers)
+
+        self.assertFalse('summary' in navigator.get_location_path())
+
+    def test_repeating_groups(self):
+        survey = load_schema_file("test_repeating_household.json")
+
+        expected_path = [
+            '980b148e-0856-4e50-9afe-67a4fa6ae13b',
+            '0c7c8876-6a63-4251-ac29-b821b3e9b1bc',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed'
+        ]
+
+        answer = Answer(
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+            value="2"
+        )
+        answers = AnswerStore()
+        answers.add(answer)
+
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual(expected_path, navigator.get_routing_path())
+
+    def test_repeating_groups_previous_location(self):
+        survey = load_schema_file("test_repeating_household.json")
+
+        expected_path = [
+            '980b148e-0856-4e50-9afe-67a4fa6ae13b',
+            '0c7c8876-6a63-4251-ac29-b821b3e9b1bc',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed'
+        ]
+
+        current_location = expected_path[4]
+        current_iteration = 2
+
+        expected_previous_location = expected_path[3]
+
+        answer = Answer(
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+            value="3"
+        )
+        answers = AnswerStore()
+        answers.add(answer)
+
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual(expected_previous_location, navigator.get_previous_location(current_location, current_iteration))
+
+    def test_repeating_groups_next_location(self):
+        survey = load_schema_file("test_repeating_household.json")
+
+        expected_path = [
+            '980b148e-0856-4e50-9afe-67a4fa6ae13b',
+            '0c7c8876-6a63-4251-ac29-b821b3e9b1bc',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed',
+            '96682325-47ab-41e4-a56e-8315a19ffe2a',
+            'a7dcbb30-1187-4276-a49c-9284730ba4ed'
+        ]
+
+        current_location = expected_path[-1]
+        current_iteration = 2
+
+        answer = Answer(
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            value="3"
+        )
+        answers = AnswerStore()
+        answers.add(answer)
+
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual('summary', navigator.get_next_location(current_location, current_iteration))

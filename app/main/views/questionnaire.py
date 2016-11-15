@@ -1,7 +1,8 @@
 import logging
 
 from app.authentication.session_manager import session_manager
-from app.globals import get_answers, get_completed_blocks, get_metadata, get_questionnaire_store
+from app.globals import get_answer_store, get_answers, get_completed_blocks, get_metadata, get_questionnaire_store
+from app.questionnaire.navigator import Navigator
 from app.questionnaire.questionnaire_manager import get_questionnaire_manager
 from app.submitter.submitter import SubmitterFactory
 from app.templating.introduction_context import get_introduction_context
@@ -67,27 +68,36 @@ def get_questionnaire(eq_id, form_type, collection_id, location):
 @questionnaire_blueprint.route('<location>', methods=["POST"])
 @login_required
 def post_questionnaire(eq_id, form_type, collection_id, location):
-    valid = get_questionnaire_manager(g.schema, g.schema_json).process_incoming_answers(location, request.form)
-    if not valid:
-        return _render_template(location, get_questionnaire_manager(g.schema, g.schema_json).state, template='questionnaire')
+    navigator = Navigator(g.schema_json, get_answer_store(current_user))
+    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
-    navigator = get_questionnaire_manager(g.schema, g.schema_json).navigator
-    next_location = navigator.get_next_location(get_answers(current_user), location)
+    valid_location = location in navigator.get_location_path()
+    valid_data = q_manager.process_incoming_answers(location, request.form)
+
+    if not valid_location or not valid_data:
+        return _render_template(location, q_manager.state, template='questionnaire')
+
+    next_location = navigator.get_next_location(location)
     metadata = get_metadata(current_user)
+
     logger.info("Redirecting user to next location %s with tx_id=%s", next_location, metadata["tx_id"])
+
     return redirect_to_questionnaire_page(eq_id, form_type, collection_id, next_location)
 
 
 @questionnaire_blueprint.route('summary', methods=["GET"])
 @login_required
 def get_summary(eq_id, form_type, collection_id):
-    navigator = get_questionnaire_manager(g.schema, g.schema_json).navigator
-    latest_location = navigator.get_latest_location(get_answers(current_user), get_completed_blocks(current_user))
+    navigator = Navigator(g.schema_json, get_answer_store(current_user))
+
+    answer_store = get_answer_store(current_user)
+    latest_location = navigator.get_latest_location(get_completed_blocks(current_user))
+
     if latest_location is 'summary':
         metadata = get_metadata(current_user)
         answers = get_answers(current_user)
         schema_json = _render_schema(g.schema_json, answers, metadata)
-        summary_context = build_summary_rendering_context(schema_json, answers)
+        summary_context = build_summary_rendering_context(schema_json, answer_store)
         return _render_template('summary', summary_context, rendered_schema_json=schema_json)
 
     return redirect_to_questionnaire_page(eq_id, form_type, collection_id, latest_location)
@@ -108,8 +118,9 @@ def get_thank_you(eq_id, form_type, collection_id):
 @questionnaire_blueprint.route('submit-answers', methods=["POST"])
 @login_required
 def submit_answers(eq_id, form_type, collection_id):
+    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
     # check that all the answers we have are valid before submitting the data
-    is_valid, invalid_location = get_questionnaire_manager(g.schema, g.schema_json).validate_all_answers()
+    is_valid, invalid_location = q_manager.validate_all_answers()
 
     if is_valid:
         submitter = SubmitterFactory.get_submitter()
@@ -143,8 +154,10 @@ def _render_template(location, context, rendered_schema_json=None, template=None
     metadata = get_metadata(current_user)
     answers = get_answers(current_user)
     metadata_context = build_metadata_context(metadata)
-    previous_location = get_questionnaire_manager(g.schema, g.schema_json).navigator.get_previous_location(answers, location)
+    navigator = Navigator(g.schema_json, get_answer_store(current_user))
+    previous_location = navigator.get_previous_location(location)
     schema_json = rendered_schema_json or _render_schema(g.schema_json, answers, metadata)
+
     try:
         theme = schema_json['theme']
         logger.debug("Theme selected: {} ".format(theme))

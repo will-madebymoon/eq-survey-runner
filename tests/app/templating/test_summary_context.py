@@ -23,13 +23,12 @@ class TestSummaryContext(unittest.TestCase):
         self.schema_json, self.schema = load_and_parse_schema('0', 'star_wars')
 
     def test_build_summary_rendering_context(self):
-        answers = MagicMock()
+        answer_store = MagicMock()
         routing_path = ['f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0']
-        questionnaire_manager = Mock()
-        questionnaire_manager.navigator.get_routing_path = Mock(return_value=routing_path)
+        navigator = Mock()
+        navigator.get_routing_path = Mock(return_value=routing_path)
 
-        with patch('app.templating.summary_context.g'), \
-                patch('app.templating.summary_context.get_questionnaire_manager', return_value=questionnaire_manager):
-            context = build_summary_rendering_context(self.schema_json, answers)
+        with patch('app.templating.summary_context.Navigator', return_value=navigator):
+            context = build_summary_rendering_context(self.schema_json, answer_store)
 
         self.assertEqual(len(context), 1)

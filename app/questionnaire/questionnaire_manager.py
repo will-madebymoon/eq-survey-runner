@@ -1,6 +1,6 @@
 import logging
 
-from app.globals import get_answers, get_metadata, get_questionnaire_store
+from app.globals import get_answer_store, get_answers, get_metadata, get_questionnaire_store
 from app.questionnaire.navigator import Navigator, evaluate_rule
 from app.templating.schema_context import build_schema_context
 from app.templating.template_renderer import renderer
@@ -30,31 +30,22 @@ class QuestionnaireManager(object):
         self._schema = schema
         self.state = None
 
-        self.navigator = Navigator(self._json)
-
     def validate(self, location, post_data):
 
-        answers = get_answers(current_user)
+        self.build_state(location, post_data)
 
-        if location in self.navigator.get_location_path(answers):
-
-            self.build_state(location, post_data)
-
-            if self.state:
-                # Todo, this doesn't feel right, validation is casting the user values to their type.
-                return self.state.schema_item.validate(self.state)
-            else:
-                # Item has node, but is not in schema: must be introduction, thank you or summary
-                return True
+        if self.state:
+            # Todo, this doesn't feel right, validation is casting the user values to their type.
+            return self.state.schema_item.validate(self.state)
         else:
-            # Not a validation location, so can't be valid
-            return False
+            # Item has node, but is not in schema: must be introduction, thank you or summary
+            return True
 
     def validate_all_answers(self):
+        navigator = Navigator(self._json, get_answer_store(current_user))
 
-        answers = get_answers(current_user)
-
-        for location in self.navigator.get_location_path(answers):
+        for location in navigator.get_location_path():
+            answers = get_answers(current_user)
             is_valid = self.validate(location, answers)
 
             if not is_valid:
