@@ -36,14 +36,16 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
             answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
-            value="No",
+            value="No"
         )
 
         answers = AnswerStore()
@@ -77,11 +79,13 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Dark Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="923ccc84-9d47-4a02-8ebc-1e9d14fcf10b",
             answer_id="pel989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="Can I be a pain and have a goodies ship",
@@ -143,11 +147,13 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
             answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="No",
@@ -175,11 +181,13 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Dark Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="923ccc84-9d47-4a02-8ebc-1e9d14fcf10b",
             answer_id="pel989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="Can I be a pain and have a goodies ship",
@@ -209,11 +217,13 @@ class TestNavigator(unittest.TestCase):
         expected_previous_block_id = expected_path[1]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
             answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="No",
@@ -240,11 +250,13 @@ class TestNavigator(unittest.TestCase):
         survey = load_schema_file("0_star_wars.json")
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
             answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="No",
@@ -257,6 +269,7 @@ class TestNavigator(unittest.TestCase):
         navigator = Navigator(survey, answers)
 
         current_location_id = 'an3b74d1-b687-4051-9634-a8f9ce10ard'
+
         next_location_id = navigator.get_next_location(current_location_id)
         expected_next_location_id = '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'
 
@@ -292,11 +305,13 @@ class TestNavigator(unittest.TestCase):
         expected_previous_location_id = expected_path[1]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="96682325-47ab-41e4-a56e-8315a19ffe2a",
             answer_id="2e0989b8-5185-4ba6-b73f-c126e3a06ba7",
             value="No",
@@ -325,6 +340,7 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="I prefer Star Trek",
@@ -351,11 +367,13 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer_1 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Cheese",
         )
         answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc1",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23",
             value="deep pan",
@@ -380,6 +398,7 @@ class TestNavigator(unittest.TestCase):
         survey = load_schema_file("0_star_wars.json")
 
         answer = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="Light Side"
@@ -404,6 +423,7 @@ class TestNavigator(unittest.TestCase):
         ]
 
         answer = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             answer_id="78774493-5b64-45c4-8072-22f1a9638095",
             block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
             value="2"
@@ -435,6 +455,7 @@ class TestNavigator(unittest.TestCase):
         expected_previous_location = expected_path[3]
 
         answer = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
             answer_id="78774493-5b64-45c4-8072-22f1a9638095",
             block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
             value="3"
@@ -464,6 +485,8 @@ class TestNavigator(unittest.TestCase):
         current_iteration = 2
 
         answer = Answer(
+            group_id="f74d1147-673c-497a-9616-763829d944a",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
             answer_id="78774493-5b64-45c4-8072-22f1a9638095",
             value="3"
         )

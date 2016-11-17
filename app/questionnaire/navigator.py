@@ -33,7 +33,7 @@ def evaluate_goto(goto_rule, answers):
     """
     if 'when' in goto_rule.keys():
         answer_index = goto_rule['when']['id']
-        filtered = answers.filter(answer_index)
+        filtered = answers.filter(answer_id=answer_index)
         if len(filtered) == 1:
             answer = filtered[0]
             if evaluate_rule(goto_rule, answer['value']):
@@ -54,7 +54,7 @@ def evaluate_repeat(repeat_rule, answers):
     """
     if 'answer_id' in repeat_rule:
         repeat_index = repeat_rule['answer_id']
-        filtered = answers.filter(repeat_index)
+        filtered = answers.filter(answer_id=repeat_index)
         if len(filtered) == 1:
             return int(filtered[0]['value'])
     return 1
