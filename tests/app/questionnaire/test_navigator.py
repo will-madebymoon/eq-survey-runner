@@ -10,19 +10,26 @@ class TestNavigator(unittest.TestCase):
     def test_first_block(self):
         survey = load_schema_file("1_0102.json")
 
+        first_group_id = "07f40cd2-0704-4804-9f32-19309089a51b"
         first_block_id = "5bce8d8f-0af8-4d35-b77d-744e6179b406"
 
         navigator = Navigator(survey)
+
         self.assertEqual(navigator.get_first_block_id(), first_block_id)
+        self.assertEqual(navigator.get_first_group_id(), first_group_id)
 
     def test_previous_block(self):
         survey = load_schema_file("1_0102.json")
 
         current_block_id = "02ed26ad-4cfc-4e29-a946-630476228b2c"
-        previous_block = {"block_id": "7418732e-12fb-4270-8307-5682ac63bfae"}
+        previous_block = {
+            "block_id": "7418732e-12fb-4270-8307-5682ac63bfae",
+            "group_id": "07f40cd2-0704-4804-9f32-19309089a51b",
+            "group_instance": 0
+        }
 
         navigator = Navigator(survey)
-        self.assertEqual(navigator.get_previous_location(current_location_id=current_block_id), previous_block)
+        self.assertEqual(navigator.get_previous_location(current_block_id=current_block_id), previous_block)
 
     def test_next_with_conditional_path(self):
         survey = load_schema_file("0_star_wars.json")
@@ -56,15 +63,16 @@ class TestNavigator(unittest.TestCase):
         expected_next_block = expected_path[2]
 
         navigator = Navigator(survey, answers)
-        actual_next_block = navigator.get_next_location(current_block_id)
+        actual_next_block = navigator.get_next_location(current_block_id=current_block_id)
 
-        self.assertEqual(actual_next_block, expected_next_block)
+        self.assertEqual(actual_next_block["block_id"], expected_next_block["block_id"])
 
         current_block_id = expected_path[2]["block_id"]
-        expected_next_block_id = expected_path[3]
-        actual_next_block_id = navigator.get_next_location(current_block_id)
+        expected_next_block = expected_path[3]
 
-        self.assertEqual(actual_next_block_id, expected_next_block_id)
+        actual_next_block = navigator.get_next_location(current_block_id=current_block_id)
+
+        self.assertEqual(actual_next_block["block_id"], expected_next_block["block_id"])
 
     def test_previous_with_conditional_path(self):
         survey = load_schema_file("0_star_wars.json")
@@ -96,31 +104,36 @@ class TestNavigator(unittest.TestCase):
         answers.add(answer_2)
 
         current_block_id = expected_path[3]["block_id"]
-        expected_previous_block_id = expected_path[2]
+        expected_previous_block = expected_path[2]
 
         navigator = Navigator(survey, answers)
-        actual_previous_block_id = navigator.get_previous_location(current_block_id)
+        actual_previous_block = navigator.get_previous_location(current_block_id=current_block_id)
 
-        self.assertEqual(actual_previous_block_id, expected_previous_block_id)
+        self.assertEqual(actual_previous_block["block_id"], expected_previous_block['block_id'])
 
         current_block_id = expected_path[2]["block_id"]
-        expected_previous_block_id = expected_path[1]
+        expected_previous_block = expected_path[1]
 
-        actual_previous_block_id = navigator.get_previous_location(current_block_id)
+        actual_previous_block = navigator.get_previous_location(current_block_id=current_block_id)
 
-        self.assertEqual(actual_previous_block_id, expected_previous_block_id)
+        self.assertEqual(actual_previous_block["block_id"], expected_previous_block['block_id'])
 
     def test_next_block(self):
         survey = load_schema_file("1_0102.json")
 
         current_block_id = "7418732e-12fb-4270-8307-5682ac63bfae"
-        next_block = {"block_id": "02ed26ad-4cfc-4e29-a946-630476228b2c"}
+        next_block = {
+            "block_id": "02ed26ad-4cfc-4e29-a946-630476228b2c",
+            "group_id": "07f40cd2-0704-4804-9f32-19309089a51b",
+            "group_instance": 0
+        }
 
         navigator = Navigator(survey)
-        self.assertEqual(navigator.get_next_location(current_location_id=current_block_id), next_block)
+        self.assertEqual(navigator.get_next_location(current_block_id=current_block_id), next_block)
 
     def test_routing_basic_path(self):
         survey = load_schema_file("1_0112.json")
+
         expected_path = [
             {"block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b"},
             {"block_id": "6c8a2f39-e0d8-406f-b463-2151225abea2"},
@@ -129,6 +142,10 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "0b29d3f7-5905-43d8-9921-5b353db68104"},
             {"block_id": "7e2d49eb-ffc7-4a61-a45d-eba336d1d0e6"},
         ]
+
+        for v in expected_path:
+            v['group_id'] = "f74d1147-673c-497a-9616-763829d944ac"
+            v['group_instance'] = 0
 
         navigator = Navigator(survey)
         routing_path = navigator.get_routing_path()
@@ -145,6 +162,10 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "an3b74d1-b687-4051-9634-a8f9ce10ard"},
             {"block_id": "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"}
         ]
+
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e766"
+            v['group_instance'] = 0
 
         answer_1 = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
@@ -180,6 +201,10 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"}
         ]
 
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e766"
+            v['group_instance'] = 0
+
         answer_1 = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
@@ -213,8 +238,12 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"}
         ]
 
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e766"
+            v['group_instance'] = 0
+
         current_block_id = expected_path[2]["block_id"]
-        expected_previous_block_id = expected_path[1]
+        expected_previous_block = expected_path[1]
 
         answer_1 = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
@@ -235,14 +264,14 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        self.assertEqual(navigator.get_previous_location(current_block_id), expected_previous_block_id)
+        self.assertEqual(navigator.get_previous_location(current_block_id=current_block_id), expected_previous_block)
 
     def test_get_next_location_introduction(self):
         survey = load_schema_file("0_star_wars.json")
 
         navigator = Navigator(survey)
 
-        next_location = navigator.get_next_location(current_location_id='introduction')
+        next_location = navigator.get_next_location(current_block_id='introduction')
 
         self.assertEqual('f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0', next_location["block_id"])
 
@@ -268,16 +297,24 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        current_location_id = 'an3b74d1-b687-4051-9634-a8f9ce10ard'
+        current_block_id = 'an3b74d1-b687-4051-9634-a8f9ce10ard'
 
-        next_location = navigator.get_next_location(current_location_id)
-        expected_next_location = {"block_id": '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'}
+        next_location = navigator.get_next_location(current_block_id=current_block_id)
+        expected_next_location = {
+            "block_id": '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1',
+            "group_id": "14ba4707-321d-441d-8d21-b8367366e766",
+            "group_instance": 0
+        }
 
         self.assertEqual(expected_next_location, next_location)
 
-        current_location_id = '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'
-        next_location = navigator.get_next_location(current_location_id)
-        expected_next_location = {"block_id": 'summary'}
+        current_block_id = '846f8514-fed2-4bd7-8fb2-4b5fcb1622b1'
+        next_location = navigator.get_next_location(current_block_id=current_block_id)
+        expected_next_location = {
+            "block_id": 'summary',
+            "group_id": "14ba4707-321d-441d-8d21-b8367366e766",
+            "group_instance": 0
+        }
 
         self.assertEqual(expected_next_location, next_location)
 
@@ -286,7 +323,7 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey)
 
-        next_location = navigator.get_previous_location(current_location_id='f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0')
+        next_location = navigator.get_previous_location(current_block_id='f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0')
 
         self.assertEqual('introduction', next_location['block_id'])
 
@@ -301,7 +338,11 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "846f8514-fed2-4bd7-8fb2-4b5fcb1622b1"}
         ]
 
-        current_location_id = expected_path[2]["block_id"]
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e766"
+            v['group_instance'] = 0
+
+        current_block_id = expected_path[2]["block_id"]
         expected_previous_location = expected_path[1]
 
         answer_1 = Answer(
@@ -323,12 +364,16 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        self.assertEqual(navigator.get_previous_location(current_location_id), expected_previous_location)
+        self.assertEqual(navigator.get_previous_location(current_block_id=current_block_id), expected_previous_location)
 
-        current_location_id = expected_path[0]["block_id"]
-        expected_previous_location = {"block_id": 'introduction'}
+        current_block_id = expected_path[0]["block_id"]
+        expected_previous_location = {
+            "block_id": 'introduction',
+            "group_id": "14ba4707-321d-441d-8d21-b8367366e766",
+            "group_instance": 0
+        }
 
-        self.assertEqual(navigator.get_previous_location(current_location_id), expected_previous_location)
+        self.assertEqual(navigator.get_previous_location(current_block_id=current_block_id), expected_previous_location)
 
     def test_next_location_goto_summary(self):
         survey = load_schema_file("0_star_wars.json")
@@ -338,6 +383,10 @@ class TestNavigator(unittest.TestCase):
             {"block_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0"},
             {"block_id": "summary"}
         ]
+
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e766"
+            v['group_instance'] = 0
 
         answer = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
@@ -349,10 +398,10 @@ class TestNavigator(unittest.TestCase):
         answers.add(answer)
         navigator = Navigator(survey, answers)
 
-        current_location = expected_path[1]["block_id"]
+        current_block_id = expected_path[1]["block_id"]
         expected_next_location = expected_path[2]
 
-        next_location = navigator.get_next_location(current_location)
+        next_location = navigator.get_next_location(current_block_id=current_block_id)
 
         self.assertEqual(next_location, expected_next_location)
 
@@ -365,6 +414,10 @@ class TestNavigator(unittest.TestCase):
           {"block_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc1"},
           {"block_id": "summary"}
         ]
+
+        for v in expected_path:
+            v['group_id'] = "14ba4707-321d-441d-8d21-b8367366e761"
+            v['group_instance'] = 0
 
         answer_1 = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
@@ -387,10 +440,10 @@ class TestNavigator(unittest.TestCase):
         # Force some empty routing rules
         navigator.survey_json['groups'][0]['blocks'][0]['routing_rules'] = []
 
-        current_location_id = expected_path[1]["block_id"]
+        current_block_id = expected_path[1]["block_id"]
         expected_next_location = expected_path[2]
 
-        next_location = navigator.get_next_location(current_location_id)
+        next_location = navigator.get_next_location(current_block_id=current_block_id)
 
         self.assertEqual(next_location, expected_next_location)
 
@@ -408,18 +461,46 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        self.assertFalse({'block_id': 'summary'} in navigator.get_location_path())
+        self.assertFalse({
+            'block_id': 'summary',
+            "group_id": "14ba4707-321d-441d-8d21-b8367366e766",
+            "group_instance": 0
+        } in navigator.get_location_path())
 
     def test_repeating_groups(self):
         survey = load_schema_file("test_repeating_household.json")
 
         expected_path = [
-            {"block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b"},
-            {"block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"}
+            {
+                "block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+             }
         ]
 
         answer = Answer(
@@ -439,18 +520,51 @@ class TestNavigator(unittest.TestCase):
         survey = load_schema_file("test_repeating_household.json")
 
         expected_path = [
-            {"block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b"},
-            {"block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"}
+            {
+                "block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            }
         ]
 
-        current_location = expected_path[4]["block_id"]
-        current_iteration = 2
+        current_block_id = expected_path[4]["block_id"]
+        current_group_id = expected_path[4]["group_id"]
+        current_iteration = expected_path[4]["group_instance"]
 
         expected_previous_location = expected_path[3]
 
@@ -465,24 +579,59 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        self.assertEqual(expected_previous_location, navigator.get_previous_location(current_location, current_iteration))
+        self.assertEqual(expected_previous_location, navigator.get_previous_location(current_group_id=current_group_id,
+                                                                                     current_block_id=current_block_id,
+                                                                                     current_iteration=current_iteration))
 
     def test_repeating_groups_next_location(self):
         survey = load_schema_file("test_repeating_household.json")
 
         expected_path = [
-            {"block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b"},
-            {"block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"},
-            {"block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a"},
-            {"block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed"}
+            {
+                "block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            }
         ]
 
-        current_location = expected_path[-1]["block_id"]
-        current_iteration = 2
+        current_group_id = expected_path[-1]["group_id"]
+        current_block_id = expected_path[-1]["block_id"]
+        current_iteration = expected_path[-1]["group_instance"]
 
         answer = Answer(
             group_id="f74d1147-673c-497a-9616-763829d944a",
@@ -495,4 +644,11 @@ class TestNavigator(unittest.TestCase):
 
         navigator = Navigator(survey, answers)
 
-        self.assertEqual({"block_id": 'summary'}, navigator.get_next_location(current_location, current_iteration))
+        summary_block = {
+            "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+            "block_id": 'summary',
+            "group_instance": 0
+        }
+        self.assertEqual(summary_block, navigator.get_next_location(current_group_id=current_group_id,
+                                                                    current_block_id=current_block_id,
+                                                                    current_iteration=current_iteration))
