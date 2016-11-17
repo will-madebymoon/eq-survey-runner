@@ -82,17 +82,19 @@ class Navigator:
         if block_id in self.CLOSING_INTERSTITIAL_PATH:
             return path
 
-        path.append(block_id)
+        path.append({"block_id": block_id})
 
         # Get blocks to be visited and a count of previous visits to this block in path
-        block_ids = [index for (index, b) in enumerate(blocks) if b["id"] == block_id]
-        no_of_previous_visits = path.count(block_id)
+        block_ids = [index for (index, b) in enumerate(blocks) if b["block"]["id"] == block_id]
+        no_of_previous_visits = sum(1 for v in path if v['block_id'] == block_id)
 
         # Return the index of the block id to be visited
         block_id_index = block_ids[no_of_previous_visits - 1]
 
-        if 'routing_rules' in blocks[block_id_index] and len(blocks[block_id_index]['routing_rules']) > 0:
-            for rule in blocks[block_id_index]['routing_rules']:
+        block = blocks[block_id_index]["block"]
+
+        if 'routing_rules' in block and len(block['routing_rules']) > 0:
+            for rule in block['routing_rules']:
                 if 'goto' in rule:
                     should_go = evaluate_goto(rule['goto'], self.answer_store)
                     if should_go is True:
@@ -100,7 +102,7 @@ class Navigator:
                     elif should_go is False:
                         return path
         elif block_id_index != len(blocks) - 1:
-            next_block_id = blocks[block_id_index + 1]['id']
+            next_block_id = blocks[block_id_index + 1]['block']['id']
             return self.build_path(blocks, next_block_id, path)
         return path
 
@@ -123,14 +125,14 @@ class Navigator:
         """
         blocks = self.get_blocks()
         routing_path = routing_path or self.build_path(blocks, self.first_block_id, [])
-        last_routing_block_id = routing_path[-1]
+        last_routing_block_id = routing_path[-1]['block_id']
 
-        if blocks[-1]['id'] == last_routing_block_id:
+        if blocks[-1]['block']['id'] == last_routing_block_id:
             return True
 
-        routing_block_id_index = next(index for (index, b) in enumerate(blocks) if b["id"] == last_routing_block_id)
+        routing_block_id_index = next(index for (index, b) in enumerate(blocks) if b['block']["id"] == last_routing_block_id)
 
-        last_routing_block = blocks[routing_block_id_index]
+        last_routing_block = blocks[routing_block_id_index]['block']
 
         if 'routing_rules' in last_routing_block:
             for rule in last_routing_block['routing_rules']:
@@ -150,11 +152,12 @@ class Navigator:
         can_reach_summary = self.can_reach_summary(routing_path)
 
         # Make sure we don't update original
-        location_path = list(Navigator.PRECEEDING_INTERSTITIAL_PATH)
-        location_path.extend(routing_path)
+        location_path = [{"block_id": v} for v in Navigator.PRECEEDING_INTERSTITIAL_PATH]
+        location_path += routing_path
 
         if can_reach_summary:
-            location_path.extend(Navigator.CLOSING_INTERSTITIAL_PATH)
+            for block_id in Navigator.CLOSING_INTERSTITIAL_PATH:
+                location_path.append({"block_id": block_id})
 
         return location_path
 
@@ -164,14 +167,22 @@ class Navigator:
     def get_blocks(self):
         blocks = []
         for group in self.survey_json['groups']:
-            group_blocks = [block for block in group['blocks']]
-            blocks.extend(group_blocks)
+            blocks.extend([{
+                "group_id": group['id'],
+                "group_instance": 0,
+                "block": block
+            } for block in group['blocks']])
+
             if 'routing_rules' in group:
                 for rule in group['routing_rules']:
                     if 'repeat' in rule.keys():
                         no_of_times = evaluate_repeat(rule['repeat'], self.answer_store)
                         for i in range(no_of_times - 1):
-                            blocks.extend(group_blocks)
+                            blocks.extend([{
+                                "group_id": group['id'],
+                                "group_instance": i + 1,
+                                "block": block
+                            } for block in group['blocks']])
         return blocks
 
     def block_in_path_count(self, block_id):
@@ -183,20 +194,19 @@ class Navigator:
     def get_first_location(cls):
         return cls.PRECEEDING_INTERSTITIAL_PATH[0]
 
-    def get_next_location(self, current_location_id=None, current_iteration=None):
+    def get_next_location(self, current_location_id=None, current_iteration=0):
         """
         Returns the next 'location' to visit given a set of user answers
         :param current_location_id:
         :param current_iteration:
         :return:
         """
-        current_iteration = current_iteration or 0
         location_path = self.get_location_path()
 
-        if current_location_id in location_path:
+        if {"block_id": current_location_id} in location_path:
 
             # Get blocks to be visited
-            block_ids = [index for (index, bid) in enumerate(location_path) if bid == current_location_id]
+            block_ids = [index for (index, path_item) in enumerate(location_path) if path_item['block_id'] == current_location_id]
 
             # Return the index of the block id to be visited
             current_location_index = block_ids[current_iteration]
@@ -204,19 +214,18 @@ class Navigator:
             if current_location_index < len(location_path) - 1:
                 return location_path[current_location_index + 1]
 
-    def get_previous_location(self, current_location_id=None, current_iteration=None):
+    def get_previous_location(self, current_location_id=None, current_iteration=0):
         """
         Returns the next 'location' to visit given a set of user answers
         :param current_location_id:
         :param current_iteration:
         :return:
         """
-        current_iteration = current_iteration or 0
         location_path = self.get_location_path()
 
-        if current_location_id in location_path:
+        if {"block_id": current_location_id} in location_path:
             # Get blocks to be visited
-            block_ids = [index for (index, bid) in enumerate(location_path) if bid == current_location_id]
+            block_ids = [index for (index, path_item) in enumerate(location_path) if path_item['block_id'] == current_location_id]
 
             # Return the index of the block id to be visited
             current_location_index = block_ids[current_iteration]
