@@ -61,13 +61,8 @@ class QuestionnaireManager(object):
         for answer in self.get_state_answers(location['block_id']):
             questionnaire_store.answer_store.add_or_update(answer.flatten())
 
-        logger.info("update_latest_location: {}".format(str(questionnaire_store.completed_blocks)))
-        logger.info("block_id: {}".format(str(location)))
-
         if location not in questionnaire_store.completed_blocks:
             questionnaire_store.completed_blocks.append(location)
-
-        logger.info("update_latest_location after: {}".format(str(questionnaire_store.completed_blocks)))
 
         questionnaire_store.save()
 
