@@ -282,11 +282,13 @@ class Navigator:
         :return:
         """
         if completed_blocks:
-            # Necessary to flatten as group/instance is not yet in completed_blocks
-            flattened_completed_blocks = [cb['block_id'] for cb in completed_blocks]
-            incomplete_blocks = [item for item in self.get_location_path() if item['block_id'] not in flattened_completed_blocks]
+            incomplete_blocks = [item for item in self.get_location_path() if item not in completed_blocks]
 
             if incomplete_blocks:
                 return incomplete_blocks[0]
 
-        return {'block_id': self.get_first_location()}
+        return {
+            'block_id': self.get_first_location(),
+            'group_id': self.get_first_group_id(),
+            'group_instance': 0,
+        }
