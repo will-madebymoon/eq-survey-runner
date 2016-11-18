@@ -89,14 +89,14 @@ class Navigator:
         this_block = {
             "block_id": block_id,
             "group_id": group_id,
-            "group_instance": group_instance
+            "group_instance": group_instance,
         }
 
         path.append(this_block)
 
         # Return the index of the block id to be visited
-        block_id_index = next(index for (index, b) in enumerate(blocks) if b["block"]["id"] == block_id \
-                              and b["group_id"] == group_id and b['group_instance'] == group_instance)
+        block_id_index = next(index for (index, b) in enumerate(blocks) if b["block"]["id"] == block_id and
+                              b["group_id"] == group_id and b['group_instance'] == group_instance)
 
         block = blocks[block_id_index]["block"]
 
@@ -165,7 +165,7 @@ class Navigator:
         location_path = [{
             "block_id": v,
             "group_id": self.first_group_id,
-            "group_instance": 0
+            "group_instance": 0,
         } for v in Navigator.PRECEEDING_INTERSTITIAL_PATH]
 
         location_path += routing_path
@@ -175,7 +175,7 @@ class Navigator:
                 location_path.append({
                     "block_id": block_id,
                     "group_id": self.last_group_id,
-                    "group_instance": 0
+                    "group_instance": 0,
                 })
 
         return location_path
@@ -195,7 +195,7 @@ class Navigator:
             blocks.extend([{
                 "group_id": group['id'],
                 "group_instance": 0,
-                "block": block
+                "block": block,
             } for block in group['blocks']])
 
             if 'routing_rules' in group:
@@ -206,7 +206,7 @@ class Navigator:
                             blocks.extend([{
                                 "group_id": group['id'],
                                 "group_instance": i + 1,
-                                "block": block
+                                "block": block,
                             } for block in group['blocks']])
         return blocks
 
@@ -233,7 +233,7 @@ class Navigator:
         this_block = {
             "block_id": current_block_id,
             "group_id": current_group_id,
-            "group_instance": current_iteration
+            "group_instance": current_iteration,
         }
 
         if this_block in location_path:
@@ -261,7 +261,7 @@ class Navigator:
         this_block = {
             "block_id": current_block_id,
             "group_id": current_group_id,
-            "group_instance": current_iteration
+            "group_instance": current_iteration,
         }
 
         if this_block in location_path:
@@ -282,9 +282,11 @@ class Navigator:
         :return:
         """
         if completed_blocks:
-            incomplete_blocks = [item for item in self.get_location_path() if item not in completed_blocks]
+            # Necessary to flatten as group/instance is not yet in completed_blocks
+            flattened_completed_blocks = [cb['block_id'] for cb in completed_blocks]
+            incomplete_blocks = [item for item in self.get_location_path() if item['block_id'] not in flattened_completed_blocks]
 
             if incomplete_blocks:
                 return incomplete_blocks[0]
 
-        return self.get_first_location()
+        return {'block_id': self.get_first_location()}

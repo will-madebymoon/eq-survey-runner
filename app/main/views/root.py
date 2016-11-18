@@ -78,4 +78,4 @@ def login():
     navigator = Navigator(json, get_answer_store(current_user))
     current_location = navigator.get_latest_location(get_completed_blocks(current_user))
 
-    return redirect('/questionnaire/' + eq_id + '/' + form_type + '/' + collection_id + '/' + current_location)
+    return redirect('/questionnaire/' + eq_id + '/' + form_type + '/' + collection_id + '/' + current_location['block_id'])

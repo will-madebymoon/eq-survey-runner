@@ -46,11 +46,11 @@ class QuestionnaireManager(object):
 
         for location in navigator.get_location_path():
             answers = get_answers(current_user)
-            is_valid = self.validate(location, answers)
+            is_valid = self.validate(location['block_id'], answers)
 
             if not is_valid:
-                logger.debug("Failed validation with current location %s", location)
-                return False, location
+                logger.debug("Failed validation with current location %s", location['block_id'])
+                return False, location['block_id']
 
         return True, None
 
@@ -61,8 +61,11 @@ class QuestionnaireManager(object):
         for answer in self.get_state_answers(location):
             questionnaire_store.answer_store.add_or_update(answer.flatten())
 
-        if location not in questionnaire_store.completed_blocks:
-            questionnaire_store.completed_blocks.append(location)
+        logger.info("update_latest_location: {}".format(str(questionnaire_store.completed_blocks)))
+        logger.info("block_id: {}".format(location))
+
+        if {'block_id': location} not in questionnaire_store.completed_blocks:
+            questionnaire_store.completed_blocks.append({'block_id': location})
 
         questionnaire_store.save()
 

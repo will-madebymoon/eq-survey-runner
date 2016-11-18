@@ -14,7 +14,7 @@ def build_summary_rendering_context(schema_json, answer_store):
     :return: questionnaire summary context
     """
     navigator = Navigator(schema_json, answer_store)
-    path = navigator.get_routing_path()
+    path = [b['block_id'] for b in navigator.get_routing_path()]
     sections = []
     for group in schema_json['groups']:
         for block in group['blocks']:

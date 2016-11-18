@@ -71,18 +71,19 @@ def post_questionnaire(eq_id, form_type, collection_id, location):
     navigator = Navigator(g.schema_json, get_answer_store(current_user))
     q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
-    valid_location = location in navigator.get_location_path()
+    valid_location = location in [l['block_id'] for l in navigator.get_location_path()]
     valid_data = q_manager.process_incoming_answers(location, request.form)
 
     if not valid_location or not valid_data:
         return _render_template(location, q_manager.state, template='questionnaire')
 
-    next_location = navigator.get_next_location(location)
+    next_location = navigator.get_next_location(current_block_id=location)
     metadata = get_metadata(current_user)
+    next_location = None if next_location is None else next_location['block_id']
 
     logger.info("Redirecting user to next location %s with tx_id=%s", next_location, metadata["tx_id"])
 
-    return redirect_to_questionnaire_page(eq_id, form_type, collection_id, next_location)
+    return redirect_to_block(eq_id, form_type, collection_id, next_location)
 
 
 @questionnaire_blueprint.route('summary', methods=["GET"])
@@ -93,14 +94,14 @@ def get_summary(eq_id, form_type, collection_id):
     answer_store = get_answer_store(current_user)
     latest_location = navigator.get_latest_location(get_completed_blocks(current_user))
 
-    if latest_location is 'summary':
+    if latest_location['block_id'] is 'summary':
         metadata = get_metadata(current_user)
         answers = get_answers(current_user)
         schema_json = _render_schema(g.schema_json, answers, metadata)
         summary_context = build_summary_rendering_context(schema_json, answer_store)
         return _render_template('summary', summary_context, rendered_schema_json=schema_json)
 
-    return redirect_to_questionnaire_page(eq_id, form_type, collection_id, latest_location)
+    return redirect_to_block(eq_id, form_type, collection_id, latest_location['block_id'])
 
 
 @questionnaire_blueprint.route('thank-you', methods=["GET"])
@@ -125,9 +126,9 @@ def submit_answers(eq_id, form_type, collection_id):
     if is_valid:
         submitter = SubmitterFactory.get_submitter()
         submitter.send_answers(get_metadata(current_user), g.schema, get_answers(current_user))
-        return redirect_to_questionnaire_page(eq_id, form_type, collection_id, 'thank-you')
+        return redirect_to_block(eq_id, form_type, collection_id, 'thank-you')
     else:
-        return redirect_to_questionnaire_page(eq_id, form_type, collection_id, invalid_location)
+        return redirect_to_block(eq_id, form_type, collection_id, invalid_location)
 
 
 def _delete_user_data():
@@ -135,7 +136,7 @@ def _delete_user_data():
     session_manager.clear()
 
 
-def redirect_to_questionnaire_page(eq_id, form_type, collection_id, location):
+def redirect_to_block(eq_id, form_type, collection_id, location):
     return redirect(url_for('.get_questionnaire',
                             eq_id=eq_id,
                             form_type=form_type,
@@ -155,8 +156,11 @@ def _render_template(location, context, rendered_schema_json=None, template=None
     answers = get_answers(current_user)
     metadata_context = build_metadata_context(metadata)
     navigator = Navigator(g.schema_json, get_answer_store(current_user))
-    previous_location = navigator.get_previous_location(location)
+    previous_location = navigator.get_previous_location(current_block_id=location)
     schema_json = rendered_schema_json or _render_schema(g.schema_json, answers, metadata)
+
+    previous_location = None if previous_location is None else previous_location['block_id']
+    logger.info("Previous Loc %s" % str(previous_location))
 
     try:
         theme = schema_json['theme']
@@ -166,6 +170,7 @@ def _render_template(location, context, rendered_schema_json=None, template=None
         theme = None
 
     template = '{}.html'.format(template or location)
+
     return render_theme_template(theme, template, meta=metadata_context,
                                  content=context,
                                  previous_location=previous_location,
