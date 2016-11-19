@@ -1,5 +1,3 @@
-import logging
-
 from tests.integration.star_wars.star_wars_tests import StarWarsTestCase
 from werkzeug.datastructures import MultiDict
 from tests.integration.star_wars import star_wars_test_urls
@@ -94,7 +92,6 @@ class TestLightSidePath(StarWarsTestCase):
 
         # We are on the review answers page
         content = resp.get_data(True)
-        logging.info(content)
         self.assertRegexpMatches(content, '<title>Summary</title>')
         self.assertRegexpMatches(content, '>Star Wars</')
         self.assertRegexpMatches(content, '>Your responses<')
