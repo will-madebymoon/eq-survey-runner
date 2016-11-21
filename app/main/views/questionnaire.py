@@ -51,9 +51,14 @@ def add_cache_control(response):
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["GET"])
 @login_required
 def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_id):
-    get_questionnaire_manager(g.schema, g.schema_json).build_state(block_id, get_answers(current_user))
+    # Filter answers down to those we may need to render
+    answer_store = get_answer_store(current_user)
+    answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
 
-    return _render_template(block_id, get_questionnaire_manager(g.schema, g.schema_json).state, template='questionnaire')
+    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
+    q_manager.build_state(block_id, answers)
+
+    return _render_template(block_id, q_manager.state, template='questionnaire')
 
 
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["POST"])
@@ -69,10 +74,12 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
     }
 
     valid_location = this_block in navigator.get_location_path()
-    valid_data = q_manager.process_incoming_answers(this_block, request.form)
+    valid_data = q_manager.validate(block_id, request.form)
 
     if not valid_location or not valid_data:
         return _render_template(block_id, q_manager.state, template='questionnaire')
+    else:
+        q_manager.update_questionnaire_store(this_block)
 
     next_location = navigator.get_next_location(current_group_id=group_id, current_iteration=group_instance, current_block_id=block_id)
     metadata = get_metadata(current_user)
@@ -113,14 +120,14 @@ def get_summary(eq_id, form_type, collection_id):
     return redirect_to_block(eq_id, form_type, collection_id, latest_location['group_id'], latest_location['group_instance'], latest_location['block_id'])
 
 
-@questionnaire_blueprint.route('<location>', methods=["POST"])
+@questionnaire_blueprint.route('<block_id>', methods=["POST"])
 @login_required
-def post_interstitial(eq_id, form_type, collection_id, location):
+def post_interstitial(eq_id, form_type, collection_id, block_id):
     navigator = Navigator(g.schema_json, get_answer_store(current_user))
     q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
     this_block = {
-        'block_id': location,
+        'block_id': block_id,
         'group_id': navigator.get_first_group_id(),
         'group_instance': 0,
     }
@@ -130,9 +137,9 @@ def post_interstitial(eq_id, form_type, collection_id, location):
 
     # Don't care if data is valid because there isn't any for interstitial
     if not valid_location:
-        return _render_template(location, q_manager.state, template='questionnaire')
+        return _render_template(block_id, q_manager.state, template='questionnaire')
 
-    next_location = navigator.get_next_location(current_block_id=location, current_iteration=0, current_group_id=this_block['group_id'])
+    next_location = navigator.get_next_location(current_block_id=block_id, current_iteration=0, current_group_id=this_block['group_id'])
     metadata = get_metadata(current_user)
 
     next_block_id = None if next_location is None else next_location['block_id']
@@ -228,6 +235,7 @@ def _same_survey(eq_id, form_type, collection_id):
 def _render_template(location, context, rendered_schema_json=None, template=None):
     metadata = get_metadata(current_user)
     answers = get_answers(current_user)
+
     metadata_context = build_metadata_context(metadata)
     navigator = Navigator(g.schema_json, get_answer_store(current_user))
     previous_location = navigator.get_previous_location(current_block_id=location)

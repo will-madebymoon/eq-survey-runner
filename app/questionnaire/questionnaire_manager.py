@@ -59,6 +59,8 @@ class QuestionnaireManager(object):
         questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
 
         for answer in self.get_state_answers(location['block_id']):
+            answer.group_id = location['group_id']
+            answer.group_instance = location['group_instance']
             questionnaire_store.answer_store.add_or_update(answer.flatten())
 
         if location not in questionnaire_store.completed_blocks:
@@ -67,7 +69,7 @@ class QuestionnaireManager(object):
         questionnaire_store.save()
 
     def process_incoming_answers(self, location, post_data):
-        logger.debug("Processing post data for %s", str(location))
+        logger.debug("Processing post data for %s", location)
 
         is_valid = self.validate(location['block_id'], post_data)
         # run the validator to update the validation_store
@@ -85,7 +87,10 @@ class QuestionnaireManager(object):
             self.state.update_state(answers)
             self._conditional_display(self.state)
         if self.state:
-            context = build_schema_context(get_metadata(current_user), self._schema.aliases, answers)
+            metadata = get_metadata(current_user)
+            all_answers = get_answers(current_user)
+
+            context = build_schema_context(metadata, self._schema.aliases, all_answers)
             renderer.render_state(self.state, context)
 
     def get_state_answers(self, item_id):
