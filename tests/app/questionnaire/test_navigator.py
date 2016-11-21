@@ -390,6 +390,7 @@ class TestNavigator(unittest.TestCase):
 
         answer = Answer(
             group_id="14ba4707-321d-441d-8d21-b8367366e766",
+            group_instance=0,
             block_id="f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
             answer_id="ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
             value="I prefer Star Trek",
@@ -511,6 +512,88 @@ class TestNavigator(unittest.TestCase):
         )
         answers = AnswerStore()
         answers.add(answer)
+
+        navigator = Navigator(survey, answers)
+
+        self.assertEqual(expected_path, navigator.get_routing_path())
+
+    def test_repeating_groups_no_of_answers(self):
+        survey = load_schema_file("test_repeating_household.json")
+
+        survey['groups'][-1]['routing_rules'][0]['repeat']['type'] = 'answer_count'
+
+        expected_path = [
+            {
+                "block_id": "980b148e-0856-4e50-9afe-67a4fa6ae13b",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+                "group_id": "f74d1147-673c-497a-9616-763829d944ac",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 0
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 1
+            },
+            {
+                "block_id": "96682325-47ab-41e4-a56e-8315a19ffe2a",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            },
+            {
+                "block_id": "a7dcbb30-1187-4276-a49c-9284730ba4ed",
+                "group_id": "f22b1ba4-d15f-48b8-a1f3-db62b6f34cc0",
+                'group_instance': 2
+            }
+        ]
+
+        answer = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
+            group_instance=0,
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+            value="This is the first answer to this question"
+        )
+
+        answer_2 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
+            group_instance=1,
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+            value="This is the second answer to this question"
+        )
+
+        answer_3 = Answer(
+            group_id="14ba4707-321d-441d-8d21-b8367366e766",
+            group_instance=2,
+            answer_id="78774493-5b64-45c4-8072-22f1a9638095",
+            block_id="0c7c8876-6a63-4251-ac29-b821b3e9b1bc",
+            value="This is the third answer to this question"
+        )
+
+        answers = AnswerStore()
+
+        answers.add(answer)
+        answers.add(answer_2)
+        answers.add(answer_3)
 
         navigator = Navigator(survey, answers)
 

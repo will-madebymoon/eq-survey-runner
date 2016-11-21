@@ -53,12 +53,15 @@ def evaluate_repeat(repeat_rule, answers):
     :param answers:
     :return: The number of times to repeat
     """
-    if 'answer_id' in repeat_rule:
+    if 'answer_id' in repeat_rule and 'type' in repeat_rule:
         repeat_index = repeat_rule['answer_id']
         filtered = answers.filter(answer_id=repeat_index)
-        if len(filtered) == 1:
-            return int(filtered[0]['value'])
-    return 1
+        if repeat_rule['type'] == 'answer_value':
+            if len(filtered) == 1:
+                return int(filtered[0]['value'])
+            return 1
+        elif repeat_rule['type'] == 'answer_count':
+            return len(filtered)
 
 
 class Navigator:
