@@ -24,16 +24,17 @@ def evaluate_rule(rule, answer_value):
     return False
 
 
-def evaluate_goto(goto_rule, answers):
+def evaluate_goto(goto_rule, answers, group_instance):
     """
     Determine whether a goto rule will be satisfied based on a given answer
     :param goto_rule:
     :param answers:
+    :param group_instance:
     :return:
     """
     if 'when' in goto_rule.keys():
         answer_index = goto_rule['when']['id']
-        filtered = answers.filter(answer_id=answer_index)
+        filtered = answers.filter(answer_id=answer_index, group_instance=group_instance)
         if len(filtered) == 1:
             answer = filtered[0]
             if evaluate_rule(goto_rule, answer['value']):
@@ -103,7 +104,7 @@ class Navigator:
         if 'routing_rules' in block and len(block['routing_rules']) > 0:
             for rule in block['routing_rules']:
                 if 'goto' in rule:
-                    should_go = evaluate_goto(rule['goto'], self.answer_store)
+                    should_go = evaluate_goto(rule['goto'], self.answer_store, group_instance)
                     if should_go is True:
                         return self.build_path(blocks, group_id, group_instance, rule['goto']['id'], path)
                     elif should_go is False:
@@ -148,7 +149,7 @@ class Navigator:
             for rule in last_routing_block['routing_rules']:
                 goto_rule = rule['goto']
                 if 'id' in goto_rule.keys() and goto_rule['id'] == 'summary':
-                    return evaluate_goto(goto_rule, self.answer_store)
+                    return evaluate_goto(goto_rule, self.answer_store, 0)
         return False
 
     def get_location_path(self):
@@ -163,10 +164,10 @@ class Navigator:
 
         # Make sure we don't update original
         location_path = [{
-            "block_id": v,
+            "block_id": block_id,
             "group_id": self.first_group_id,
             "group_instance": 0,
-        } for v in Navigator.PRECEEDING_INTERSTITIAL_PATH]
+        } for block_id in Navigator.PRECEEDING_INTERSTITIAL_PATH]
 
         location_path += routing_path
 
