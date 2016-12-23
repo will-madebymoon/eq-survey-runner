@@ -86,3 +86,9 @@ class SchemaHelper(object):
             group_instance=0,
             block_id=cls.get_last_block_id(survey_json),
         )
+
+    @classmethod
+    def get_block_for_location(cls, survey_json, location):
+        group = cls.get_group(survey_json, location.group_id)
+
+        return next(b for b in group['blocks'] if b["id"] == location.block_id)

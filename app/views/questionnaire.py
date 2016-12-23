@@ -1,8 +1,12 @@
 import logging
 
+from datetime import date
+
 from app.authentication.session_manager import session_manager
+from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
 from app.helpers.schema_helper import SchemaHelper
+from app.helpers.forms import generate_form
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
 from app.questionnaire.questionnaire_manager import get_questionnaire_manager
@@ -72,36 +76,51 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
     answer_store = get_answer_store(current_user)
     answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
 
-    this_location = Location(group_id, group_instance, block_id)
-
-    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
-    q_manager.build_state(this_location, answers)
-
-    block = g.schema.get_item_by_id(block_id)
-    template = block.type if block and block.type else 'questionnaire'
-
     current_location = Location(group_id, group_instance, block_id)
 
-    return _render_template(q_manager.state, current_location=current_location, template=template)
+    block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
+
+    form = generate_form(block, answers)
+
+    template = block['type'] if block and block['type'] else 'questionnaire'
+
+    return _render_template({'form': form, 'block': block}, current_location=current_location, template=template)
+
+
+def update_questionnaire_store(location, answer_dict):
+    # Store answers in QuestionnaireStore
+    questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
+
+    for answer_id, answer_value in answer_dict.items():
+        if isinstance(answer_value, date):
+            answer = Answer(answer_id=answer_id, value=answer_value.strftime('%d/%m/%Y'), location=location)
+        else:
+            answer = Answer(answer_id=answer_id, value=answer_value, location=location)
+        questionnaire_store.answer_store.add_or_update(answer)
+
+    if location not in questionnaire_store.completed_blocks:
+        questionnaire_store.completed_blocks.append(location)
 
 
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["POST"])
 @login_required
 def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_id):
     navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
-    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
-    this_location = Location(group_id, group_instance, block_id)
+    current_location = Location(group_id, group_instance, block_id)
 
-    valid_location = this_location in navigator.get_routing_path(group_id, group_instance)
-    valid_data = q_manager.validate(this_location, request.form)
+    valid_location = current_location in navigator.get_routing_path(group_id, group_instance)
+
+    block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
+    form = generate_form(block, request.form.to_dict())
+    valid_data = form.validate()
 
     if not valid_location or not valid_data:
-        return _render_template(q_manager.state, block_id=block_id, template='questionnaire')
+        return _render_template({'form': form, 'block': block}, block_id=block_id, template='questionnaire')
     else:
-        q_manager.update_questionnaire_store(this_location)
+        update_questionnaire_store(current_location, form.data)
 
-    next_location = navigator.get_next_location(current_location=this_location)
+    next_location = navigator.get_next_location(current_location=current_location)
     metadata = get_metadata(current_user)
 
     if next_location is None:
@@ -155,8 +174,8 @@ def get_summary(eq_id, form_type, collection_id):
     metadata = get_metadata(current_user)
 
     if latest_location.block_id is 'summary':
-        answers = get_answer_store(current_user)
-        schema_context = build_schema_context(metadata, g.schema.aliases, answers)
+        logger.info("Answers %s", answer_store.map())
+        schema_context = build_schema_context(metadata, g.schema.aliases, answer_store)
         rendered_schema_json = renderer.render(g.schema_json, **schema_context)
         summary_context = build_summary_rendering_context(rendered_schema_json, answer_store, metadata)
         return _render_template(summary_context, current_location=latest_location)
@@ -343,8 +362,10 @@ def _render_template(context, current_location=None, block_id=None, template=Non
 
     template = '{}.html'.format(template or current_location.block_id)
 
-    return render_theme_template(theme, template, meta=metadata_context,
+    return render_theme_template(theme, template,
+                                 meta=metadata_context,
                                  content=context,
+                                 current_location=current_location,
                                  previous_location=previous_url,
                                  navigation=front_end_navigation,
                                  schema_title=g.schema_json['title'])

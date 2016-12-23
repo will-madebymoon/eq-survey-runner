@@ -1,1 +1,23 @@
-{{ answer.schema_item.widget.render(answer)|safe}}
+
+    {% set answer_value = form[answer['id']].data if form[answer['id']].data != None else '' %}
+
+{% set input = {
+    'type': 'text',
+    'classes': 'input-type__input',
+    'hasType': true,
+    'value': answer_value|e,
+    'name': answer.id,
+    'id': answer.id,
+    'placeholder': ''
+} %}
+
+{% if answer.label %}
+  <fieldset class="fieldgroup fieldgroup--date" data-qa="widget-date">
+    <legend class="fieldgroup__title venus">{{answer.label}}</legend>
+      {% include 'partials/forms/input.html' %}
+  </fieldset>
+{% else %}
+  <div class="fieldgroup fieldgroup--date">
+      {% include 'partials/forms/input.html' %}
+  </div>
+{% endif %}

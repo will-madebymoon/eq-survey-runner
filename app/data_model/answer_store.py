@@ -4,11 +4,19 @@ from collections import OrderedDict
 
 
 class Answer(object):
-    def __init__(self, group_id=None, block_id=None, answer_id=None, value=None, group_instance=0, answer_instance=0):
+    def __init__(self, group_id=None, block_id=None, answer_id=None, value=None, group_instance=0, answer_instance=0, location=None):
         valid = (group_id or answer_id or block_id or value) is not None
 
         if not valid:
             raise ValueError("At least one of 'answer_id', 'group_id', 'block_id' or 'value' must be set for Answer")
+
+        if location:
+            assert not (group_id or group_instance or block_id), \
+                "Expected either a location object or one or more of group_id, group_instance, block_id params"
+
+            self.group_id = location.group_id
+            self.group_instance = location.group_instance
+            self.block_id = location.block_id
 
         self.group_id = group_id
         self.block_id = block_id
