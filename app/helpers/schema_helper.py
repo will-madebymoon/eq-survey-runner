@@ -4,6 +4,11 @@ from app.questionnaire.location import Location
 class SchemaHelper(object):
 
     @staticmethod
+    def get_messages(survey_json):
+        if 'messages' in survey_json:
+            return survey_json['messages']
+
+    @staticmethod
     def has_introduction(survey_json):
         return 'introduction' in survey_json
 

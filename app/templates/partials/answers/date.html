@@ -1,5 +1,4 @@
-
-    {% set answer_value = form[answer['id']].data if form[answer['id']].data != None else '' %}
+{% set answer_value = form[answer['id']].data if form[answer['id']].data != None else '' %}
 
 {% set input = {
     'type': 'text',
@@ -14,10 +13,10 @@
 {% if answer.label %}
   <fieldset class="fieldgroup fieldgroup--date" data-qa="widget-date">
     <legend class="fieldgroup__title venus">{{answer.label}}</legend>
-      {% include 'partials/forms/input.html' %}
+      {{form[answer['id']]}}
   </fieldset>
 {% else %}
   <div class="fieldgroup fieldgroup--date">
-      {% include 'partials/forms/input.html' %}
+      {{form[answer['id']]}}
   </div>
 {% endif %}
