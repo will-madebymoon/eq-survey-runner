@@ -1,10 +1,10 @@
 {% set type = "text" if input.type == "number" else input.type %}
-{% set answer_value = form[answer['id']].data if form[answer['id']].data != None else '' %}
+{% set answer_value = input.data if input.data != None else '' %}
 
 {% set attr = {
   "class": "input input--" ~ input.type ~ " " ~ input.classes,
   "type": type,
-  "value": input.value,
+  "value": answer_value,
   "name": input.name,
   "id": "input-" ~ input.id,
   "placeholder": input.placeholder,

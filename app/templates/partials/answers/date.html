@@ -1,22 +1,46 @@
 {% set answer_value = form[answer['id']].data if form[answer['id']].data != None else '' %}
 
-{% set input = {
-    'type': 'text',
-    'classes': 'input-type__input',
-    'hasType': true,
-    'value': answer_value|e,
-    'name': answer.id,
-    'id': answer.id,
-    'placeholder': ''
-} %}
+{% set subfields %}
+  <div class="fieldgroup__fields">
+    {% if form[answer['id']]['day'] %}
+    <div class="field field--input field--day">
+      <label class="label mercury" for="input-{{answer['id']}}-day" id="label-{{answer['id']}}-day" data-qa="label-day">Day</label>
+      {% set input = form[answer['id']]['day'] %}
+      {% include 'partials/forms/input.html' %}
+    </div>
+    {% endif %}
+    {% if form[answer['id']]['month'] %}
+    <div class="field field--select field--month">
+      <label class="label mercury" for="input-{{answer['id']}}-month" id="label-{{answer['id']}}-month" data-qa="label-month">Month</label>
+      {% set select = form[answer['id']]['month'] %}
+      <select class='input input--select' id='input-{{select.name}}' name='{{select.name}}'>
+
+          {%- for option_value, option_text in select.choices -%}
+
+            <option value="{{option_value}}">{{option_text}}</option>
+
+          {%- endfor -%}
+
+        </select>
+    </div>
+    {% endif %}
+    {% if form[answer['id']]['year'] %}
+    <div class="field field--input field--year">
+      <label class="label mercury" for="input-{{answer['id']}}-year" id="label-{{answer['id']}}-year" data-qa="label-year">Year</label>
+      {% set input = form[answer['id']]['year'] %}
+      {% include 'partials/forms/input.html' %}
+    </div>
+    {% endif %}
+  </div>
+{% endset %}
 
 {% if answer.label %}
   <fieldset class="fieldgroup fieldgroup--date" data-qa="widget-date">
     <legend class="fieldgroup__title venus">{{answer.label}}</legend>
-      {{form[answer['id']]}}
+    {{subfields|safe}}
   </fieldset>
 {% else %}
   <div class="fieldgroup fieldgroup--date">
-      {{form[answer['id']]}}
+    {{subfields|safe}}
   </div>
 {% endif %}

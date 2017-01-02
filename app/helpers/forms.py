@@ -1,11 +1,11 @@
 import logging
 import calendar
+from datetime import datetime
 
 from app.validation.error_messages import error_messages
 from flask_wtf import FlaskForm
-from wtforms import SelectField, IntegerField, DateField, SelectMultipleField, TextAreaField
+from wtforms import SelectField, IntegerField, Form, SelectMultipleField, TextAreaField, StringField, FormField
 from wtforms.widgets import TextArea, TextInput, RadioInput, CheckboxInput, ListWidget
-from wtforms.widgets.core import Select, HTMLString, html_params
 from wtforms import validators
 
 
@@ -17,59 +17,25 @@ class Struct:
         self.__dict__.update(entries)
 
 
-class SelectDateWidget(object):
+class DateForm(Form):
 
-    # http://stackoverflow.com/questions/14643200/how-to-render-datefield-with-3-selects
+    MONTH_CHOICES = [(str(x), calendar.month_name[x]) for x in range(1, 13)]
 
-    FORMAT_CHOICES = {
-        '%m': [(x, calendar.month_name[x]) for x in range(1, 13)]
-    }
+    day = StringField()
+    month = SelectField(choices=MONTH_CHOICES)
+    year = StringField()
 
-    FORMAT_CLASSES = {
-        '%d': 'select_date_day',
-        '%m': 'select_date_month',
-        '%Y': 'select_date_year'
-    }
+    def process_data(self, value):
+        datestr = "{:02d}/{:02d}/{}".format(int(self.day.data or 0), int(self.month.data or 0), self.year.data or '')
+        return datetime.strptime(datestr, "%d/%m/%Y")
 
-    def __init__(self):
-        super(SelectDateWidget, self).__init__()
-
-    def __call__(self, field, **kwargs):
-        field_id = kwargs.pop('id', field.id)
-        html = []
-        allowed_format = ['%m']
-
-        for date_format in field.format.split():
-            id_suffix = date_format.replace('%', '-')
-            id_current = field_id + id_suffix
-
-            if date_format in allowed_format:
-                choices = self.FORMAT_CHOICES[date_format]
-
-                kwargs['class'] = self.FORMAT_CLASSES[date_format]
-                try:
-                    del kwargs['placeholder']
-                except:
-                    pass
-
-                html.append('<select %s>' % html_params(name=field.name, id=id_current, **kwargs))
-
-                if field.data:
-                    current_value = int(field.data.strftime(date_format))
-                else:
-                    current_value = None
-
-                for value, label in choices:
-                    selected = (value == current_value)
-                    html.append(Select.render_option(value, label, selected))
-
-                html.append('</select>')
-            else:
-                html.append('<input type="text" value="" %s></input>' % html_params(name=field.name, id=id_current, **kwargs))
-
-            html.append(' ')
-
-        return HTMLString(''.join(html))
+    def validate_day(self, field):
+        try:
+            datestr = "{:02d}/{:02d}/{}".format(int(self.day.data or 0), int(self.month.data or 0), self.year.data or '')
+            datetime.strptime(datestr, "%d/%m/%Y")
+        except ValueError:
+            raise validators.ValidationError(error_messages['INVALID_DATE'])
+        return True
 
 
 def generate_form(block_json, data):
@@ -114,24 +80,17 @@ def get_field(answer, label):
         )
     if answer['type'] == 'Date':
         if answer['mandatory'] is True:
-            field = DateField(
+            field = FormField(
+                DateForm,
                 label=label,
-                description=answer['guidance'],
-                widget=SelectDateWidget(),
-                validators=[
-                    validators.InputRequired(
-                        message=error_messages['MANDATORY']
-                    )
-                ],
-                format="%d %m %Y"
+                description=answer['guidance']
             )
         else:
-            field = DateField(
+            field = FormField(
+                DateForm,
                 label=label,
                 description=answer['guidance'],
-                widget=SelectDateWidget(),
-                validators=[validators.Optional()],
-                format="%d %m %Y"
+                validators=[validators.Optional()]
             )
     if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
