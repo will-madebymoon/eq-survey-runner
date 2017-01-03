@@ -1,4 +1,3 @@
-{% set input = form[answer['id']] %}
 {% set type = "text" if input.type == "number" else input.type %}
 {% set answer_value = input.data if input.data != None else '' %}
 
