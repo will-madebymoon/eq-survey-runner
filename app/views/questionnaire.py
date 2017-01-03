@@ -195,11 +195,11 @@ def get_confirmation(eq_id, form_type, collection_id):
 
     if latest_location.block_id == 'confirmation':
 
-        q_manager = get_questionnaire_manager(g.schema, g.schema_json)
         this_location = Location(SchemaHelper.get_first_group_id(g.schema_json), 0, 'confirmation')
-        q_manager.build_state(this_location, answer_store)
 
-        return _render_template(q_manager.state, current_location=latest_location)
+        block = SchemaHelper.get_block_for_location(g.schema_json, this_location)
+
+        return _render_template({"block": block}, current_location=latest_location)
 
     metadata = get_metadata(current_user)
 

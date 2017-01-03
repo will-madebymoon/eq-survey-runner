@@ -33,7 +33,7 @@
 
 {% block main %}
 
-    {% if form.errors %}
+    {% if form and form.errors %}
 
     <div class="panel panel--error u-mb-s" data-qa="error">
       <div class="panel__header">
