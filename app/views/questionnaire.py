@@ -146,16 +146,16 @@ def post_interstitial(eq_id, form_type, collection_id, block_id):
     navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
     q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
-    this_location = Location(SchemaHelper.get_first_group_id(g.schema_json), 0, block_id)
+    current_location = Location(SchemaHelper.get_first_group_id(g.schema_json), 0, block_id)
 
-    valid_location = this_location in navigator.get_location_path()
-    q_manager.process_incoming_answers(this_location, request.form)
+    valid_location = current_location in navigator.get_location_path()
+    q_manager.process_incoming_answers(current_location, request.form)
 
     # Don't care if data is valid because there isn't any for interstitial
     if not valid_location:
-        return _render_template(q_manager.state, current_location=this_location, template='questionnaire')
+        return _render_template(q_manager.state, current_location=current_location, template='questionnaire')
 
-    next_location = navigator.get_next_location(current_location=this_location)
+    next_location = navigator.get_next_location(current_location=current_location)
     metadata = get_metadata(current_user)
 
     if next_location is None:
