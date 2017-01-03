@@ -72,7 +72,7 @@ def get_field(answer, label):
     if answer['type'] == 'Checkbox':
         field = SelectMultipleField(
             label=label,
-            description=answer.guidance,
+            description=guidance,
             choices=build_choices(answer['options']),
             widget=ListWidget(),
             option_widget=CheckboxInput()
