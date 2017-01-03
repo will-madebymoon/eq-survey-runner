@@ -16,12 +16,10 @@
       <select class='input input--select' id='input-{{select.name}}' name='{{select.name}}'>
 
           {%- for option_value, option_text in select.choices -%}
-
             <option value="{{option_value}}">{{option_text}}</option>
-
           {%- endfor -%}
 
-        </select>
+      </select>
     </div>
     {% endif %}
     {% if form[answer['id']]['year'] %}

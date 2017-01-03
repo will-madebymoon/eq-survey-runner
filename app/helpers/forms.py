@@ -45,7 +45,7 @@ def generate_form(block_json, data):
     for section in block_json['sections']:
         for question in section['questions']:
             for answer in question['answers']:
-                name = answer['label'] if answer['label'] else question['title']
+                name = answer['label'] if 'label' in answer else question['title']
                 setattr(QuestionnaireForm, answer['id'], get_field(answer, name))
 
     if data:
@@ -59,13 +59,12 @@ def generate_form(block_json, data):
 
 def get_field(answer, label):
     field = None
-
-    logger.info("Setting field to %s, %s", label, answer['guidance'])
+    guidance = answer['guidance'] if 'guidance' in answer else ''
 
     if answer['type'] == 'Radio':
         field = SelectField(
             label=label,
-            description=answer['guidance'],
+            description=guidance,
             choices=build_choices(answer['options']),
             widget=ListWidget(),
             option_widget=RadioInput()
@@ -83,20 +82,20 @@ def get_field(answer, label):
             field = FormField(
                 DateForm,
                 label=label,
-                description=answer['guidance']
+                description=guidance
             )
         else:
             field = FormField(
                 DateForm,
                 label=label,
-                description=answer['guidance'],
+                description=guidance,
                 validators=[validators.Optional()]
             )
     if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
             field = IntegerField(
                 label=label,
-                description=answer['guidance'],
+                description=guidance,
                 widget=TextInput(),
                 validators=[
                     validators.InputRequired(
@@ -108,7 +107,7 @@ def get_field(answer, label):
             label = '<span class="label__inner">'+label+'</span>'
             field = IntegerField(
                 label=label,
-                description=answer['guidance'],
+                description=guidance,
                 widget=TextInput(),
                 validators=[
                     validators.Optional()
@@ -118,7 +117,7 @@ def get_field(answer, label):
         if answer['mandatory'] is True:
             field = IntegerField(
                 label=label,
-                description=answer['guidance'],
+                description=guidance,
                 widget=TextInput(),
                 validators=[
                     validators.InputRequired(
@@ -130,7 +129,7 @@ def get_field(answer, label):
             label = '<span class="label__inner">'+label+'</span>'
             field = IntegerField(
                 label=label,
-                description=answer['guidance'],
+                description=guidance,
                 widget=TextInput(),
                 validators=[
                     validators.Optional()
@@ -139,7 +138,7 @@ def get_field(answer, label):
     if answer['type'] == 'TextArea':
         field = TextAreaField(
             label=label,
-            description=answer['guidance'],
+            description=guidance,
             widget=TextArea(),
             validators=[
                 validators.Optional()

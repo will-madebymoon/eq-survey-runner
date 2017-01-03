@@ -82,7 +82,7 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
 
     form = generate_form(block, answers)
 
-    template = block['type'] if block and block['type'] else 'questionnaire'
+    template = block['type'] if block and 'type' in block and block['type'] else 'questionnaire'
 
     return _render_template({'form': form, 'block': block}, current_location=current_location, template=template)
 
