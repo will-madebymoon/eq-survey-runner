@@ -92,8 +92,10 @@ def update_questionnaire_store(location, answer_dict):
     questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
 
     for answer_id, answer_value in answer_dict.items():
-        if isinstance(answer_value, date):
-            answer = Answer(answer_id=answer_id, value=answer_value.strftime('%d/%m/%Y'), location=location)
+        # Dates are comprised of 3 string values
+        if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
+            datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
+            answer = Answer(answer_id=answer_id, value=datestr, location=location)
         else:
             answer = Answer(answer_id=answer_id, value=answer_value, location=location)
         questionnaire_store.answer_store.add_or_update(answer)

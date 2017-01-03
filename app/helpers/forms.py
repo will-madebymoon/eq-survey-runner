@@ -25,14 +25,14 @@ class DateForm(Form):
     month = SelectField(choices=MONTH_CHOICES)
     year = StringField()
 
-    def process_data(self, value):
+    def to_date(self):
         datestr = "{:02d}/{:02d}/{}".format(int(self.day.data or 0), int(self.month.data or 0), self.year.data or '')
+
         return datetime.strptime(datestr, "%d/%m/%Y")
 
-    def validate_day(self, field):
+    def validate_day(self, field=None):
         try:
-            datestr = "{:02d}/{:02d}/{}".format(int(self.day.data or 0), int(self.month.data or 0), self.year.data or '')
-            datetime.strptime(datestr, "%d/%m/%Y")
+            self.to_date()
         except ValueError:
             raise validators.ValidationError(error_messages['INVALID_DATE'])
         return True
