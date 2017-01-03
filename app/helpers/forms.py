@@ -78,19 +78,11 @@ def get_field(answer, label):
             option_widget=CheckboxInput()
         )
     if answer['type'] == 'Date':
-        if answer['mandatory'] is True:
-            field = FormField(
-                DateForm,
-                label=label,
-                description=guidance
-            )
-        else:
-            field = FormField(
-                DateForm,
-                label=label,
-                description=guidance,
-                validators=[validators.Optional()]
-            )
+        field = FormField(
+            DateForm,
+            label=label,
+            description=guidance
+        )
     if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
             field = IntegerField(

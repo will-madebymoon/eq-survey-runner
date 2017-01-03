@@ -1,7 +1,5 @@
 import logging
 
-from datetime import date
-
 from app.authentication.session_manager import session_manager
 from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
@@ -144,16 +142,17 @@ def get_introduction(eq_id, form_type, collection_id):
 @login_required
 def post_interstitial(eq_id, form_type, collection_id, block_id):
     navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
-    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
 
     current_location = Location(SchemaHelper.get_first_group_id(g.schema_json), 0, block_id)
 
     valid_location = current_location in navigator.get_location_path()
-    q_manager.process_incoming_answers(current_location, request.form)
+    update_questionnaire_store(current_location, request.form.to_dict())
 
     # Don't care if data is valid because there isn't any for interstitial
     if not valid_location:
-        return _render_template(q_manager.state, current_location=current_location, template='questionnaire')
+        block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
+
+        return _render_template({"block": block}, current_location=current_location, template='questionnaire')
 
     next_location = navigator.get_next_location(current_location=current_location)
     metadata = get_metadata(current_user)
