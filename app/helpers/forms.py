@@ -7,7 +7,7 @@ from app.validation.error_messages import error_messages
 
 from flask_wtf import FlaskForm
 
-from wtforms import Form, FormField, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
+from wtforms import Form, FormField, FieldList, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
 from wtforms import validators
 from wtforms.widgets import CheckboxInput, ListWidget, RadioInput, TextArea, TextInput
 
@@ -39,6 +39,21 @@ class DateForm(Form):
         except ValueError:
             raise validators.ValidationError(error_messages['INVALID_DATE'])
         return True
+
+
+class NameForm(Form):
+    first_name = StringField(validators=[
+        validators.InputRequired(
+            message=error_messages['MANDATORY']
+        )
+    ])
+
+    middle_names = StringField(validators=[validators.Optional()])
+    last_name = StringField(validators=[validators.Optional()])
+
+
+class HouseHoldCompositionForm(Form):
+    full_names = FieldList(FormField(NameForm), min_entries=1)
 
 
 def generate_form(block_json, data):
@@ -140,6 +155,8 @@ def get_field(answer, label):
             ],
             filters=[lambda x: x if x else None],
         )
+    if answer['type'] == 'RepeatingAnswer':
+        field = FieldList(FormField(NameForm))
 
     if field is None:
         logger.info("Could not find field for answer type %s", answer['type'])

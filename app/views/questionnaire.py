@@ -3,7 +3,7 @@ import logging
 from app.authentication.session_manager import session_manager
 from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
-from app.helpers.forms import generate_form
+from app.helpers.forms import generate_form, HouseHoldCompositionForm, Struct
 from app.helpers.schema_helper import SchemaHelper
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
@@ -78,31 +78,16 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
 
     block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
 
-    form = generate_form(block, answers)
+    logger.info(answer_store.answers)
+
+    if block_id == 'household-composition':
+        form = HouseHoldCompositionForm(obj=answers)
+    else:
+        form = generate_form(block, answers)
 
     template = block['type'] if block and 'type' in block and block['type'] else 'questionnaire'
 
     return _render_template({'form': form, 'block': block}, current_location=current_location, template=template)
-
-
-def update_questionnaire_store(location, answer_dict):
-    # Store answers in QuestionnaireStore
-    questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
-
-    survey_answer_ids = SchemaHelper.get_answer_ids_for_location(g.schema_json, location)
-
-    for answer_id, answer_value in answer_dict.items():
-        if answer_id in survey_answer_ids:
-            # Dates are comprised of 3 string values
-            if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
-                datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
-                answer = Answer(answer_id=answer_id, value=datestr, location=location)
-            else:
-                answer = Answer(answer_id=answer_id, value=answer_value, location=location)
-            questionnaire_store.answer_store.add_or_update(answer)
-
-    if location not in questionnaire_store.completed_blocks:
-        questionnaire_store.completed_blocks.append(location)
 
 
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["POST"])
@@ -131,6 +116,41 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
 
     if next_location.block_id == 'confirmation':
         return redirect_to_confirmation(eq_id, form_type, collection_id)
+
+    return redirect(next_location.url(metadata))
+
+
+@questionnaire_blueprint.route('<group_id>/0/household-composition', methods=["POST"])
+@login_required
+def post_household_composition(eq_id, form_type, collection_id, group_id):
+    navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
+    questionnaire_manager = get_questionnaire_manager(g.schema, g.schema_json)
+    answer_store = get_answer_store(current_user)
+
+    current_location = Location(group_id, 0, 'household-composition')
+
+    if 'action[save_continue]' in request.form:
+        _remove_repeating_on_household_answers(answer_store, group_id)
+
+    if 'action[add_answer]' in request.form:
+        questionnaire_manager.add_answer(current_location, 'household-composition-question', answer_store)
+        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
+
+    elif 'action[remove_answer]' in request.form:
+        index_to_remove = int(request.form.get('action[remove_answer]'))
+        questionnaire_manager.remove_answer(current_location, answer_store, index_to_remove)
+        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
+
+    block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
+
+    form = HouseHoldCompositionForm(obj=request.form)
+
+    if not form.validate():
+        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
+
+    next_location = navigator.get_next_location(current_location=current_location)
+
+    metadata = get_metadata(current_user)
 
     return redirect(next_location.url(metadata))
 
@@ -235,39 +255,6 @@ def submit_answers(eq_id, form_type, collection_id):
     return redirect_to_thank_you(eq_id, form_type, collection_id)
 
 
-@questionnaire_blueprint.route('<group_id>/0/household-composition', methods=["POST"])
-@login_required
-def post_household_composition(eq_id, form_type, collection_id, group_id):
-    navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
-    questionnaire_manager = get_questionnaire_manager(g.schema, g.schema_json)
-    answer_store = get_answer_store(current_user)
-
-    this_location = Location(group_id, 0, 'household-composition')
-
-    if 'action[save_continue]' in request.form:
-        _remove_repeating_on_household_answers(answer_store, group_id)
-
-    valid = questionnaire_manager.process_incoming_answers(this_location, request.form)
-
-    if 'action[add_answer]' in request.form:
-        questionnaire_manager.add_answer(this_location, 'household-composition-question', answer_store)
-        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
-
-    elif 'action[remove_answer]' in request.form:
-        index_to_remove = int(request.form.get('action[remove_answer]'))
-        questionnaire_manager.remove_answer(this_location, answer_store, index_to_remove)
-        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
-
-    if not valid:
-        return _render_template(questionnaire_manager.state, current_location=this_location, template='questionnaire')
-
-    next_location = navigator.get_next_location(current_location=this_location)
-
-    metadata = get_metadata(current_user)
-
-    return redirect(next_location.url(metadata))
-
-
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/permanent-or-family-home', methods=["POST"])
 @login_required
 def post_everyone_at_address_confirmation(eq_id, form_type, collection_id, group_id, group_instance):
@@ -285,6 +272,26 @@ def _remove_repeating_on_household_answers(answer_store, group_id):
             answer_store.remove(group_id=group['id'])
             questionnaire_store.completed_blocks[:] = [b for b in questionnaire_store.completed_blocks if
                                                        b.group_id != group['id']]
+
+
+def update_questionnaire_store(location, answer_dict):
+    # Store answers in QuestionnaireStore
+    questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
+
+    survey_answer_ids = SchemaHelper.get_answer_ids_for_location(g.schema_json, location)
+
+    for answer_id, answer_value in answer_dict.items():
+        if answer_id in survey_answer_ids or answer_id == 'full_names':
+            # Dates are comprised of 3 string values
+            if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
+                datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
+                answer = Answer(answer_id=answer_id, value=datestr, location=location)
+            else:
+                answer = Answer(answer_id=answer_id, value=answer_value, location=location)
+            questionnaire_store.answer_store.add_or_update(answer)
+
+    if location not in questionnaire_store.completed_blocks:
+        questionnaire_store.completed_blocks.append(location)
 
 
 def _delete_user_data():
