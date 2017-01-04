@@ -61,12 +61,27 @@ class SchemaHelper(object):
         return next(b for b in cls.get_blocks(survey_json) if b["id"] == block_id)
 
     @classmethod
+    def get_answer_ids_for_location(cls, survey_json, location):
+        answer_ids = []
+
+        if not location.is_interstitial():
+            block = cls.get_block_for_location(survey_json, location)
+
+            for section in block['sections']:
+                for question in section['questions']:
+                    for answer in question['answers']:
+                        answer_ids.append(answer['id'])
+
+        return answer_ids
+
+    @classmethod
     def get_answers_that_repeat_in_block(cls, survey_json, block_id):
         block = cls.get_block(survey_json, block_id)
-        for section in (s for s in block['sections'] if block['sections']):
-            for question in (q for q in section['questions'] if section['questions']):
+
+        for section in block['sections']:
+            for question in section['questions']:
                 if question['type'] == 'RepeatingAnswer':
-                    for answer in (a for a in question['answers'] if question['answers']):
+                    for answer in question['answers']:
                         yield answer
 
     @classmethod

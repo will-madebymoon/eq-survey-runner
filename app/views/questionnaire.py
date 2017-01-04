@@ -3,8 +3,8 @@ import logging
 from app.authentication.session_manager import session_manager
 from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
-from app.helpers.schema_helper import SchemaHelper
 from app.helpers.forms import generate_form
+from app.helpers.schema_helper import SchemaHelper
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
 from app.questionnaire.questionnaire_manager import get_questionnaire_manager
@@ -89,14 +89,17 @@ def update_questionnaire_store(location, answer_dict):
     # Store answers in QuestionnaireStore
     questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
 
+    survey_answer_ids = SchemaHelper.get_answer_ids_for_location(g.schema_json, location)
+
     for answer_id, answer_value in answer_dict.items():
-        # Dates are comprised of 3 string values
-        if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
-            datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
-            answer = Answer(answer_id=answer_id, value=datestr, location=location)
-        else:
-            answer = Answer(answer_id=answer_id, value=answer_value, location=location)
-        questionnaire_store.answer_store.add_or_update(answer)
+        if answer_id in survey_answer_ids:
+            # Dates are comprised of 3 string values
+            if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
+                datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
+                answer = Answer(answer_id=answer_id, value=datestr, location=location)
+            else:
+                answer = Answer(answer_id=answer_id, value=answer_value, location=location)
+            questionnaire_store.answer_store.add_or_update(answer)
 
     if location not in questionnaire_store.completed_blocks:
         questionnaire_store.completed_blocks.append(location)
@@ -211,7 +214,7 @@ def get_thank_you(eq_id, form_type, collection_id):
     if not _same_survey(eq_id, form_type, collection_id):
         return redirect("/information/multiple-surveys")
 
-    thank_you_page = _render_template(get_questionnaire_manager(g.schema, g.schema_json).state, block_id='thank-you')
+    thank_you_page = _render_template({}, block_id='thank-you')
     # Delete user data on request of thank you page.
     _delete_user_data()
     return thank_you_page
@@ -220,21 +223,16 @@ def get_thank_you(eq_id, form_type, collection_id):
 @questionnaire_blueprint.route('submit-answers', methods=["POST"])
 @login_required
 def submit_answers(eq_id, form_type, collection_id):
-    q_manager = get_questionnaire_manager(g.schema, g.schema_json)
-    # check that all the answers we have are valid before submitting the data
-    is_valid, invalid_location = q_manager.validate_all_answers()
     metadata = get_metadata(current_user)
 
-    if is_valid:
-        answer_store = get_answer_store(current_user)
-        navigator = Navigator(g.schema_json, metadata, answer_store)
-        submitter = SubmitterFactory.get_submitter()
-        message = convert_answers(metadata, g.schema, answer_store, navigator.get_routing_path())
-        submitter.send_answers(message)
-        logger.info("Responses submitted tx_id=%s", metadata["tx_id"])
-        return redirect_to_thank_you(eq_id, form_type, collection_id)
-    else:
-        return redirect(invalid_location.url(metadata))
+    answer_store = get_answer_store(current_user)
+    navigator = Navigator(g.schema_json, metadata, answer_store)
+    submitter = SubmitterFactory.get_submitter()
+    message = convert_answers(metadata, g.schema, answer_store, navigator.get_routing_path())
+    submitter.send_answers(message)
+
+    logger.info("Responses submitted tx_id=%s", metadata["tx_id"])
+    return redirect_to_thank_you(eq_id, form_type, collection_id)
 
 
 @questionnaire_blueprint.route('<group_id>/0/household-composition', methods=["POST"])
