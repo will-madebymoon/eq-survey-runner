@@ -1,12 +1,15 @@
-import logging
 import calendar
+import logging
+
 from datetime import datetime
 
 from app.validation.error_messages import error_messages
+
 from flask_wtf import FlaskForm
-from wtforms import SelectField, IntegerField, Form, SelectMultipleField, TextAreaField, StringField, FormField
-from wtforms.widgets import TextArea, TextInput, RadioInput, CheckboxInput, ListWidget
+
+from wtforms import Form, FormField, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
 from wtforms import validators
+from wtforms.widgets import CheckboxInput, ListWidget, RadioInput, TextArea, TextInput
 
 
 logger = logging.getLogger(__name__)
@@ -67,7 +70,7 @@ def get_field(answer, label):
             description=guidance,
             choices=build_choices(answer['options']),
             widget=ListWidget(),
-            option_widget=RadioInput()
+            option_widget=RadioInput(),
         )
     if answer['type'] == 'Checkbox':
         field = SelectMultipleField(
@@ -75,13 +78,13 @@ def get_field(answer, label):
             description=guidance,
             choices=build_choices(answer['options']),
             widget=ListWidget(),
-            option_widget=CheckboxInput()
+            option_widget=CheckboxInput(),
         )
     if answer['type'] == 'Date':
         field = FormField(
             DateForm,
             label=label,
-            description=guidance
+            description=guidance,
         )
     if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
@@ -92,8 +95,8 @@ def get_field(answer, label):
                 validators=[
                     validators.InputRequired(
                         message=answer['validation']['messages']['MANDATORY'] or error_messages['MANDATORY']
-                    )
-                ]
+                    ),
+                ],
             )
         else:
             label = '<span class="label__inner">'+label+'</span>'
@@ -102,8 +105,8 @@ def get_field(answer, label):
                 description=guidance,
                 widget=TextInput(),
                 validators=[
-                    validators.Optional()
-                ]
+                    validators.Optional(),
+                ],
             )
     if answer['type'] == 'PositiveInteger' or answer['type'] == 'Integer':
         if answer['mandatory'] is True:
@@ -114,8 +117,8 @@ def get_field(answer, label):
                 validators=[
                     validators.InputRequired(
                         message=answer['validation']['messages']['MANDATORY'] or error_messages['MANDATORY']
-                    )
-                ]
+                    ),
+                ],
             )
         else:
             label = '<span class="label__inner">'+label+'</span>'
@@ -124,8 +127,8 @@ def get_field(answer, label):
                 description=guidance,
                 widget=TextInput(),
                 validators=[
-                    validators.Optional()
-                ]
+                    validators.Optional(),
+                ],
             )
     if answer['type'] == 'TextArea':
         field = TextAreaField(
@@ -133,9 +136,9 @@ def get_field(answer, label):
             description=guidance,
             widget=TextArea(),
             validators=[
-                validators.Optional()
+                validators.Optional(),
             ],
-            filters=[lambda x: x if x else None]
+            filters=[lambda x: x if x else None],
         )
 
     if field is None:
