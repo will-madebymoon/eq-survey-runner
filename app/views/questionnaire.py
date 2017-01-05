@@ -72,17 +72,19 @@ def save_questionnaire_store(response):
 def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_id):
     # Filter answers down to those we may need to render
     answer_store = get_answer_store(current_user)
-    answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
 
     current_location = Location(group_id, group_instance, block_id)
 
     block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
 
-    logger.info(answer_store.answers)
-
     if block_id == 'household-composition':
-        form = HouseHoldCompositionForm(obj=answers)
+        household = next((a['value'] for a in answer_store.answers if a['answer_id'] == 'household'), None)
+        form_data = {'household': household}
+
+        data_class = Struct(**form_data)
+        form = HouseHoldCompositionForm(csrf_enabled=False, obj=data_class)
     else:
+        answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
         form = generate_form(block, answers)
 
     template = block['type'] if block and 'type' in block and block['type'] else 'questionnaire'
@@ -143,10 +145,12 @@ def post_household_composition(eq_id, form_type, collection_id, group_id):
 
     block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
 
-    form = HouseHoldCompositionForm(obj=request.form)
+    form = HouseHoldCompositionForm(csrf_enabled=False, obj=request.form)
 
     if not form.validate():
         return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
+
+    update_questionnaire_store(current_location, form.data)
 
     next_location = navigator.get_next_location(current_location=current_location)
 
@@ -281,7 +285,7 @@ def update_questionnaire_store(location, answer_dict):
     survey_answer_ids = SchemaHelper.get_answer_ids_for_location(g.schema_json, location)
 
     for answer_id, answer_value in answer_dict.items():
-        if answer_id in survey_answer_ids or answer_id == 'full_names':
+        if answer_id in survey_answer_ids or location.block_id == 'household-composition':
             # Dates are comprised of 3 string values
             if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
                 datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])

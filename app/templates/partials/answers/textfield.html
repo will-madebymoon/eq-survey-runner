@@ -1,3 +1,16 @@
 <div class="field">
-    {% include 'partials/widgets/text_widget.html' %}
+    {% set label = {
+      'for': answer.id,
+      'text': answer.label
+    } %}
+    {% include 'partials/forms/label.html' %}
+
+    {% set input = {
+      'type': 'text',
+      'data': input_value or ''|e,
+      'name': answer.name,
+      'id': answer.id,
+      'placeholder': answer.placeholder
+    } %}
+    {% include 'partials/forms/input.html' %}
 </div>

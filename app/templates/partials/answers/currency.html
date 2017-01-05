@@ -9,16 +9,15 @@
     <div class="input-type input-type--currency">
 
       <span class="input-type__type" id="{{answer.id}}-type">£</span>
-
-      {% set input = {
-        'type': 'text',
-        'classes': 'input-type__input',
-        'hasType': true,
-        'value': answer_value|e,
-        'name': answer.id,
-        'id': answer.id,
-        'placeholder': ''
-      } %}
+        {% set input = {
+            'type': 'text',
+            'classes': 'input-type__input',
+            'hasType': true,
+            'data': form[answer['id']].data or ''|e,
+            'name': answer.id,
+            'id': answer.id,
+            'placeholder': ''
+        } %}
 
       {% include 'partials/forms/input.html' %}
 

@@ -1,10 +1,7 @@
-{% set type = "text" if input.type == "number" else input.type %}
-{% set answer_value = input.data if input.data != None else '' %}
-
 {% set attr = {
   "class": "input input--" ~ input.type ~ " " ~ input.classes,
   "type": type,
-  "value": answer_value,
+  "value": input.data,
   "name": input.name,
   "id": "input-" ~ input.id,
   "placeholder": input_placeholder,

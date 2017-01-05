@@ -11,7 +11,7 @@
   {{question_guidance|safe}}
 
   <div class="question__answers">
-    {% for name_form in form.full_names %}
+    {% for name_form in form.household %}
       <div class="question__answer js-household-person" data-remove="{{ _('Remove') }}" data-index="{{loop.index}}">
         <h3 class="neptune">{{ _('Person ') }}<span class="js-household-loopindex">{{ loop.index }}</span>
           <small>(
@@ -28,7 +28,15 @@
           <legend class="question__legend u-vh">{{ _('Person ') }} {{ loop.index }}</legend>
           {% for input in name_form %}
             {% with render_guidance = False %}
-              {% set answer = question.answers[loop.index0] %}
+              {% set schema_item = question.answers[loop.index0] %}
+              {% set input_value = input.data %}
+              {% set answer = {
+                 'id': schema_item.alias,
+                 'type': schema_item.type,
+                 'label': input.label,
+                 'placeholder': schema_item.placeholder,
+                 'name': input.name,
+              } %}
               {% include theme('partials/answer.html') %}
             {% endwith %}
           {% endfor %}
