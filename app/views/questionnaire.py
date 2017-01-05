@@ -7,7 +7,6 @@ from app.helpers.forms import generate_form, HouseHoldCompositionForm, Struct
 from app.helpers.schema_helper import SchemaHelper
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
-from app.questionnaire.questionnaire_manager import get_questionnaire_manager
 from app.submitter.converter import convert_answers
 from app.submitter.submitter import SubmitterFactory
 from app.templating.introduction_context import get_introduction_context
@@ -126,26 +125,34 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
 @login_required
 def post_household_composition(eq_id, form_type, collection_id, group_id):
     navigator = Navigator(g.schema_json, get_metadata(current_user), get_answer_store(current_user))
-    questionnaire_manager = get_questionnaire_manager(g.schema, g.schema_json)
     answer_store = get_answer_store(current_user)
 
+    form = HouseHoldCompositionForm(csrf_enabled=False, obj=request.form)
     current_location = Location(group_id, 0, 'household-composition')
+    block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
 
     if 'action[save_continue]' in request.form:
         _remove_repeating_on_household_answers(answer_store, group_id)
 
     if 'action[add_answer]' in request.form:
-        questionnaire_manager.add_answer(current_location, 'household-composition-question', answer_store)
-        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
+        form.household.append_entry()
+
+        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
 
     elif 'action[remove_answer]' in request.form:
         index_to_remove = int(request.form.get('action[remove_answer]'))
-        questionnaire_manager.remove_answer(current_location, answer_store, index_to_remove)
-        return get_block(eq_id, form_type, collection_id, group_id, 0, 'household-composition')
 
-    block = SchemaHelper.get_block_for_location(g.schema_json, current_location)
+        popped = []
 
-    form = HouseHoldCompositionForm(csrf_enabled=False, obj=request.form)
+        while index_to_remove != len(form.household.data):
+            popped.append(form.household.pop_entry())
+
+        popped.reverse()
+
+        for field in popped[1:]:
+            form.household.append_entry(field.data)
+
+        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
 
     if not form.validate():
         return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
