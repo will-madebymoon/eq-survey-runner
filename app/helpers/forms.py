@@ -118,7 +118,7 @@ def get_field(answer, label):
     field = None
     guidance = answer['guidance'] if 'guidance' in answer else ''
 
-    if answer['type'] == 'Radio':
+    if answer['type'] == 'Radio' or answer['type'] == 'Relationship':
         field = SelectField(
             label=label,
             description=guidance,

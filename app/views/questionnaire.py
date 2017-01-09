@@ -5,6 +5,7 @@ from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
 from app.helpers.forms import HouseHoldCompositionForm, Struct, generate_form
 from app.helpers.schema_helper import SchemaHelper
+from app.jinja_filters import format_household_member_name
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
 from app.submitter.converter import convert_answers
@@ -66,6 +67,39 @@ def save_questionnaire_store(response):
     return response
 
 
+def build_relationship_choices(answer_store, group_instance):
+    household_answers = answer_store.filter(answer_id='household')
+
+    first_names = [answer['first_name'] for answer in household_answers[0]['value']]
+    last_names = [answer['last_name'] for answer in household_answers[0]['value']]
+
+    household_members = []
+
+    for first_name, last_name in zip(first_names, last_names):
+        household_members.append({
+            'first-name': first_name,
+            'last-name': last_name,
+        })
+
+    remaining_people = household_members[group_instance + 1:] if group_instance < len(household_members) else []
+
+    current_person_name = format_household_member_name([
+        household_members[group_instance]['first-name'],
+        household_members[group_instance]['last-name'],
+    ])
+
+    choices = []
+
+    for index, remaining_person in enumerate(remaining_people):
+        other_person_name = format_household_member_name([
+            remaining_person['first-name'],
+            remaining_person['last-name'],
+        ])
+        choices.append((current_person_name, other_person_name))
+
+    return choices
+
+
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["GET"])
 @login_required
 def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_id):
@@ -82,14 +116,20 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
 
         data_class = Struct(**form_data)
         form = HouseHoldCompositionForm(csrf_enabled=False, obj=data_class)
+        content = {'form': form, 'block': block}
     else:
         answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
 
         form = generate_form(block, answers)
 
+        content = {'form': form, 'block': block}
+
+        if block_id == 'relationships':
+            content['household_relationships'] = build_relationship_choices(answer_store, group_instance)
+
     template = block['type'] if block and 'type' in block and block['type'] else 'questionnaire'
 
-    return _render_template({'form': form, 'block': block}, current_location=current_location, template=template)
+    return _render_template(content, current_location=current_location, template=template)
 
 
 @questionnaire_blueprint.route('<group_id>/<int:group_instance>/<block_id>', methods=["POST"])
@@ -111,6 +151,7 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
         update_questionnaire_store(current_location, form.data)
 
     next_location = navigator.get_next_location(current_location=current_location)
+
     metadata = get_metadata(current_user)
 
     if next_location is None:
