@@ -1,7 +1,7 @@
 {% set attr = {
   "class": "input input--" ~ input.type ~ " " ~ input.classes,
   "type": type,
-  "value": input.data,
+  "value": input.data if input.data is not none else '',
   "name": input.name,
   "id": "input-" ~ input.id,
   "placeholder": input_placeholder,

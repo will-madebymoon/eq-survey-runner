@@ -6,12 +6,13 @@
 
     {% include 'partials/forms/label.html' %}
 
-    {% set answer_value = content.form[answer['id']].data or '' %}
+    {% set input = content.form[answer['id']] %}
+    {% set answer_value = input.data or '' %}
 
     {% set attr = {
       "class": "input input--textarea js-charlimit-input",
       "aria-describedby": "description-" ~ question.id ~ " guidance-" ~ answer.id ~ "-trigger",
-      "name": answer.name,
+      "name": input.name,
       "id": "input-" ~ answer.id,
       "placeholder": answer.placeholder,
       "rows": "8",

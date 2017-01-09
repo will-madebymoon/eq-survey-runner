@@ -29,7 +29,7 @@
           {% for input in name_form %}
             {% with render_guidance = False %}
               {% set schema_item = question.answers[loop.index0] %}
-              {% set input_value = input.data %}
+
               {% set answer = {
                  'id': schema_item.alias,
                  'type': schema_item.type,

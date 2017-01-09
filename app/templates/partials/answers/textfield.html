@@ -7,10 +7,10 @@
 
     {% set input = {
       'type': 'text',
-      'data': input_value or ''|e,
-      'name': answer.name,
-      'id': answer.id,
-      'placeholder': answer.placeholder
+      'data': form[answer.id].data or ''|e,
+      'name': form[answer.id].name,
+      'id': answer.id
     } %}
+    {% set input_placeholder = answer.placeholder %}
     {% include 'partials/forms/input.html' %}
 </div>

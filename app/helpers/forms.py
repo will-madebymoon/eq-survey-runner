@@ -7,7 +7,7 @@ from app.validation.error_messages import error_messages
 
 from flask_wtf import FlaskForm
 
-from wtforms import Form, FormField, FieldList, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
+from wtforms import FieldList, Form, FormField, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
 from wtforms import validators
 from wtforms.widgets import CheckboxInput, ListWidget, RadioInput, TextArea, TextInput
 
@@ -44,8 +44,8 @@ class DateForm(Form):
 class NameForm(Form):
     first_name = StringField(validators=[
         validators.InputRequired(
-            message=error_messages['MANDATORY']
-        )
+            message=error_messages['MANDATORY'],
+        ),
     ])
 
     middle_names = StringField(validators=[validators.Optional()])
@@ -54,6 +54,17 @@ class NameForm(Form):
 
 class HouseHoldCompositionForm(FlaskForm):
     household = FieldList(FormField(NameForm), min_entries=1)
+
+    def remove_person(self, index_to_remove):
+        popped = []
+
+        while index_to_remove != len(self.household.data):
+            popped.append(self.household.pop_entry())
+
+        popped.reverse()
+
+        for field in popped[1:]:
+            self.household.append_entry(field.data)
 
 
 def generate_form(block_json, data):
@@ -184,8 +195,15 @@ def get_field(answer, label):
             ],
             filters=[lambda x: x if x else None],
         )
-    if answer['type'] == 'RepeatingAnswer':
-        field = FieldList(FormField(NameForm))
+    if answer['type'] == 'TextField':
+        field = StringField(
+            label=label,
+            description=guidance,
+            widget=TextArea(),
+            validators=[
+                validators.Optional(),
+            ],
+        )
 
     if field is None:
         logger.info("Could not find field for answer type %s", answer['type'])

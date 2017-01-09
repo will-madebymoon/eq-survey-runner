@@ -3,7 +3,7 @@ import logging
 from app.authentication.session_manager import session_manager
 from app.data_model.answer_store import Answer
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
-from app.helpers.forms import generate_form, HouseHoldCompositionForm, Struct
+from app.helpers.forms import HouseHoldCompositionForm, Struct, generate_form
 from app.helpers.schema_helper import SchemaHelper
 from app.questionnaire.location import Location
 from app.questionnaire.navigator import Navigator
@@ -84,6 +84,7 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
         form = HouseHoldCompositionForm(csrf_enabled=False, obj=data_class)
     else:
         answers = answer_store.map(group_id=group_id, group_instance=group_instance, block_id=block_id)
+
         form = generate_form(block, answers)
 
     template = block['type'] if block and 'type' in block and block['type'] else 'questionnaire'
@@ -136,26 +137,16 @@ def post_household_composition(eq_id, form_type, collection_id, group_id):
 
     if 'action[add_answer]' in request.form:
         form.household.append_entry()
-
-        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
-
     elif 'action[remove_answer]' in request.form:
         index_to_remove = int(request.form.get('action[remove_answer]'))
 
-        popped = []
+        form.remove_person(index_to_remove)
 
-        while index_to_remove != len(form.household.data):
-            popped.append(form.household.pop_entry())
-
-        popped.reverse()
-
-        for field in popped[1:]:
-            form.household.append_entry(field.data)
-
-        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
-
-    if not form.validate():
-        return _render_template({'form': form, 'block': block}, current_location=current_location, template='questionnaire')
+    if not form.validate() or 'action[add_answer]' in request.form or 'action[remove_answer]' in request.form:
+        return _render_template({
+            'form': form,
+            'block': block,
+        }, current_location=current_location, template='questionnaire')
 
     update_questionnaire_store(current_location, form.data)
 
