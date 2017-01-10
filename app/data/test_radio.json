@@ -31,7 +31,6 @@
                                 {
                                     "answers": [
                                         {
-                                            "alias" : "othervalue",
                                             "guidance": "",
                                             "id": "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
                                             "label": "What is your favourite breakfast food",
@@ -51,15 +50,26 @@
                                                 },
                                                 {
                                                     "label": "Other",
-                                                    "value": "other",
-                                                    "description": "An answer is required.",
-                                                    "other": {
-                                                      "label": "Please specify other"
-                                                    }
+                                                    "value": "Other",
+                                                    "sub_answer_id": "other-answer-mandatory"
                                                 }
                                             ],
                                             "q_code": "20",
                                             "type": "Radio",
+                                            "validation": {
+                                                "messages": {}
+                                            }
+                                        },
+                                        {
+                                            "parent_answer": "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+                                            "alias" : "othervalue",
+                                            "mandatory": false,
+                                            "guidance": "",
+                                            "id": "other-answer-mandatory",
+                                            "label": "Please specify other",
+                                            "description": "An answer is required.",
+                                            "q_code": "20",
+                                            "type": "TextField",
                                             "validation": {
                                                 "messages": {}
                                             }
@@ -92,7 +102,6 @@
                                 {
                                     "answers": [
                                         {
-                                            "alias" : "",
                                             "guidance": "",
                                             "id": "7587qe9b-f24e-4dc0-ac94-66118b896c10",
                                             "label": "What is your favourite breakfast food",
@@ -112,15 +121,26 @@
                                                 },
                                                 {
                                                     "label": "Other",
-                                                    "value": "other",
-                                                    "description": "This is not mandatory.",
-                                                    "other": {
-                                                      "label": "Please specify other"
-                                                    }
+                                                    "value": "Other",
+                                                    "sub_answer_id": "other-answer-non-mandatory"
                                                 }
                                             ],
                                             "q_code": "20",
                                             "type": "Radio",
+                                            "validation": {
+                                                "messages": {}
+                                            }
+                                        },
+                                        {
+                                            "parent_answer": "7587qe9b-f24e-4dc0-ac94-66118b896c10",
+                                            "mandatory": false,
+                                            "alias" : "",
+                                            "guidance": "",
+                                            "id": "other-answer-non-mandatory",
+                                            "label": "Please specify other",
+                                            "description": "This is not mandatory.",
+                                            "q_code": "20",
+                                            "type": "TextField",
                                             "validation": {
                                                 "messages": {}
                                             }

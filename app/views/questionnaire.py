@@ -225,7 +225,6 @@ def get_summary(eq_id, form_type, collection_id):
     metadata = get_metadata(current_user)
 
     if latest_location.block_id is 'summary':
-        logger.info("Answers %s", answer_store.map())
         schema_context = build_schema_context(metadata, g.schema.aliases, answer_store)
         rendered_schema_json = renderer.render(g.schema_json, **schema_context)
         summary_context = build_summary_rendering_context(rendered_schema_json, answer_store, metadata)
