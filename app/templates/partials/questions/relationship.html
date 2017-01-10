@@ -11,8 +11,10 @@
     {{question_description|safe}}
 
     <div class="js-relationship">
-        {% for current_person, other_person in content.household_relationships %}
+        {% for current_person, other_person in content.relation_instances %}
             {% set answer = question.answers[0] %}
+            {% set relation_instance = loop.index0 %}
+
             {% include 'partials/widgets/relationship_widget.html' %}
 
         {% endfor %}

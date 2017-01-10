@@ -15,7 +15,8 @@
 
       <div class="relationship__body js-relationship-body">
         <div class="relationship__fields">
-          {% for option in form[answer.id] %}
+
+          {% for option in form[answer.id][relation_instance] %}
 
             {% set input = {
               "class": "input input--radio js-focusable js-relationship-trigger",
