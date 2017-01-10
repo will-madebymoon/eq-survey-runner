@@ -312,6 +312,9 @@ def update_questionnaire_store(location, answer_dict):
             if isinstance(answer_value, dict) and 'day' in answer_value and 'month' in answer_value:
                 datestr = "{:02d}/{:02d}/{}".format(int(answer_value['day']), int(answer_value['month']), answer_value['year'])
                 answer = Answer(answer_id=answer_id, value=datestr, location=location)
+            elif isinstance(answer_value, dict) and 'year' in answer_value and 'month' in answer_value:
+                datestr = "{:02d}/{}".format(int(answer_value['month']), answer_value['year'])
+                answer = Answer(answer_id=answer_id, value=datestr, location=location)
             else:
                 answer = Answer(answer_id=answer_id, value=answer_value, location=location)
             questionnaire_store.answer_store.add_or_update(answer)

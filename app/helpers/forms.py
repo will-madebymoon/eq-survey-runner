@@ -77,6 +77,26 @@ class DateForm(Form):
         return True
 
 
+class MonthYearDateForm(Form):
+
+    MONTH_CHOICES = [(str(x), calendar.month_name[x]) for x in range(1, 13)]
+
+    month = SelectField(choices=MONTH_CHOICES)
+    year = StringField()
+
+    def to_date(self):
+        datestr = "{:02d}/{}".format(int(self.month.data or 0), self.year.data or '')
+
+        return datetime.strptime(datestr, "%m/%Y")
+
+    def validate_month(self, field=None):
+        try:
+            self.to_date()
+        except ValueError:
+            raise validators.ValidationError(error_messages['INVALID_DATE'])
+        return True
+
+
 class NameForm(Form):
     first_name = StringField(validators=[
         validators.InputRequired(
@@ -174,6 +194,12 @@ def get_field(answer, label):
             label=label,
             description=guidance,
         )
+    if answer['type'] == 'MonthYearDate':
+        field = FormField(
+            MonthYearDateForm,
+            label=label,
+            description=guidance,
+        )
     if answer['type'] == 'Currency':
         if answer['mandatory'] is True:
             field = IntegerField(
@@ -188,7 +214,6 @@ def get_field(answer, label):
                 ],
             )
         else:
-            label = '<span class="label__inner">'+label+'</span>'
             field = IntegerField(
                 label=label,
                 description=guidance,
@@ -210,7 +235,6 @@ def get_field(answer, label):
                 ],
             )
         else:
-            label = '<span class="label__inner">'+label+'</span>'
             field = IntegerField(
                 label=label,
                 description=guidance,
