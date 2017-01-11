@@ -25,9 +25,9 @@
       {% endif %}
     </label>
 
-    {% if answer['options'][loop.index0].sub_answer_id %}
-      {% set sub_answer_id = answer['options'][loop.index0].sub_answer_id %}
-      {% set other_answer = form[sub_answer_id] %}
+    {% if answer['options'][loop.index0].child_answer_id %}
+      {% set child_answer_id = answer['options'][loop.index0].child_answer_id %}
+      {% set other_answer = form[child_answer_id] %}
 
       {% set other_label = {
         "class": "label mercury",

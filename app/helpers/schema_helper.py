@@ -41,16 +41,16 @@ class SchemaHelper(object):
                 yield block
 
     @staticmethod
-    def get_sub_answer_ids(answers_json):
-        sub_answer_ids = []
+    def get_child_answer_ids(answers_json):
+        child_answer_ids = []
 
         for answer_json in answers_json:
-            if answer_json['type'] == 'Radio':
+            if answer_json['type'] == 'Radio' or answer_json['type'] == 'Checkbox':
                 for option in answer_json['options']:
-                    if 'sub_answer_id' in option:
-                        sub_answer_ids.append(option['sub_answer_id'])
+                    if 'child_answer_id' in option:
+                        child_answer_ids.append(option['child_answer_id'])
 
-        return sub_answer_ids
+        return child_answer_ids
 
     @staticmethod
     def get_groups(survey_json):

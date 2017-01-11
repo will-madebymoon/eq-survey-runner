@@ -1429,7 +1429,7 @@
                                                 {
                                                     "label": "Yes, an address outside the UK (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "another-address-answer-other"
+                                                    "child_answer_id": "another-address-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -1610,7 +1610,7 @@
                                                 {
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "address-type-answer-other"
+                                                    "child_answer_id": "address-type-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -1781,7 +1781,7 @@
                                                 {
                                                     "label": "Elsewhere (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "country-of-birth-england-answer-other"
+                                                    "child_answer_id": "country-of-birth-england-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -1837,7 +1837,7 @@
                                                 {
                                                     "label": "Elsewhere (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "country-of-birth-wales-answer-other"
+                                                    "child_answer_id": "country-of-birth-wales-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2138,7 +2138,7 @@
                                                 {
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "national-identity-england-answer-other"
+                                                    "child_answer_id": "national-identity-england-answer-other"
                                                 }
                                             ],
                                             "type": "Checkbox"
@@ -2196,7 +2196,7 @@
                                                 {
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "national-identity-wales-answer-other"
+                                                    "child_answer_id": "national-identity-wales-answer-other"
                                                 }
                                             ],
                                             "type": "Checkbox"
@@ -2527,7 +2527,7 @@
                                                 {
                                                     "label": "Any other White background (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "white-ethnic-group-england-answer-other"
+                                                    "child_answer_id": "white-ethnic-group-england-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2576,7 +2576,7 @@
                                                 {
                                                     "label": "Any other White background (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "white-ethnic-group-wales-question-other"
+                                                    "child_answer_id": "white-ethnic-group-wales-question-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2674,7 +2674,7 @@
                                                 {
                                                     "label": "Any other Mixed / multiple ethnic background (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id":  "mixed-ethnic-group-answer-other"
+                                                    "child_answer_id":  "mixed-ethnic-group-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2767,7 +2767,7 @@
                                                 {
                                                     "label": "Any other Asian background (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "asian-ethnic-group-answer-other"
+                                                    "child_answer_id": "asian-ethnic-group-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2852,7 +2852,7 @@
                                                 {
                                                     "label": "Any other Black / African / Caribbean background (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "black-ethnic-group-answer-other"
+                                                    "child_answer_id": "black-ethnic-group-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -2933,7 +2933,7 @@
                                                 {
                                                     "label": "Any other ethnic group (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "other-ethnic-group-answer-other"
+                                                    "child_answer_id": "other-ethnic-group-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -3023,7 +3023,7 @@
                                                 {
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "sexual-identity-answer-other"
+                                                    "child_answer_id": "sexual-identity-answer-other"
                                                 }
                                             ],
                                             "type": "Checkbox"
@@ -3136,7 +3136,7 @@
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
                                                     "description": "Including British Sign Language",
-                                                    "sub_answer_id": "language-england-answer-other"
+                                                    "child_answer_id": "language-england-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -3177,7 +3177,7 @@
                                                     "label": "Other (please specify)",
                                                     "value": "Other",
                                                     "description": "Including British Sign Language",
-                                                    "sub_answer_id": "language-welsh-answer-other"
+                                                    "child_answer_id": "language-welsh-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -3330,7 +3330,7 @@
                                                 {
                                                     "label": "Any other religion (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "religion-answer-other"
+                                                    "child_answer_id": "religion-answer-other"
                                                 }
                                             ],
                                             "type": "Checkbox"
@@ -3395,7 +3395,7 @@
                                                 {
                                                     "label": "Any other religion (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "religion-welsh-answer-other"
+                                                    "child_answer_id": "religion-welsh-answer-other"
                                                 }
                                             ],
                                             "type": "Checkbox"
@@ -3458,7 +3458,7 @@
                                                 {
                                                     "label": "An address outside the UK (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "past-usual-address-answer-other"
+                                                    "child_answer_id": "past-usual-address-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"
@@ -4728,7 +4728,7 @@
                                                 {
                                                     "label": "No, usually lives outside the United Kingdom (please specify)",
                                                     "value": "Other",
-                                                    "sub_answer_id": "visitor-uk-resident-answer-other"
+                                                    "child_answer_id": "visitor-uk-resident-answer-other"
                                                 }
                                             ],
                                             "type": "Radio"

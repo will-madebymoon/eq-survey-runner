@@ -51,7 +51,7 @@
                                                 {
                                                     "label": "Other",
                                                     "value": "Other",
-                                                    "sub_answer_id": "other-answer-mandatory"
+                                                    "child_answer_id": "other-answer-mandatory"
                                                 }
                                             ],
                                             "q_code": "20",
@@ -122,7 +122,7 @@
                                                 {
                                                     "label": "Other",
                                                     "value": "Other",
-                                                    "sub_answer_id": "other-answer-non-mandatory"
+                                                    "child_answer_id": "other-answer-non-mandatory"
                                                 }
                                             ],
                                             "q_code": "20",
