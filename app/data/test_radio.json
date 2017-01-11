@@ -61,7 +61,7 @@
                                             }
                                         },
                                         {
-                                            "parent_answer": "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
+                                            "parent_answer_id": "ca3ce3a3-ae44-4e30-8f85-5b6a7a2fb23c",
                                             "alias" : "othervalue",
                                             "mandatory": false,
                                             "guidance": "",
@@ -132,7 +132,7 @@
                                             }
                                         },
                                         {
-                                            "parent_answer": "7587qe9b-f24e-4dc0-ac94-66118b896c10",
+                                            "parent_answer_id": "7587qe9b-f24e-4dc0-ac94-66118b896c10",
                                             "mandatory": false,
                                             "alias" : "",
                                             "guidance": "",
