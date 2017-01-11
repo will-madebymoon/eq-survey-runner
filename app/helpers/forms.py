@@ -58,10 +58,10 @@ class Struct:
 
 class DateForm(Form):
 
-    MONTH_CHOICES = [(str(x), calendar.month_name[x]) for x in range(1, 13)]
+    MONTH_CHOICES = [('', 'Select month')] + [(str(x), calendar.month_name[x]) for x in range(1, 13)]
 
     day = StringField()
-    month = SelectField(choices=MONTH_CHOICES)
+    month = SelectField(choices=MONTH_CHOICES, default='')
     year = StringField()
 
     def to_date(self):
@@ -79,9 +79,9 @@ class DateForm(Form):
 
 class MonthYearDateForm(Form):
 
-    MONTH_CHOICES = [(str(x), calendar.month_name[x]) for x in range(1, 13)]
+    MONTH_CHOICES = [('', 'Select month')] + [(str(x), calendar.month_name[x]) for x in range(1, 13)]
 
-    month = SelectField(choices=MONTH_CHOICES)
+    month = SelectField(choices=MONTH_CHOICES, default='')
     year = StringField()
 
     def to_date(self):
