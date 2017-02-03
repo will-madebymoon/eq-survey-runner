@@ -1,51 +1,19 @@
 {% set legend = _(answer.label, current_person=answer.current_person, other_person=answer.other_person).split('&hellip;') %}
 {% set personName = legend[1]|replace(' of ', '') %}
 
-<div class="relationship__item js-relationship-item" data-relationship-name="{{personName}}">
-
-  <fieldset class="field field--selectionbtn field--multiplechoice relationship__field" ]>
-
-    <button class="btn btn--link pluto relationship__edit js-relationship-editbtn u-hidden" data-close="{{_('Close')}}" data-qa="relationship-close-btn">
-      {{_('Edit')}}
-    </button>
-
-      <legend class="relationship__title  venus u-f-no" data-qa="relationship-title">
-        <span>{{legend[0]}}</span> <span class="highlight js-relationship-legend">&nbsp; &hellip; &nbsp;</span> <span>{{legend[1]}}</span>
-      </legend>
-
-      <div class="relationship__body js-relationship-body">
-        <div class="relationship__fields">
+<div class="question__answer">
+  <div class="answer">
+    <div class="answer__fields">
+      <div class="field field--select">
+        <label class="label venus">{{legend[0]}}</span><span>{{legend[1]}}'s</label>
+        <select class="input input--select">
           {% for option in widget.options %}
-
-            {% set option_id = answer.id ~ "-" ~ loop.index %}
-
-            {% set input = {
-              "class": "input input--radio js-focusable js-relationship-trigger",
-              "type": 'radio',
-              "value": option.value,
-              "name": answer.name,
-              "id": option_id,
-              "checked": "checked" if option.selected
-            } %}
-
-            {% set label = {
-              "class": "label label--inline venus js-relationship-trigger",
-              "for": option_id
-            } %}
-
-            <div class="field__item js-focusable-box">
-
-              <input {{input|xmlattr}}>
-              <label {{label|xmlattr}}>
-                {{option.label}}
-              </label>
-
-            </div>
+           
+            <option value="{{option.value}}">{{option.label}}</option>
 
           {% endfor %}
-        </div>
+        </select>
       </div>
-
-  </fieldset>
-
+    </div>
+  </div>
 </div>

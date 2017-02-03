@@ -1,25 +1,24 @@
 {% import 'macros/helpers.html' as helpers %}
 
-<div class="relationship">
+<div class="question">
+  <fieldset class="question__fieldset">
+    <legend class="question__legend">
+      <span class="question__title neptune">
+        {%- if question_number -%}
+          <span class="question__number">{{question_number}}. </span>
+        {% endif %}
+        {{question_title|safe}}
+      </span>
+    </legend>
 
-    <h2 class="question__title neptune">
-      {%- if question_number -%}
-        <span class="question__number">{{question_number}}. </span>
-      {% endif %}
-      {{question_title|safe}}
-    </h2>
     {{question_description|safe}}
 
-    <div class="js-relationship">
-
-        {%- for answer in question.answers -%}
-
-            {{ answer.schema_item.widget.render(answer) | safe}}
-
-        {%- endfor -%}
-
+    <div class="question__answers">
+      {%- for answer in question.answers -%}
+        {{ answer.schema_item.widget.render(answer) | safe}}
+      {%- endfor -%}
     </div>
-
+  </fieldset>
 </div>
 
 {% if (question.schema_item.guidance) %}
