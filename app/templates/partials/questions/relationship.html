@@ -1,5 +1,4 @@
 {% import 'macros/helpers.html' as helpers %}
-
 <div class="question">
   <fieldset class="question__fieldset">
     <legend class="question__legend">
@@ -14,6 +13,7 @@
     {{question_description|safe}}
 
     <div class="question__answers">
+
       {%- for answer in question.answers -%}
         {{ answer.schema_item.widget.render(answer) | safe}}
       {%- endfor -%}

@@ -1,14 +1,12 @@
-{% set legend = _(answer.label, current_person=answer.current_person, other_person=answer.other_person).split('&hellip;') %}
-{% set personName = legend[1]|replace(' of ', '') %}
-
 <div class="question__answer">
   <div class="answer">
     <div class="answer__fields">
       <div class="field field--select">
-        <label class="label venus">{{legend[0]}}</span><span>{{legend[1]}}'s</label>
+        <label class="label venus">{{answer.other_person}} is {{answer.current_person}}'s</label>
         <select class="input input--select">
+           <<option value="Select relationship">Select relationship</option>
           {% for option in widget.options %}
-           
+
             <option value="{{option.value}}">{{option.label}}</option>
 
           {% endfor %}
