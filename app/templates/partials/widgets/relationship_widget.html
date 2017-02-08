@@ -4,7 +4,7 @@
       <div class="field field--select">
         <label class="label venus" for="input-{{answer.other_person|replace(' ','-')}}">{{answer.other_person}} is {{answer.current_person}}'s</label>
         <select class="input input--select" id="input-{{answer.other_person|replace(' ','-')}}">
-           <option value="Select relationship">Select relationship</option>
+           <option value="Select relationship" selected="selected" disabled="disabled">Select relationship</option>
           {% for option in widget.options %}
 
             <option value="{{option.value}}">{{option.label}}</option>
