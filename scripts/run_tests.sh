@@ -21,8 +21,6 @@ fi
 echo "Environment variables in use:"
 env | grep EQ_
 
-set -o pipefail
-
 function display_result {
   RESULT=$1
   EXIT_STATUS=$2
