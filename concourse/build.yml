@@ -1,0 +1,18 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: python:3.4
+
+inputs:
+- name: source-code
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cd source-code
+    pip install --require-hashes -r requirements.txt
+    pip install -r requirements_for_test.txt
