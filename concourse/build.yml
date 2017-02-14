@@ -17,3 +17,4 @@ run:
     cd source-code
     pip install --require-hashes -r requirements.txt
     pip install -r requirements_for_test.txt
+    sh ./scripts/run_tests.sh
