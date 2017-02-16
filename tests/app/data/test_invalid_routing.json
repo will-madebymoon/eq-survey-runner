@@ -8,12 +8,12 @@
     "description": "",
     "theme": "default",
     "legal_basis": "StatisticsOfTradeAct",
-    "introduction": {
+    "Introduction": {
         "description": ""
     },
     "groups": [{
         "blocks": [{
-            "type": "questionnaire",
+            "type": "Questionnaire",
             "id": "conditional-routing-block",
             "title": "Test Iinvalid Routing",
             "sections": [{
@@ -82,7 +82,7 @@
             ]
         },
         {
-            "type": "questionnaire",
+            "type": "Questionnaire",
             "id": "response-yes",
             "title": "You responded yes",
             "sections": [{
@@ -107,7 +107,7 @@
             "routing_rules":[
                 {
                     "goto": {
-                        "id" : "summary"
+                        "id" : "Summary"
                     }
 
                 }

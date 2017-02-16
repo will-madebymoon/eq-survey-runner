@@ -8,7 +8,7 @@
     "theme": "default",
     "legal_basis": "StatisticsOfTradeAct",
     "description": "A survey that tests the totalling of percentage input fields",
-    "introduction": {
+    "Introduction": {
         "description": "",
         "information_to_provide": []
     },
@@ -21,7 +21,7 @@
         {
             "blocks": [
                 {
-                    "type": "questionnaire",
+                    "type": "Questionnaire",
                     "id": "block",
                     "sections": [
                         {
