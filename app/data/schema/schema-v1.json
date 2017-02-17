@@ -89,6 +89,9 @@
           "type": "string"
         },
         "INVALID_DATE_RANGE_TO_FROM_SAME": {
+            "type": "string"
+        },
+        "INVALID_TIME_INPUT": {
           "type": "string"
         }
       },
@@ -368,6 +371,7 @@
                                         "Radio",
                                         "TextArea",
                                         "TextField",
+                                        "TimeInput",
                                         "Relationship"
                                     ]
                                   },
