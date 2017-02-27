@@ -8,6 +8,7 @@ from app.jinja_filters import format_household_member_name
 from app.jinja_filters import format_str_as_date
 from app.jinja_filters import format_str_as_date_range
 from app.jinja_filters import format_str_as_month_year_date
+from app.jinja_filters import format_time_input
 
 
 class TestJinjaFilters(TestCase):
@@ -197,3 +198,8 @@ class TestJinjaFilters(TestCase):
         self.assertEqual(format_percentage('100'), '100%')
         self.assertEqual(format_percentage(100), '100%')
         self.assertEqual(format_percentage(4.5), '4.5%')
+
+    def test_format_time_input(self):
+        self.assertEqual(format_time_input('2:30'), '2 hours 30 mins')
+        self.assertEqual(format_time_input('2:'), '2 hours ')
+        self.assertEqual(format_time_input(':30'), '30 mins')
