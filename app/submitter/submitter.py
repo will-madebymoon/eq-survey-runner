@@ -85,6 +85,7 @@ class RabbitMQSubmitter(Submitter):
         :param queue: the name of the queue
         :return: a boolean value indicating if it was successful
         """
+
         message_as_string = str(message)
         logger.info("sending message to rabbit mq", message=message_as_string)
         try:
