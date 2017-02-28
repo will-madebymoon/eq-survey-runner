@@ -80,14 +80,15 @@ def get_block(eq_id, form_type, collection_id, group_id, group_instance, block_i
 
     valid_group = group_id in SchemaHelper.get_group_ids(g.schema_json)
     is_valid_location = valid_group and current_location in path_finder.get_routing_path(group_id, group_instance)
+    latest_location = path_finder.get_latest_location(get_completed_blocks(current_user))
     if not is_valid_location:
-        return _redirect_to_latest_location(collection_id, eq_id, form_type, path_finder)
+        return _redirect_to_latest_location(collection_id, eq_id, form_type, latest_location)
 
     block = _render_schema(current_location)
     block_type = block['type']
-    is_skipping_to_end = block_type in ['Summary', 'Confirmation'] and current_location != path_finder.get_latest_location(get_completed_blocks(current_user))
+    is_skipping_to_end = block_type in ['Summary', 'Confirmation'] and current_location != latest_location
     if is_skipping_to_end:
-        return _redirect_to_latest_location(collection_id, eq_id, form_type, path_finder)
+        return _redirect_to_latest_location(collection_id, eq_id, form_type, latest_location)
 
     context = _get_context(block, current_location, answer_store)
     return _build_template(current_location, context, template=block_type)
@@ -104,7 +105,8 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
     valid_group = group_id in SchemaHelper.get_group_ids(g.schema_json)
     is_valid_location = valid_group and current_location in path_finder.get_routing_path(group_id, group_instance)
     if not is_valid_location:
-        return _redirect_to_latest_location(collection_id, eq_id, form_type, path_finder)
+        latest_location = path_finder.get_latest_location(get_completed_blocks(current_user))
+        return _redirect_to_latest_location(collection_id, eq_id, form_type, latest_location)
 
     error_messages = SchemaHelper.get_messages(g.schema_json)
     block = _render_schema(current_location)
@@ -408,8 +410,7 @@ def extract_answer_id_and_instance(answer_instance_id):
     return answer_id, int(index)
 
 
-def _redirect_to_latest_location(collection_id, eq_id, form_type, path_finder):
-    latest_location = path_finder.get_latest_location(get_completed_blocks(current_user))
+def _redirect_to_latest_location(collection_id, eq_id, form_type, latest_location):
     return redirect(url_for('.get_block', eq_id=eq_id, form_type=form_type, collection_id=collection_id,
                             group_id=latest_location.group_id,
                             group_instance=latest_location.group_instance, block_id=latest_location.block_id))

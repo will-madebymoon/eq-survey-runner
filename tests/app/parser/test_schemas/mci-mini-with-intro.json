@@ -8,10 +8,6 @@
     "description": "MCI description",
     "theme": "default",
     "navigation":false,
-    "Introduction": {
-      "legal":"<b>This is the legal bit.</b>",
-      "description": "<p>This is the description.</p>"
-    },
     "groups": [
         {
             "type": "Questionnaire",

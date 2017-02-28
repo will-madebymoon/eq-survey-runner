@@ -8,10 +8,6 @@
     "theme": "default",
     "legal_basis": "StatisticsOfTradeAct",
     "description": "A survey that tests the totalling of percentage input fields",
-    "Introduction": {
-        "description": "",
-        "information_to_provide": []
-    },
     "messages": {
       "INTEGER_TOO_LARGE": "Number cannot be greater than one hundred",
       "NEGATIVE_INTEGER": "Number cannot be less than zero",

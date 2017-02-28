@@ -8,9 +8,6 @@
     "description": "",
     "theme": "default",
     "legal_basis": "StatisticsOfTradeAct",
-    "Introduction": {
-        "description": ""
-    },
     "groups": [{
         "blocks": [{
             "type": "Questionnaire",

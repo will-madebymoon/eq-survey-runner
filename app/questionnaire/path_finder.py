@@ -146,12 +146,12 @@ class PathFinder:
         :param current_location:
         :return: The next location as a dict
         """
-        location_path = self.get_routing_path(current_location.group_id, current_location.group_instance)
+        routing_path = self.get_routing_path(current_location.group_id, current_location.group_instance)
 
-        current_location_index = PathFinder._get_current_location_index(location_path, current_location)
+        current_location_index = PathFinder._get_current_location_index(routing_path, current_location)
 
-        if current_location_index is not None and current_location_index < len(location_path) - 1:
-            return location_path[current_location_index + 1]
+        if current_location_index is not None and current_location_index < len(routing_path) - 1:
+            return routing_path[current_location_index + 1]
         return None
 
     def get_previous_location(self, current_location):
@@ -170,11 +170,11 @@ class PathFinder:
         if is_first_block_for_group:
             return None
 
-        location_path = self.get_routing_path(current_location.group_id, current_location.group_instance)
-        current_location_index = PathFinder._get_current_location_index(location_path, current_location)
+        routing_path = self.get_routing_path(current_location.group_id, current_location.group_instance)
+        current_location_index = PathFinder._get_current_location_index(routing_path, current_location)
 
         if current_location_index is not None and current_location_index != 0:
-            return location_path[current_location_index - 1]
+            return routing_path[current_location_index - 1]
         return None
 
     def get_latest_location(self, completed_blocks=None):
@@ -184,14 +184,14 @@ class PathFinder:
         :param completed_blocks:
         :return:
         """
-        location_path = self.get_routing_path()
+        routing_path = self.get_routing_path()
         if completed_blocks:
-            incomplete_blocks = [item for item in location_path if item not in completed_blocks]
+            incomplete_blocks = [item for item in routing_path if item not in completed_blocks]
 
             if incomplete_blocks:
                 return incomplete_blocks[0]
 
-        return location_path[0]
+        return routing_path[0]
 
     @staticmethod
     def _relationship_previous_location(current_group_instance):
