@@ -140,7 +140,7 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
     next_location = path_finder.get_next_location(current_location=current_location)
 
     if next_location is None:
-        raise NotFound
+        return submit_answers(eq_id, form_type, collection_id)
 
     metadata = get_metadata(current_user)
 
@@ -223,7 +223,7 @@ def post_interstitial(eq_id, form_type, collection_id, block_id):  # pylint: dis
     next_location = path_finder.get_next_location(current_location=current_location)
 
     if next_location is None:
-        raise NotFound
+        return submit_answers(eq_id, form_type, collection_id)
 
     metadata = get_metadata(current_user)
     next_location_url = next_location.url(metadata)
@@ -327,15 +327,10 @@ def post_everyone_at_address_confirmation(eq_id, form_type, collection_id, group
 def validate_all_answers(answer_store, metadata):
 
     path_finder = PathFinder(g.schema_json, answer_store, metadata)
-    error_messages = SchemaHelper.get_messages(g.schema_json)
+    completed_blocks = get_completed_blocks(current_user)
 
     for location in path_finder.get_location_path():
-        if not location.is_interstitial():
-            block_json = _render_schema(location)
-            form, _ = get_form_for_location(block_json, location, answer_store, error_messages)
-
-            if not form.validate():
-                logger.debug("Failed validation", location=str(location))
+        if location not in completed_blocks:
                 return False, location
 
     return True, None
