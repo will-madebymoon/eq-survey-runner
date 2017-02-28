@@ -2,7 +2,8 @@ import unittest
 
 from wtforms import validators, StringField, TextAreaField, FormField, SelectField, SelectMultipleField
 
-from app.forms.fields import CustomIntegerField, get_field, get_mandatory_validator
+from app.forms.custom_integer_field import CustomIntegerField
+from app.forms.fields import get_field, get_mandatory_validator
 from app.validation.error_messages import error_messages
 from app.validation.validators import ResponseRequired
 

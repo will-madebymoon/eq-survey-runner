@@ -149,8 +149,8 @@ class TestFormHelper(unittest.TestCase):
         time_input_mandatory_answer = getattr(form, "time-input-mandatory-answer")
 
         self.assertEquals(time_input_mandatory_answer.data, {
-            'hours': '1',
-            'mins': '30',
+            'hours': 1,
+            'mins': 30,
         })
 
     def test_get_form_deserialises_lists(self):

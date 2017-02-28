@@ -28,11 +28,11 @@ class TestTimeInputForm(unittest.TestCase):
     def test_generate_time_input_non_mandatory_form(self):
         survey = load_schema_file("test_time_input.json")
         block_json = SchemaHelper.get_block(survey, 'time-input-block')
-        error_messages = None
+        error_messages = SchemaHelper.get_messages(survey)
 
         answers = SchemaHelper.get_answers_by_id_for_block(block_json)
 
-        form = get_time_input_form(answers['time-input-non-mandatory-answer'], error_messages= error_messages)
+        form = get_time_input_form(answers['time-input-non-mandatory-answer'], error_messages=error_messages)
 
         self.assertTrue(hasattr(form, 'hours'))
         self.assertTrue(hasattr(form, 'mins'))

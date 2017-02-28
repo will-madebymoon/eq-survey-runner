@@ -1,6 +1,7 @@
-from wtforms import FormField, IntegerField, SelectField, SelectMultipleField, StringField, TextAreaField
+from wtforms import FormField, SelectField, SelectMultipleField, StringField, TextAreaField
 from wtforms import validators
 
+from app.forms.custom_integer_field import CustomIntegerField
 from app.forms.date_form import get_date_form, get_month_year_form
 from app.forms.time_input_form import get_time_input_form
 from app.validation.validators import IntegerCheck, NumberRange, ResponseRequired
@@ -112,26 +113,6 @@ def get_select_multiple_field(answer, label, guidance, error_messages):
         choices=build_choices(answer['options']),
         validators=validate_with,
     )
-
-
-class CustomIntegerField(IntegerField):
-    """
-    The default wtforms field coerces data to an int and raises
-    cast errors outside of it's validation chain. In order to stop
-    the validation chain, we create a custom field that doesn't
-    raise the error and we can instead fail and stop other calls to
-    further validation steps by using a separate IntegerCheck validator
-    """
-    def __init__(self, **kwargs):
-
-        super(CustomIntegerField, self).__init__(**kwargs)
-
-    def process_formdata(self, valuelist):
-        if valuelist:
-            try:
-                self.data = int(valuelist[0])
-            except ValueError:
-                self.data = None
 
 
 def get_select_field(answer, label, guidance, error_messages):
