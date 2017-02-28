@@ -111,10 +111,10 @@ class StarWarsTestCase(IntegrationTestCase):
         self.assertEqual(resp.status_code, 200)
         return resp
 
-    def complete_survey(self, form_type):
+    def complete_survey(self, page):
         # Submit answers
         post_data = {
             "action[submit_answers]": "Submit answers"
         }
-        _, resp = self.postRedirectGet('/questionnaire/0/{form_type}/789/submit-answers'.format(form_type=form_type), post_data)
+        _, resp = self.postRedirectGet(page, post_data)
         return resp

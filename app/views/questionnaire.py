@@ -121,6 +121,10 @@ def post_block(eq_id, form_type, collection_id, group_id, group_instance, block_
     else:
         _update_questionnaire_store(current_location, form)
         next_location = path_finder.get_next_location(current_location=current_location)
+
+        if next_location is None:
+            return submit_answers(eq_id, form_type, collection_id, metadata, answer_store)
+
         return redirect(next_location.url(metadata))
 
 
@@ -161,6 +165,10 @@ def post_household_composition(eq_id, form_type, collection_id, group_id):
         metadata = get_metadata(current_user)
         path_finder = PathFinder(g.schema_json, get_answer_store(current_user), metadata)
         next_location = path_finder.get_next_location(current_location=current_location)
+
+        if next_location is None:
+            return submit_answers(eq_id, form_type, collection_id, metadata, answer_store)
+
         return redirect(next_location.url(metadata))
 
 
@@ -214,11 +222,7 @@ def get_session_expired(eq_id, form_type, collection_id):  # pylint: disable=unu
                                  survey_id=g.schema_json['survey_id'])
 
 
-@questionnaire_blueprint.route('submit-answers', methods=["POST"])
-@login_required
-def submit_answers(eq_id, form_type, collection_id):
-    metadata = get_metadata(current_user)
-    answer_store = get_answer_store(current_user)
+def submit_answers(eq_id, form_type, collection_id, metadata, answer_store):
     is_valid, invalid_location = validate_all_answers(answer_store, metadata)
 
     if is_valid:
@@ -241,16 +245,13 @@ def post_everyone_at_address_confirmation(eq_id, form_type, collection_id, group
 
 
 def validate_all_answers(answer_store, metadata):
+
     path_finder = PathFinder(g.schema_json, answer_store, metadata)
-    error_messages = SchemaHelper.get_messages(g.schema_json)
+    completed_blocks = get_completed_blocks(current_user)
 
     for location in path_finder.get_routing_path():
-        block_json = _render_schema(location)
-        form, _ = get_form_for_location(block_json, location, answer_store, error_messages)
-
-        if not form.validate():
-            logger.debug("Failed validation", location=str(location))
-            return False, location
+        if location not in completed_blocks:
+                return False, location
 
     return True, None
 

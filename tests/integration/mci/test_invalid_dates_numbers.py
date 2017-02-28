@@ -79,7 +79,7 @@ class TestInvalidDateNumber(IntegrationTestCase):
         post_data = {
             "action[submit_answers]": 'Submit answers'
         }
-        _, resp = self.postRedirectGet('/questionnaire/1/0205/789/submit-answers', post_data)
+        _, resp = self.postRedirectGet(mci_test_urls.MCI_0205_SUMMARY, post_data)
 
         # We are on the thank you page
         content = resp.get_data(True)

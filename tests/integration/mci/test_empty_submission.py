@@ -98,7 +98,7 @@ class TestEmptySubmission(IntegrationTestCase):
         post_data = {
             'action[submit_answers]': "Submit Answers"
         }
-        _, resp = self.postRedirectGet('/questionnaire/1/{form_type}/789/submit-answers'.format(form_type=form_type_id), post_data)
+        _, resp = self.postRedirectGet(mci_test_urls.MCI_0205_SUMMARY, post_data)
 
         # We are on the thank you page
         content = resp.get_data(True)

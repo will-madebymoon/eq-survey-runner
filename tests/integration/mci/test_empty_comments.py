@@ -79,7 +79,7 @@ class TestEmptyComments(IntegrationTestCase):
         post_data = {
             "action[submit_answers]": "Submit answers"
         }
-        _, resp = self.postRedirectGet('/questionnaire/1/0203/789/submit-answers', post_data)
+        _, resp = self.postRedirectGet(summary_url, post_data)
 
         # We are on the thank you page
         content = resp.get_data(True)

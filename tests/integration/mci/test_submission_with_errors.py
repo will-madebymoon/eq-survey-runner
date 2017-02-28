@@ -59,4 +59,4 @@ class TestSubmissionWithErrors(IntegrationTestCase):
         post_data = {
             "action[submit_answers]": "Submit answers"
         }
-        self.postRedirectGet('/questionnaire/1/0205/789/submit-answers', post_data)
+        self.postRedirectGet(mci_test_urls.MCI_0205_SUMMARY, post_data)
