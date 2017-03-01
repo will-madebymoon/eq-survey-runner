@@ -31,6 +31,7 @@ class Submitter(object):
         :param message: The payload to submit
         :raise: a submission failed exception
         """
+
         encrypted_message = self.encrypt_message(message)
         sent = self.send_message(encrypted_message, settings.EQ_RABBITMQ_QUEUE_NAME)
         if not sent:

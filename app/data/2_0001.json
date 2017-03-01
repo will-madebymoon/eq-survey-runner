@@ -83,7 +83,7 @@
                                             "title": "Exclude:"
                                         }
                                     ],
-                                    "id": "quarterly-business-survey-question-2",
+                                    "id": "number-of-employees-question",
                                     "title": "On {{exercise.start_date|format_date}}  what was the number of employees for {{respondent.ru_name}}?",
                                     "type": "General"
                                 }
@@ -102,11 +102,11 @@
             "title": "Quarterly Business Survey"
         }
     ],
-    "legal_basis": "Voluntary",
+    "legal_basis": "StatisticsOfTradeAct",
     "mime_type": "application/json/ons/eq",
-    "questionnaire_id": "023s",
+    "questionnaire_id": "0001",
     "schema_version": "0.0.1",
-    "survey_id": "qbs",
+    "survey_id": "139",
     "theme": "default",
     "title": "Quarterly Business Survey"
 }
