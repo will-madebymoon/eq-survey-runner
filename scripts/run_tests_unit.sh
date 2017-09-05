@@ -26,5 +26,6 @@ source ${DIR}/dev_settings.sh
 echo "Environment variables in use:"
 env | grep EQ_
 
-py.test --cov=app --cov-report html
+NUM_PROCS="$( getconf _NPROCESSORS_ONLN )"
+py.test --cov=app --cov-report html -W ignore::UserWarning -n ${NUM_PROCS}
 display_result $? 3 "Unit tests"

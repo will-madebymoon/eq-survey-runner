@@ -150,14 +150,15 @@ def post_household_composition(eq_id, form_type, collection_id, group_id):  # py
     if _is_invalid_form(form) or 'action[add_answer]' in request.form or 'action[remove_answer]' in request.form:
         context = {'form': form, 'block': block}
         return _build_template(current_location, context, template='questionnaire')
-    else:
-        questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
-        update_questionnaire_store_with_answer_data(questionnaire_store, current_location, form.serialise(current_location))
 
-        metadata = get_metadata(current_user)
-        path_finder = PathFinder(g.schema_json, get_answer_store(current_user), metadata)
-        next_location = path_finder.get_next_location(current_location=current_location)
-        return redirect(next_location.url(metadata))
+    questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
+    update_questionnaire_store_with_answer_data(questionnaire_store, current_location, form.serialise(current_location))
+
+    metadata = get_metadata(current_user)
+    path_finder = PathFinder(g.schema_json, get_answer_store(current_user), metadata)
+    next_location = path_finder.get_next_location(current_location=current_location)
+
+    return redirect(next_location.url(metadata))
 
 
 @questionnaire_blueprint.route('thank-you', methods=["GET"])
@@ -174,8 +175,8 @@ def get_thank_you(eq_id, form_type, collection_id):  # pylint: disable=unused-ar
                                                    survey_id=schema['survey_id'],
                                                    survey_title=TemplateRenderer.safe_content(schema['title']))
         return thank_you_template
-    else:
-        return _redirect_to_latest_location(collection_id, eq_id, form_type, schema)
+
+    return _redirect_to_latest_location(collection_id, eq_id, form_type, schema)
 
 
 @login_required
@@ -487,8 +488,8 @@ def _get_front_end_navigation(answer_store, current_location, metadata, routing_
     block_json = SchemaHelper.get_block_for_location(g.schema_json, current_location)
     if block_json is not None and block_json['type'] in ('Questionnaire', 'Interstitial', 'Confirmation', 'Summary'):
         return navigation.build_navigation(current_location.group_id, current_location.group_instance)
-    else:
-        return None
+
+    return None
 
 
 def get_page_title_for_location(schema_json, current_location):

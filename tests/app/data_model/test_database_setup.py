@@ -1,19 +1,17 @@
 import uuid
 from unittest import TestCase
-
-
-from mock import patch
+from unittest.mock import patch
 
 from app.data_model.database import Database
 
 
 class TestDatabaseSetupRetry(TestCase):
 
-    def _test_database_retry(self, retry_count, exception):
+    def _test_database_retry(self, retry_count, test_exception):
         # Given a retry count of 'retry_count'
         # And 'exception' is always raised when trying to setup the database/connection
         with patch('time.sleep'), patch('app.data_model.database.Database._create_session_and_engine', autospec=True) as setup:
-            setup.side_effect = exception
+            setup.side_effect = test_exception
 
             # When I attempt to setup the database
             # Then a TimeoutError is raised

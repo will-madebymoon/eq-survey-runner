@@ -1,4 +1,4 @@
-from mock import Mock
+from unittest.mock import Mock
 
 from app.data_model.database import EQSession, Database
 from app.authentication.session_storage import SessionStorage, EQ_SESSION_ID

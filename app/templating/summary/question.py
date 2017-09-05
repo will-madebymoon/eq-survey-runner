@@ -18,9 +18,9 @@ class Question:
         self.is_skipped = evaluate_skip_conditions(self.skip_conditions, metadata, answer_store)
 
     @classmethod
-    def _build_answers(cls, question_schema, answer_schema, answers):
+    def _build_answers(cls, question_schema, answer_schemas, answers):
         summary_answers = []
-        answers_iterator = iter(answer_schema)
+        answers_iterator = iter(answer_schemas)
         for answer_schema in answers_iterator:
             if 'parent_answer_id' in answer_schema:
                 continue
@@ -61,8 +61,8 @@ class Question:
             return checkbox_answers or None
         elif answer_schema['type'] == 'Radio':
             return cls._build_radio_answer(answer, answer_schema)
-        else:
-            return answer
+
+        return answer
 
     @classmethod
     def _build_checkbox_answers(cls, answer, answer_schema):

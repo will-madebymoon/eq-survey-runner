@@ -1,7 +1,7 @@
 import time
 import uuid
 
-from mock import patch
+from unittest.mock import patch
 
 from tests.integration.integration_test_case import IntegrationTestCase
 
@@ -95,6 +95,7 @@ class TestFlushData(IntegrationTestCase):
         args = self.encrypt_instance.call_args[0] # pylint: disable=no-member
 
         self.assertTrue(args[0]['flushed'])
+
 
     @staticmethod
     def get_payload():

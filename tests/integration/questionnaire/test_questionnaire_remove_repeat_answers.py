@@ -1,4 +1,4 @@
-from mock import patch, call
+from unittest.mock import patch, call
 
 from tests.integration.integration_test_case import IntegrationTestCase
 

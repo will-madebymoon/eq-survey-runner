@@ -1,14 +1,14 @@
+# coding: utf-8
 from datetime import datetime
-from unittest import TestCase
-
-from mock import Mock
+import unittest
+from unittest.mock import Mock
 
 from app.jinja_filters import format_date, format_conditional_date, format_currency, format_multilined_string, \
      format_percentage, format_start_end_date, format_household_member_name, format_str_as_date, \
      format_str_as_date_range, format_str_as_month_year_date, format_number_to_alphabetic_letter, format_unit
 
 
-class TestJinjaFilters(TestCase):  # pylint: disable=too-many-public-methods
+class TestJinjaFilters(unittest.TestCase):  # pylint: disable=too-many-public-methods
 
     def test_format_currency_without_decimals(self):
         # Given

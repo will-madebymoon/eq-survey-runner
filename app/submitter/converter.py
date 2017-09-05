@@ -198,5 +198,5 @@ def _encode_value(value):
         return str(value)
     elif isinstance(value, str) and value == '':
         return None
-    else:
-        return value
+
+    return value

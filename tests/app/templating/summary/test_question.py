@@ -1,6 +1,4 @@
-from unittest import TestCase
-
-import mock
+from unittest import TestCase, mock
 
 from app.templating.summary.question import Question
 from app.data_model.answer_store import Answer, AnswerStore

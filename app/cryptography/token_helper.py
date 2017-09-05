@@ -96,7 +96,7 @@ def encode_jwt(claims, kid, secret_store, purpose):
 def extract_kid_from_header(token):
     header = token.split('.')[:1][0]
 
-    if header is "":
+    if not header:
         raise InvalidTokenException("Missing Headers")
 
     try:

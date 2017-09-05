@@ -1,4 +1,4 @@
-from mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from app.data_model.answer_store import AnswerStore
 from app.questionnaire.location import Location

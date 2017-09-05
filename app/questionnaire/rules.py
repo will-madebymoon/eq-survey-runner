@@ -76,7 +76,7 @@ def _get_answer_value(filtered_answers):
 
 
 def _get_answer_count(filtered_answers):
-    return len(filtered_answers) - 1 if len(filtered_answers) > 0 else 0
+    return len(filtered_answers) - 1 if filtered_answers else 0
 
 
 def evaluate_skip_conditions(skip_conditions, metadata, answer_store, group_instance=0):
@@ -135,12 +135,15 @@ def get_metadata_value(metadata, keys):
     if "." in keys:
         key, rest = keys.split(".", 1)
         return get_metadata_value(metadata[key], rest)
-    else:
-        return metadata[keys]
+
+    return metadata[keys]
 
 
 def is_goto_rule(rule):
-    return 'goto' in rule and 'when' in rule['goto'].keys() or 'id' in rule['goto'].keys()
+    if 'goto' in rule:
+        return 'when' in rule['goto'].keys() or 'id' in rule['goto'].keys()
+
+    return False
 
 
 def _contains_in_dict(metadata, keys):

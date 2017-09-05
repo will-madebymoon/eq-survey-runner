@@ -18,7 +18,7 @@ class Encoder(object):
     # password and key variables are dynamically assigned
     def __init__(self, private_key, public_key):
 
-        if not len(private_key):
+        if not private_key:
             raise ValueError('Invalid private key')
 
         self._public_key = public_key

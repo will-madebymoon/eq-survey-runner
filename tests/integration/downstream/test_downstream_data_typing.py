@@ -1,8 +1,9 @@
 # coding: utf-8
+
+from unittest.mock import patch
 import json
 
 from jwcrypto import jwt
-from mock import patch
 
 from app.cryptography.token_helper import decrypt_jwe, extract_kid_from_header
 from app.secrets import KEY_PURPOSE_SUBMISSION

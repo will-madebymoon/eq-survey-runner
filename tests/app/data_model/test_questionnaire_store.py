@@ -1,7 +1,6 @@
 import json
 import unittest
-
-from mock import Mock
+from unittest.mock import Mock
 
 from app.data_model.answer_store import Answer
 from app.data_model.questionnaire_store import QuestionnaireStore

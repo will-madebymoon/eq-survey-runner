@@ -1,7 +1,7 @@
 import uuid
 from unittest import TestCase
+from unittest.mock import patch, Mock, call
 
-from mock import patch, Mock, call
 from pika.exceptions import AMQPError
 
 from app.submitter.submitter import RabbitMQSubmitter

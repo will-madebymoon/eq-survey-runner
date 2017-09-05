@@ -26,8 +26,8 @@ def role_required(role):
         @wraps(func)
         def role_required_wrapper(*args, **kwargs):
             metadata = get_metadata(current_user)
-            roles = metadata and metadata.get('roles', []) or []
-            if current_user.is_authenticated and role in roles:
+            roles = metadata.get('roles', []) if metadata else []
+            if roles and current_user.is_authenticated and role in roles:
                 return func(*args, **kwargs)
             else:
                 raise Forbidden

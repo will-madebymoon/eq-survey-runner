@@ -3,7 +3,7 @@ import os
 import time
 
 from httmock import urlmatch, HTTMock, response
-from mock import patch
+from unittest.mock import patch
 
 from app.utilities.schema import DEFAULT_LANGUAGE_CODE, get_schema_file_path
 from tests.integration.create_token import PAYLOAD

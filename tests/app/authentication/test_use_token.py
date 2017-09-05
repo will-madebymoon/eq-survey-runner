@@ -1,7 +1,7 @@
 from unittest import TestCase
+from unittest.mock import Mock
 from uuid import uuid4
 
-from mock import Mock
 from sqlalchemy.exc import IntegrityError
 
 from app.setup import Database

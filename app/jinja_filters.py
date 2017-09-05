@@ -16,10 +16,10 @@ blueprint = flask.Blueprint('filters', __name__)
 
 @blueprint.app_template_filter()
 def format_currency(value):
-    if value is not None and len(str(value)) > 0:
+    if value:
         return "£{:,.2f}".format(value)
-    else:
-        return ""
+
+    return ""
 
 
 @blueprint.app_template_filter()
@@ -68,8 +68,8 @@ def format_conditional_date(date1=None, date2=None):
 
     if isinstance(date, datetime):
         return format_date(date)
-    else:
-        return format_date(datetime.strptime(date, "%d/%m/%Y"))
+
+    return format_date(datetime.strptime(date, "%d/%m/%Y"))
 
 
 def format_start_end_date(start_date, end_date=None):
@@ -103,7 +103,7 @@ def format_household_member_name(names):
 
 @blueprint.app_template_filter()
 def format_household_summary(names):
-    if len(names) > 0:
+    if names:
         person_list = '<ul>'
         for first_name, middle_name, last_name in zip(names[0], names[1], names[2]):
             person_list += '<li>{}</li>'.format(format_household_member_name([first_name, middle_name, last_name]))
