@@ -1,4 +1,5 @@
 # coding: utf-8
+
 from datetime import datetime
 import unittest
 from unittest.mock import Mock
@@ -147,6 +148,7 @@ class TestJinjaFilters(unittest.TestCase):  # pylint: disable=too-many-public-me
 
             # Then
             self.assertEqual(format_value, "<span class='date'>{date}</span>".format(date=triple[2]))
+
 
     def test_format_start_end_date(self):
         # Given
