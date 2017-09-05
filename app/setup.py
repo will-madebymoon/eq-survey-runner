@@ -13,7 +13,7 @@ from flask_babel import Babel
 from flask_themes2 import Themes
 from structlog import get_logger
 
-from app import settings
+
 from app.authentication.authenticator import login_manager
 from app.authentication.cookie_session import SHA256SecureCookieSessionInterface
 
@@ -51,18 +51,15 @@ class AWSReverseProxied(object):
         return self.app(environ, start_response)
 
 
-def create_app(setting_overrides=None):  # noqa: C901  pylint: disable=too-complex
+def create_app(config):  # noqa: C901  pylint: disable=too-complex
     application = Flask(__name__, static_url_path='/s', static_folder='../static')
-    application.config.from_object(settings)
+    application.config.from_object(config)
 
     application.eq = {}
 
     secrets = yaml.safe_load(open(application.config['EQ_SECRETS_FILE']))
     validate_required_secrets(secrets)
     application.eq['secret_store'] = SecretStore(secrets)
-
-    if setting_overrides:
-        application.config.update(setting_overrides)
 
     if application.config['EQ_APPLICATION_VERSION']:
         logger.info('starting eq survey runner', version=application.config['EQ_APPLICATION_VERSION'])
@@ -145,7 +142,7 @@ def create_app(setting_overrides=None):  # noqa: C901  pylint: disable=too-compl
 
     @application.context_processor
     def override_url_for():  # pylint: disable=unused-variable
-        return dict(url_for=versioned_url_for)
+        return dict(url_for=get_versioned_url_for(application.config['EQ_APPLICATION_VERSION']))
 
     @application.teardown_appcontext
     def shutdown_session(exception=None):  # pylint: disable=unused-variable,unused-argument
@@ -247,26 +244,28 @@ def add_safe_health_check(application):
         return json.dumps(data)
 
 
-def versioned_url_for(endpoint, **values):
+def get_versioned_url_for(version, minified_assets=True):
 
-    if endpoint == 'static':
-        filename = values.get('filename', None)
-        if filename:
-            filename = get_minimized_asset(filename)
-            # use the git revision
-            version = settings.EQ_APPLICATION_VERSION
-            values['filename'] = filename
-            values['q'] = version
-    return url_for(endpoint, **values)
+    def versioned_url_for(endpoint, **values):
 
+        if endpoint == 'static':
+            filename = values.get('filename', None)
+            if filename:
+                filename = get_asset(filename, minifed_assets)
+                values['filename'] = filename
+                values['q'] = version
 
-def get_minimized_asset(filename):
+        return url_for(endpoint, **values)
+
+    return versioned_url_for
+
+def get_asset(filename, minified=True):
     """
     If we're in production and it's a js or css file, return the minified version.
     :param filename: the original filename
     :return: the new file name will be .min.css or .min.js
     """
-    if settings.EQ_MINIMIZE_ASSETS:
+    if minified:
         if 'css' in filename:
             filename = filename.replace(".css", ".min.css")
         elif 'js' in filename:

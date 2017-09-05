@@ -12,6 +12,8 @@ from structlog.processors import TimeStamper
 from structlog.stdlib import LoggerFactory, add_log_level
 from structlog.threadlocal import wrap_dict
 
+from app import settings
+
 EQ_LOG_LEVEL = os.getenv('EQ_LOG_LEVEL', 'INFO')
 EQ_WERKZEUG_LOG_LEVEL = os.getenv('EQ_WERKZEUG_LOG_LEVEL', 'INFO')
 EQ_DEVELOPER_LOGGING = os.getenv('EQ_DEVELOPER_LOGGING', 'False').upper() == 'TRUE'
@@ -59,7 +61,7 @@ def add_service(logger, method_name, event_dict):  # pylint: disable=unused-argu
 # Initialise logging before the rest of the application
 configure_logging()
 from app.setup import create_app  # NOQA
-application = create_app()
+application = create_app(settings)
 
 
 if __name__ == '__main__':

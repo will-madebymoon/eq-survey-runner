@@ -80,12 +80,14 @@ class Database:
             self._database_url = "{driver}://{name}".format(driver=driver,
                                                             name=database_name)
         else:
-            self._database_url = "{driver}://{username}:{password}@{host}:{port}/{name}".format(driver=driver,
-                                                                                                username=username,
-                                                                                                password=password,
-                                                                                                host=host,
-                                                                                                port=port,
-                                                                                                name=database_name)
+            self._database_url = "{driver}://{username}:{password}@{host}:{port}/{name}".format(
+                driver=driver,
+                username=username,
+                password=password,
+                host=host,
+                port=port,
+                name=database_name
+            )
 
         self._setup_attempts = setup_attempts
         self._setup_retry_delay = setup_retry_delay

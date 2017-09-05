@@ -1,7 +1,7 @@
 import unittest
 
 from app.setup import create_app
-
+from tests import settings
 
 class AppContextTestCase(unittest.TestCase):
     """
@@ -9,12 +9,7 @@ class AppContextTestCase(unittest.TestCase):
     and destroys it on tearDown
     """
     def setUp(self):
-        setting_overrides = {
-            "EQ_SERVER_SIDE_STORAGE_DATABASE_DRIVER": "sqlite",
-            "EQ_SERVER_SIDE_STORAGE_DATABASE_NAME": ""
-        }
-        self._app = create_app(setting_overrides)
-        self._app.config['SERVER_NAME'] = 'test'
+        self._app = create_app(settings)
         self._app_context = self._app.app_context()
         self._app_context.push()
 
