@@ -646,7 +646,6 @@
                     "additionalProperties": false,
                     "required": [
                       "id",
-                      "title",
                       "type",
                       "answers"
                     ]
