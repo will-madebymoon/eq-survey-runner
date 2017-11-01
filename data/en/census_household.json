@@ -810,7 +810,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "details-correct",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "details-correct-question",
                         "title": "Is the name {{ [answers.first_name[group_instance], answers.middle_names[group_instance], answers.last_name[group_instance]] | format_household_name }} correct, including any middle name(s)?",
@@ -850,7 +849,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "correct-name",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "correct-name-question",
                         "title": "What is your correct name?",
@@ -2052,7 +2050,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "white-ethnic-group",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                             "id": "white-ethnic-group-england-question",
                             "title": "Which one best describes your White ethnic group or background?",
@@ -2198,7 +2195,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "mixed-ethnic-group",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "mixed-ethnic-group-question",
                         "title": "Which one best describes your Mixed / multiple ethnic group or background?",
@@ -2282,7 +2278,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "asian-ethnic-group",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "asian-ethnic-group-question",
                         "title": "Which one best describes your Asian / Asian British ethnic group or background?",
@@ -2370,7 +2365,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "black-ethnic-group",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "black-ethnic-group-question",
                         "title": "Which one best describes your Black / African / Caribbean / Black British ethnic group or background?",
@@ -2450,7 +2444,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "other-ethnic-group",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "other-ethnic-group-question",
                         "title": "Which one best describes your Other ethnic group or background?",
@@ -2526,7 +2519,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "sexual-identity",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "sexual-identity-question",
                         "title": "Which of the following options best describes how you think of yourself?",
@@ -2611,7 +2603,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "understand-welsh",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "understand-welsh-question",
                         "title": "Can you understand, speak, read or write Welsh",
@@ -2648,7 +2639,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "language",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                             "id": "language-england-question",
                             "title": "What is your main language?",
@@ -2752,7 +2742,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "english",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "english-question",
                         "title": "How well can you speak English?",
@@ -2784,7 +2773,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "religion",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                             "id": "religion-question",
                             "title": "What is your religion?",
@@ -2910,7 +2898,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "past-usual-address",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "past-usual-address-question",
                         "title": "One year ago, what was your usual address?",
@@ -2985,7 +2972,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "last-year-address",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "last-year-address-question",
                         "title": "Enter details of your address one year ago",
@@ -3026,7 +3012,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "passports",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "passports-question",
                         "title": "What passports do you hold?",
@@ -3075,7 +3060,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "other-passports",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "other-passports-question",
                         "title": "Please specify other passports held",
@@ -3091,7 +3075,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "disability",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "disability-question",
                         "title": "Are your day-to-day activities limited because of a health problem or disability which has lasted, or is expected to last, at least 12 months?",
@@ -3140,7 +3123,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "qualifications",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                             "id": "qualifications-england-question",
                             "title": "Thinking of any studies, exams or qualifications, which of the following do you have?",
@@ -3312,7 +3294,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "volunteering",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "volunteering-question",
                         "title": "Thinking of the last 12 months, have you taken part in any volunteering for any groups, clubs or organisations?",
@@ -3349,7 +3330,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "employment-type",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "employment-type-question",
                         "title": "Last week were you:",
@@ -3465,7 +3445,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "jobseeker",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "jobseeker-question",
                         "title": "Were you actively looking for any kind of paid work during the last four weeks?",
@@ -3489,7 +3468,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "job-availability",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "job-availability-question",
                         "title": "If a job had been available last week, could you have started it within two weeks?",
@@ -3513,7 +3491,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "job-pending",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "job-pending-question",
                         "title": "Last week, were you waiting to start a job already obtained?",
@@ -3537,7 +3514,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "occupation",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "occupation-question",
                         "title": "Last week, were you:",
@@ -3574,7 +3550,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "ever-worked",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "ever-worked-question",
                         "title": "Have you ever worked?",
@@ -3640,7 +3615,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "main-job",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "main-job-question",
                         "title": "In your main job, are (were) you:",
@@ -3673,7 +3647,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "hours-worked",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "description": "",
                     "questions": [{
                         "title": "In your main job, how many hours a week do you usually work?",
@@ -3713,7 +3686,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "work-travel",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "description": "",
                     "questions": [{
                         "title": "How do you usually travel to work?",
@@ -3787,7 +3759,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "job-title",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "job-title-question",
                         "title": "What is (was) your full and specific job title?",
@@ -3822,7 +3793,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "job-description",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "job-description-question",
                         "title": "Briefly describe what you do (did) in your main job.",
@@ -3849,7 +3819,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "employers-business",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "employers-business-question",
                         "title": "At your workplace what is (was) the main activity of your employer or business?",
@@ -3891,7 +3860,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "main-job-type",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "main-job-type-question",
                         "title": "In your main job are (were) you:",
@@ -3936,7 +3904,6 @@
                 {
                     "type": "Questionnaire",
                     "id": "business-name",
-                    "title": "{{[answers.first_name[group_instance], answers.last_name[group_instance]] | format_household_name }}",
                     "questions": [{
                         "id": "business-name-question",
                         "title": "In your main job, what is (was) the name of the organisation or business you work (worked) for?",
