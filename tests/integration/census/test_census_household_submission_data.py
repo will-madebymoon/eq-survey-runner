@@ -17,6 +17,70 @@ class TestCensusHouseholdSubmissionData(IntegrationTestCase):
     def get_expected_submission_data():
         expected_downstream_data = [
             {
+                'answer_id': 'building',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'the shard'
+            },
+            {
+                'answer_id': 'address-line-1',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': '44 hill side'
+            },
+            {
+                'answer_id': 'address-line-2',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'cimla'
+            },
+            {
+                'answer_id': 'county',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'west glamorgan'
+            },
+            {
+                'answer_id': 'country',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'wales'
+            },
+            {
+                'answer_id': 'postcode',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'cf336gn'
+            },
+            {
+                'answer_id': 'address-line-3',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': ''
+            },
+            {
+                'answer_id': 'town-city',
+                'answer_instance': 0,
+                'block_id': 'what-is-your-address',
+                'group_id': 'what-is-your-address-group',
+                'group_instance': 0,
+                'value': 'neath'
+            },
+            {
                 'group_instance': 0,
                 'answer_id': 'permanent-or-family-home-answer',
                 'block_id': 'permanent-or-family-home',
@@ -190,6 +254,14 @@ class TestCensusHouseholdSubmissionData(IntegrationTestCase):
                 'group_id': 'household-member',
                 'answer_instance': 0,
                 'value': 'Male'
+            },
+            {
+                'group_instance': 0,
+                'answer_id': 'sex-answer-other',
+                'block_id': 'sex',
+                'group_id': 'household-member',
+                'answer_instance': 0,
+                'value': ''
             },
             {
                 'group_instance': 0,
@@ -1107,6 +1179,7 @@ class TestCensusHouseholdSubmissionData(IntegrationTestCase):
 
     def complete_who_lives_here_section(self):
         # We are in the questionnaire
+        self.assertInPage('What is your address?')
         self.assertInPage('Who lives here?')
         self.assertInPage('>Continue<')
         # In Who lives here? Section
@@ -1114,6 +1187,15 @@ class TestCensusHouseholdSubmissionData(IntegrationTestCase):
         self.post(post_data={'permanent-or-family-home-answer': ['Yes']})
         self.post(action='add_answer')
         post_data = [
+            {
+                'building': 'the shard',
+                'address-line-1': '44 hill side',
+                'address-line-2': 'cimla',
+                'county': 'west glamorgan',
+                'country': 'wales',
+                'postcode': 'cf336gn',
+                'town-city': 'neath'
+            },
             {
                 'permanent-or-family-home-answer': ['Yes']
             },
