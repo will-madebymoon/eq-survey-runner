@@ -1,0 +1,10 @@
+{% import 'macros/helpers.html' as helpers %}
+
+{% for item in block_definitions %}
+  {%- if item.title -%}
+    <dt><strong class="u-mb-s u-d-b">{{item.title}}</strong></dt>
+  {% endif %}
+  {%- if item.description -%}
+    <dd>{{item.description}}</dd>
+  {% endif %}
+{% endfor %}

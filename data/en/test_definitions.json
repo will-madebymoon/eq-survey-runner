@@ -1,0 +1,90 @@
+{
+  "mime_type": "application/json/ons/eq",
+  "schema_version": "0.0.1",
+  "data_version": "0.0.1",
+  "survey_id": "0",
+  "title": "Definitions",
+  "theme": "default",
+  "legal_basis": "StatisticsOfTradeAct",
+  "description": "A questionnaire to test definitions",
+  "messages": {
+    "NUMBER_TOO_LARGE": "Number is too large",
+    "NUMBER_TOO_SMALL": "Number cannot be less than zero",
+    "INVALID_DECIMAL": "Please enter a number to %(max)d decimal places"
+  },
+  "groups": [
+    {
+      "id": "group",
+      "title": "",
+      "blocks": [
+        {
+          "type": "Questionnaire",
+          "id": "block",
+          "title":
+            "Do you connect an <a href='#def-accumulator'>accumulator</a> to your <a href='#def-photovoltaics'>photovoltic system</a> to store surplus energy?",
+          "description": "",
+          "definitions": [
+            {
+              "title":
+                "<def id='def-accumulator'>Definition for an accumulator</def>",
+              "description":
+                "An accumulator is an energy storge device; a device which accepts energy, stores energy and releases energy as needed."
+            },
+            {
+              "title":
+                "<def id='def-photovoltaics'>Definition for a photovoltaic system</def>",
+              "description":
+                "Photovoltaics known as solar panels are usually installed on homes and comercial properties. They produce electricity directly from the energy of the sun. The panels are usually installed on the roof of your property."
+            }
+          ],
+          "routing_rules": [],
+          "questions": [
+            {
+              "description": "",
+              "id": "question",
+              "title": "",
+              "type": "General",
+              "guidance": {
+                "content": [
+                  {
+                    "title": "Include",
+                    "list": [
+                      "Batteries",
+                      "Capacitors",
+                      "Alternators",
+                      "Mainsprings",
+                      "Flywheel energy storage"
+                    ]
+                  }
+                ]
+              },
+              "answers": [
+                {
+                  "id": "light-side-pick-ship-answer",
+                  "label": "",
+                  "mandatory": true,
+                  "options": [
+                    {
+                      "label": "Yes",
+                      "value": "Yes"
+                    },
+                    {
+                      "label": "No",
+                      "value": "No"
+                    }
+                  ],
+                  "q_code": "23",
+                  "type": "Radio"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Summary",
+          "id": "summary"
+        }
+      ]
+    }
+  ]
+}

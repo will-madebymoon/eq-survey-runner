@@ -11,6 +11,7 @@
 
 {% set block = content.block %}
 {% set form = content.form %}
+{% set block_definitions = block.definitions %}
 
 {% block sidebar %}
   {% if navigation %}
@@ -40,6 +41,11 @@
       <div class="u-mb-m">
         <button class="btn btn--link mars js-btn-save" data-qa="btn-save-sign-out" type="submit" name="action[save_sign_out]" {{helpers.track('click', 'Navigation', 'Save and complete later click')}}>{% block save_sign_out_button_text %}Save and complete later{% endblock %}</button>
       </div>
+      {%- if block_definitions -%}
+        <div class="definition">
+          {% include 'partials/definition.html' %}
+        </div>
+      {% endif %}
     </form>
 
 {% endblock main %}
