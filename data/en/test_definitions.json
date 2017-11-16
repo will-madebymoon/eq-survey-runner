@@ -21,7 +21,7 @@
           "type": "Questionnaire",
           "id": "block",
           "title":
-            "Do you connect an <a href='#def-accumulator'>accumulator</a> to your <a href='#def-photovoltaics'>photovoltic system</a> to store surplus energy?",
+            "Do you connect an <a class='definition__anchor' href='#def-accumulator'>accumulator</a> to your <a class='definition__anchor' href='#def-photovoltaics'>photovoltic system</a> to store surplus energy?",
           "description": "",
           "definitions": [
             {
