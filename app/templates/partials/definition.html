@@ -1,13 +1,16 @@
 {% import 'macros/helpers.html' as helpers %}
 
-{% for item in block_definitions %}
-  <dl class="definition__list">
-    {%- if item.title -%}
-      <dt class="definition__title venus"><strong class="u-mb-s u-d-b">{{item.title}}</strong></dt>
-    {% endif %}
-    {%- if item.description -%}
-      <dd class="definition__description mars" >{{item.description}}</dd>
-      <a href="#main" class="definition__backtotop">Back to top</a>
-    {% endif %}
-  </dl>
-{% endfor %}
+
+<div class="definition js-definition">
+  {% for item in block_definitions %}
+    <dl class="definition__list js-definition-body">
+      {%- if item.title -%}
+        <a href="#main" class="definition__backtotop">Back to top</a>
+        <dt class="definition__title venus"><strong class="u-mb-s u-d-b">{{item.title}}</strong></dt>
+      {% endif %}
+      {%- if item.description -%}
+        <dd class="definition__description mars" >{{item.description}}</dd>
+      {% endif %}
+    </dl>
+  {% endfor %}
+</div>

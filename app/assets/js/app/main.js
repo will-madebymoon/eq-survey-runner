@@ -1,5 +1,6 @@
 import 'babel-polyfill'
 import './modules/nav'
+import './modules/definition-toggle'
 import './modules/details-toggle'
 import './modules/analytics'
 import './modules/inpagelink'
