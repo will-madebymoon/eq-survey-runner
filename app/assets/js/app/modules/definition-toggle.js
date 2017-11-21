@@ -1,7 +1,7 @@
-import {forEach} from 'lodash'
+import { forEach } from 'lodash'
 import domready from './domready'
 
-export const classDetails = 'js-definition'
+export const classDefinition = 'js-definition'
 export const classTrigger = 'js-definition-trigger'
 export const classBody = 'js-definition-body'
 export const classLabel = 'js-definition-label'
@@ -18,42 +18,44 @@ export default function() {
 }
 
 export function definitionToggle() {
-  const nodeList = document.getElementsByClassName(classDetails)
-  forEach(nodeList, applyDetailsToggle)
+  const nodeList = document.getElementsByClassName(classDefinition)
+  forEach(nodeList, applyDefinitionToggle)
   return nodeList
 }
 
-export function applyDetailsToggle(elDetails) {
-  const elTrigger = elDetails.getElementsByClassName(classTrigger)[0]
-  const elBody = elDetails.getElementsByClassName(classBody)[0]
-  const elLabel = elDetails.getElementsByClassName(classLabel)[0]
+export function applyDefinitionToggle(elDefinition) {
+  const elTrigger = elDefinition.getElementsByClassName(classTrigger)[0]
+  const elBody = elDefinition.getElementsByClassName(classBody)[0]
+  const elLabel = elDefinition.getElementsByClassName(classLabel)[0]
   let toggled = false
 
-  elTrigger.addEventListener('click', (e) => {
+  elTrigger.addEventListener('click', e => {
     e.preventDefault()
-    toggled = toggle(toggled, elDetails, elTrigger, elBody, elLabel)
+    toggled = toggle(toggled, elDefinition, elTrigger, elBody, elLabel)
     return false
   })
 
-  return {elDetails, elTrigger, elBody}
+  return { elDefinition, elTrigger, elBody }
 }
 
-export function open(elDetails, elBody, elLabel, elTrigger) {
-  elDetails.classList.add(classExpandedState)
-  elLabel.innerHTML = elDetails.getAttribute(attrHideLbl)
+export function open(elDefinition, elBody, elLabel, elTrigger) {
+  elDefinition.classList.add(classExpandedState)
+  elLabel.innerHTML = elDefinition.getAttribute(attrHideLbl)
   elTrigger.setAttribute(attrAriaExpanaded, true)
   elBody.setAttribute(attrAriaHidden, false)
 }
 
-export function close(elDetails, elBody, elLabel, elTrigger) {
-  elDetails.classList.remove(classExpandedState)
-  elLabel.innerHTML = elDetails.getAttribute(attrShowLbl)
+export function close(elDefinition, elBody, elLabel, elTrigger) {
+  elDefinition.classList.remove(classExpandedState)
+  elLabel.innerHTML = elDefinition.getAttribute(attrShowLbl)
   elTrigger.setAttribute(attrAriaExpanaded, false)
   elBody.setAttribute(attrAriaHidden, true)
 }
 
-export function toggle(toggled, elDetails, elTrigger, elBody, elLabel) {
-  !toggled ? open(elDetails, elBody, elLabel, elTrigger) : close(elDetails, elBody, elLabel, elTrigger)
+export function toggle(toggled, elDefinition, elTrigger, elBody, elLabel) {
+  !toggled
+    ? open(elDefinition, elBody, elLabel, elTrigger)
+    : close(elDefinition, elBody, elLabel, elTrigger)
   return !toggled
 }
 
