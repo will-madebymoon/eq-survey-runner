@@ -1,10 +1,9 @@
 {% import 'macros/helpers.html' as helpers %}
 
-<a href="#" class="js-definition-trigger js-definition-label" data-show-label="Show test" data-hide-label="Show test">test</a>
-
-
 <div class="definition js-definition">
   {% for item in block_definitions %}
+  <a href="#" class="js-definition-trigger js-definition-label" data-show-label="Open" data-hide-label="Close">Close</a>
+
     <dl class="definition__list js-definition-body">
       {%- if item.title -%}
         <a href="#main" class="definition__backtotop">Back to top</a>

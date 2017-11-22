@@ -8,6 +8,7 @@ export const classLabel = 'js-definition-label'
 export const classExpandedState = 'is-expanded'
 
 export const attrShowLbl = 'data-show-label'
+
 export const attrHideLbl = 'data-hide-label'
 export const attrAriaExpanaded = 'aria-expanded'
 export const attrAriaHidden = 'aria-hidden'
