@@ -21,7 +21,7 @@
           "type": "Questionnaire",
           "id": "block",
           "title":
-            "Do you connect an <a class='definition__anchor' href='#def-accumulator' data-def-title='Definition for an accumulator' data-def-definition='An accumulator is an energy storge device; a device which accepts energy, stores energy and releases energy as needed.'>accumulator</a> to your <a class='definition__anchor' href='#def-photovoltaics' data-def-title='Definition for Photovoltaics' data-def-definition='Photovoltaics known as solar panels are usually installed on homes and comercial properties. They produce electricity directly from the energy of the sun. The panels are usually installed on the roof of your property.'>photovoltic system</a> to store surplus energy?",
+            "<span class='js-definition'>Do you connect an <button type='button' class='definition__anchor js-definition-trigger' data-dialog-call='Definition for an accumulator: An accumulator is an energy storge device; a device which accepts energy, stores energy and releases energy as needed.' data-dialog-response='Close'>accumulator</button> to your <button type='button' class='definition__anchor js-definition-trigger' href='#def-photovoltaics' data-dialog-call='Definition for Photovoltaics: Photovoltaics known as solar panels are usually installed on homes and comercial properties. They produce electricity directly from the energy of the sun. The panels are usually installed on the roof of your property.' data-dialog-response='Close'>photovoltic system</button> to store surplus energy?</span>",
           "description": "",
           "definitions": [
             {

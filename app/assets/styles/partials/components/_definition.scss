@@ -1,14 +1,15 @@
 .definition {
+  display: none;
   border-top: 1px solid $color-borders;
   margin-top: 3em;
-  // .no-js & {
-  //   display: none;
-  // }
+  .no-js & {
+    display: block;
+  }
 }
 
 .definition__list {
   margin: 0;
-  padding: 1.5em 0 1em 0;
+  padding: 1.5em 0 1em 0em;
   position: relative;
 }
 
@@ -18,7 +19,8 @@
 
 .definition__backtotop {
   $size: 1.5rem;
-  background: url("#{$s}/img/icons/icons--definition-arrow.svg") no-repeat center center;
+  background: url('#{$s}/img/icons/icons--definition-arrow.svg') no-repeat
+    center center;
   background-size: auto;
   text-align: center;
   width: $size;
@@ -43,13 +45,14 @@
   &:hover {
     text-decoration-style: dashed;
   }
-  &:after{
-    content: "";
+  &:after {
+    content: '';
     top: 0;
     right: 0;
-    background: transparent url("#{$s}/img/icons/icons--definition-anchor.svg") no-repeat 50%;
+    background: transparent url('#{$s}/img/icons/icons--definition-anchor.svg')
+      no-repeat 50%;
     background-size: auto;
-    padding: .5em;
+    padding: 0.5em;
     display: inline;
     white-space: nowrap;
     line-height: 0;
