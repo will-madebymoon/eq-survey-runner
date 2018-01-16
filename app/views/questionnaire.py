@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 import simplejson as json
 
-from flask import Blueprint, g, redirect, request, url_for, current_app
+from flask import Blueprint, g, redirect, request, url_for, current_app, jsonify
 from flask_login import current_user, login_required, logout_user
 from flask_themes2 import render_theme_template
 from sdc.crypto.encrypter import encrypt
@@ -236,6 +236,12 @@ def _redirect_to_latest_location(routing_path, collection_id, eq_id, form_type):
 def _render_page(full_routing_path, block, current_location, post_form=None):
 
     context = _get_context(full_routing_path, block, current_location, post_form)
+
+    if request_wants_json():
+        return jsonify({
+            'block': context['block'],
+            'variables': context['variables']
+        })
 
     return _build_template(
         current_location,
@@ -626,3 +632,10 @@ def _render_template(context, current_location, template, front_end_navigation, 
         page_title=page_title,
         **kwargs
     )
+
+def request_wants_json():
+    best = request.accept_mimetypes \
+        .best_match(['application/json', 'text/html'])
+    return best == 'application/json' and \
+        request.accept_mimetypes[best] > \
+        request.accept_mimetypes['text/html']
