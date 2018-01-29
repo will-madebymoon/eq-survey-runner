@@ -88,7 +88,13 @@
                             "q_code": "2",
                             "type": "Number"
                         }]
-                    }],
+                    }]
+                },
+                {
+                    "id": "coffee-interstitial",
+                    "title": "Coffee Interstitial Page",
+                    "description": "You have successfully completed the Coffee section. Next we want to know about your Toast.",
+                    "type": "Interstitial",
                     "routing_rules": [{
                         "goto": {
                             "group": "toast-group"
