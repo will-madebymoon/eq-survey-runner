@@ -140,11 +140,9 @@ class Navigation(object):
             for location in self.routing_path:
                 if location.group_id == group_id and location.group_instance == group_instance:
                     contains_group_in_routing_path = True
-
                     # Is location a Question page
                     block = self.schema.get_block(location.block_id)
                     if block['type'] == 'Question':
-
                         if location not in self.completed_blocks:
                             return False
 
