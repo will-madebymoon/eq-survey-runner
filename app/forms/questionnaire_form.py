@@ -39,8 +39,13 @@ class QuestionnaireForm(FlaskForm):
             if question['type'] == 'DateRange':
                 period_from_id = question['answers'][0]['id']
                 period_to_id = question['answers'][1]['id']
-                if not (self.answers_all_valid([period_from_id, period_to_id]) and
-                        self._validate_date_range_question(question['id'], period_from_id, period_to_id)):
+                messages = None
+                if 'validation' in question:
+                    messages = question['validation'].get('messages')
+                if not (
+                        self.answers_all_valid([period_from_id, period_to_id]) and
+                        self._validate_date_range_question(question['id'], period_from_id, period_to_id, messages,
+                                                           question.get('period_limits'))):
                     valid_form = False
             elif question['type'] == 'Calculated':
                 valid_form = self.validate_calculated_question(question)
@@ -66,17 +71,20 @@ class QuestionnaireForm(FlaskForm):
         target_answer = self.schema.get_answer(calculation['answer_id'])
         return self.answer_store.filter(answer_ids=[target_answer['id']]).values()[0], target_answer.get('currency')
 
-    def _validate_date_range_question(self, question_id, period_from_id, period_to_id):
+    def _validate_date_range_question(self, question_id, period_from_id, period_to_id, messages, period_limits):
         period_from = getattr(self, period_from_id)
         period_to = getattr(self, period_to_id)
-        validator = DateRangeCheck()
+        validator = DateRangeCheck(messages=messages)
 
         # Check every field on each form has populated data
         populated = all(field.data for field in itertools.chain(period_from, period_to))
 
+        # Check for period_limits
+        period_min, period_max = self._get_period_limits(period_limits)
+
         if populated:
             try:
-                validator(self, period_from, period_to)
+                validator(self, period_from, period_to, period_min, period_max)
             except validators.ValidationError as e:
                 self.question_errors[question_id] = str(e)
                 return False
@@ -104,6 +112,16 @@ class QuestionnaireForm(FlaskForm):
             return False
 
         return True
+
+    @staticmethod
+    def _get_period_limits(limits):
+        minimum, maximum = None, None
+        if limits:
+            if 'minimum' in limits:
+                minimum = limits['minimum']
+            if 'maximum' in limits:
+                maximum = limits['maximum']
+        return minimum, maximum
 
     @staticmethod
     def _get_calculation_type(calculation_type):

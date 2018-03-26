@@ -1,6 +1,7 @@
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 from babel import numbers
+from dateutil.relativedelta import relativedelta
 from wtforms import validators
 from wtforms.compat import string_types
 from structlog import get_logger
@@ -213,11 +214,12 @@ class MonthYearCheck(object):
 
 class DateRangeCheck(object):
     def __init__(self, messages=None):
-        if not messages:
-            messages = error_messages
-        self.messages = messages
+        if messages:
+            self.messages = messages
+        else:
+            self.messages = error_messages
 
-    def __call__(self, form, from_field, to_field):
+    def __call__(self, form, from_field, to_field, period_min, period_max):
 
         from_date_str = '{}-{:02d}-{:02d}'.format(int(from_field.year.data or 0),
                                                   int(from_field.month.data or 0),
@@ -230,8 +232,22 @@ class DateRangeCheck(object):
         from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
         to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
 
+        min_period_to = from_date + relativedelta(years=period_min.get("years", 0), months=period_min.get("months", 0),
+                                                  days=period_min.get("days", 0))
+        max_period_to = from_date + relativedelta(years=period_max.get("years", 0), months=period_max.get("months", 0),
+                                                  days=period_max.get("days", 0))
+
+        min_to = min_period_to - to_date
+        max_to = to_date - max_period_to
+
         if from_date == to_date or from_date > to_date:
             raise validators.ValidationError(self.messages['INVALID_DATE_RANGE'])
+        if period_min:
+            if min_to.days > 0:
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_SMALL'] % dict(min=period_min))
+        if period_max:
+            if max_to.days > 0:
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=period_max))
 
 
 class SumCheck(object):
