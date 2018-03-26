@@ -213,13 +213,16 @@ class MonthYearCheck(object):
 
 
 class DateRangeCheck(object):
-    def __init__(self, messages=None):
+    def __init__(self, messages=None, period_min=None, period_max=None):
         if messages:
             self.messages = messages
         else:
             self.messages = error_messages
 
-    def __call__(self, form, from_field, to_field, period_min, period_max):
+        self.period_min = period_min
+        self.period_max = period_max
+
+    def __call__(self, form, from_field, to_field):
 
         from_date_str = '{}-{:02d}-{:02d}'.format(int(from_field.year.data or 0),
                                                   int(from_field.month.data or 0),
@@ -232,22 +235,42 @@ class DateRangeCheck(object):
         from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
         to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
 
-        min_to = self._get_min_max_period_to(from_date, period_min) - to_date
-        max_to = to_date - self._get_min_max_period_to(from_date, period_max)
-
         if from_date == to_date or from_date > to_date:
             raise validators.ValidationError(self.messages['INVALID_DATE_RANGE'])
-        if period_min:
-            if min_to.days > 0:
-                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_SMALL'] % dict(min=min_to.days))
-        if period_max:
-            if max_to.days > 0:
-                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=max_to.days))
+
+        if self.period_min:
+            min_to = self._get_min_max_period_to(from_date, self.period_min)
+            if to_date < min_to:
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_SMALL'] % dict(min=self._build_range_length_error(self.period_min)))
+
+        if self.period_max:
+            max_to = self._get_min_max_period_to(from_date, self.period_max)
+            if to_date > max_to:
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=self._build_range_length_error(self.period_max)))
 
     @staticmethod
     def _get_min_max_period_to(date, period_object):
         return date + relativedelta(years=period_object.get("years", 0), months=period_object.get("months", 0),
                                     days=period_object.get("days", 0))
+
+    def _build_range_length_error(self, period_object):
+        error_message = ''
+        if 'years' in period_object:
+            error_message = self.return_error_component(error_message, period_object['years'], ' year')
+        if 'months' in period_object:
+            error_message = self.return_error_component(error_message, period_object['months'], ' month')
+        if 'days' in period_object:
+            error_message = self.return_error_component(error_message, period_object['days'], ' day')
+
+        return error_message
+
+    def return_error_component(self, error_message, number, unit):
+        if len(error_message) > 0:
+            error_message = error_message + ', '
+        error_message = error_message + str(number) + unit
+        if number > 1:
+            error_message = error_message + 's'
+        return error_message
 
 
 class SumCheck(object):

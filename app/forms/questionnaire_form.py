@@ -74,17 +74,16 @@ class QuestionnaireForm(FlaskForm):
     def _validate_date_range_question(self, question_id, period_from_id, period_to_id, messages, period_limits):
         period_from = getattr(self, period_from_id)
         period_to = getattr(self, period_to_id)
-        validator = DateRangeCheck(messages=messages)
+        period_min, period_max = self._get_period_limits(period_limits)
+        validator = DateRangeCheck(messages=messages, period_min=period_min, period_max=period_max)
 
         # Check every field on each form has populated data
         populated = all(field.data for field in itertools.chain(period_from, period_to))
 
         # Check for period_limits
-        period_min, period_max = self._get_period_limits(period_limits)
-
         if populated:
             try:
-                validator(self, period_from, period_to, period_min, period_max)
+                validator(self, period_from, period_to)
             except validators.ValidationError as e:
                 self.question_errors[question_id] = str(e)
                 return False
