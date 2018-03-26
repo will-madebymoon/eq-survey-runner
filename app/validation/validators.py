@@ -239,10 +239,10 @@ class DateRangeCheck(object):
             raise validators.ValidationError(self.messages['INVALID_DATE_RANGE'])
         if period_min:
             if min_to.days > 0:
-                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_SMALL'] % dict(min=period_min))
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_SMALL'] % dict(min=min_to.days))
         if period_max:
             if max_to.days > 0:
-                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=period_max))
+                raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=max_to.days))
 
     @staticmethod
     def _get_min_max_period_to(date, period_object):
