@@ -232,13 +232,8 @@ class DateRangeCheck(object):
         from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
         to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
 
-        min_period_to = from_date + relativedelta(years=period_min.get("years", 0), months=period_min.get("months", 0),
-                                                  days=period_min.get("days", 0))
-        max_period_to = from_date + relativedelta(years=period_max.get("years", 0), months=period_max.get("months", 0),
-                                                  days=period_max.get("days", 0))
-
-        min_to = min_period_to - to_date
-        max_to = to_date - max_period_to
+        min_to = self._get_min_max_period_to(from_date, period_min) - to_date
+        max_to = to_date - self._get_min_max_period_to(from_date, period_max)
 
         if from_date == to_date or from_date > to_date:
             raise validators.ValidationError(self.messages['INVALID_DATE_RANGE'])
@@ -248,6 +243,11 @@ class DateRangeCheck(object):
         if period_max:
             if max_to.days > 0:
                 raise validators.ValidationError(self.messages['DATE_PERIOD_TOO_BIG'] % dict(max=period_max))
+
+    @staticmethod
+    def _get_min_max_period_to(date, period_object):
+        return date + relativedelta(years=period_object.get("years", 0), months=period_object.get("months", 0),
+                                    days=period_object.get("days", 0))
 
 
 class SumCheck(object):
