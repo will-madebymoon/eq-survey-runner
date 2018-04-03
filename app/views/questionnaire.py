@@ -34,7 +34,7 @@ from app.templating.template_renderer import renderer, TemplateRenderer
 from app.templating.view_context import build_view_context
 
 from app.utilities.schema import load_schema_from_metadata, load_schema_from_session_data
-from app.views.errors import MultipleSurveyError
+from app.views.errors import MultipleSurveyError, get_account_url
 from app.authentication.no_token_exception import NoTokenException
 
 END_BLOCKS = 'Summary', 'Confirmation'
@@ -229,7 +229,8 @@ def get_thank_you(eq_id, form_type):  # pylint: disable=unused-argument
                                      survey_title=TemplateRenderer.safe_content(schema.json['title']),
                                      is_view_submitted_response_enabled=is_view_submitted_response_enabled(schema.json),
                                      view_submission_url=view_submission_url,
-                                     view_submission_duration=view_submission_duration)
+                                     view_submission_duration=view_submission_duration,
+                                     respondent_account_url=get_account_url())
 
     metadata = get_metadata(current_user)
     g.schema = load_schema_from_metadata(metadata)
