@@ -5,7 +5,7 @@ const ConfirmZeroEmployeesBlockPage = require('../../../pages/features/confirmat
 const SummaryPage = require('../../../pages/features/confirmation_question/summary.page.js');
 const ThankYouPage = require('../../../pages/thank-you.page.js');
 
-describe('@watch Feature: Routing removes uncompletes block being routed tp', function() {
+describe('Feature: Routing removes uncompletes block being routed tp', function() {
 
   describe('Given I have a confirmation Question', function() {
 
