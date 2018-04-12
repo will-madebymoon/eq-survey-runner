@@ -50,7 +50,7 @@ class QuestionnaireSchema(object):  # pylint: disable=too-many-public-methods
         return self._block_with_group_and_section_ids.get(block_id)
 
     def get_group_and_block_id_by_answer_id(self, answer_id):
-        return self._answer_with_block_and_group_id.get(answer_id)
+        return self._answer_with_block_and_group_ids.get(answer_id)
 
     def get_groups_that_repeat_with_answer_id(self, answer_id):
         for group in self.groups:
@@ -227,20 +227,6 @@ class QuestionnaireSchema(object):  # pylint: disable=too-many-public-methods
                     answers_blocks_groups[answer_id] = block_group
 
         return answers_blocks_groups
-
-    def _get_block_section_group_ids(self):
-        block_section_groups = {}
-        for section in self.sections:
-            for group in section['groups']:
-                section_group = {
-                    'section': section['id'],
-                    'group': group['id']
-                }
-                block_ids = (block['id'] for block in group['blocks'])
-                for block_id in block_ids:
-                    block_section_groups[block_id] = section_group
-
-        return block_section_groups
 
 
 def get_nested_schema_objects(parent_object, list_key):
