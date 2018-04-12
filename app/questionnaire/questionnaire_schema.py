@@ -46,6 +46,9 @@ class QuestionnaireSchema(object):  # pylint: disable=too-many-public-methods
     def get_answer_dependencies_by_id(self, answer_id):
         return self._answer_dependencies.get(answer_id, [])
 
+    def get_section_and_group_id_by_block_id(self, block_id):
+        return self._block_with_group_and_section_ids.get(block_id)
+
     def get_group_and_block_id_by_answer_id(self, answer_id):
         return self._answer_with_block_and_group_ids.get(answer_id)
 
@@ -145,6 +148,7 @@ class QuestionnaireSchema(object):  # pylint: disable=too-many-public-methods
         self.error_messages = self._get_error_messages()
         self.aliases = self._get_aliases()
         self._answer_dependencies = self._get_answer_dependencies()
+        self._block_with_group_and_section_ids = self._get_block_group_section_ids()
         self._answer_with_block_and_group_ids = self._get_answer_block_group_ids()
 
     def _get_sections_by_id(self):
@@ -196,6 +200,19 @@ class QuestionnaireSchema(object):  # pylint: disable=too-many-public-methods
                         dependencies[answer_id].append(dependency_id)
 
         return dependencies
+
+    def _get_block_group_section_ids(self):
+        blocks_groups_sections = {}
+        for section in self.sections:
+            for group in section['groups']:
+                group_section = {
+                    'group': group['id'],
+                    'section': section['id']
+                }
+                for block in group['blocks']:
+                    blocks_groups_sections[block['id']] = group_section
+
+        return blocks_groups_sections
 
     def _get_answer_block_group_ids(self):
         answers_blocks_groups = {}

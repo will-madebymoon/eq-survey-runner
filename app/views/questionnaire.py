@@ -22,7 +22,7 @@ from app.questionnaire.location import Location
 from app.questionnaire.navigation import Navigation
 from app.questionnaire.path_finder import PathFinder
 
-from app.questionnaire.rules import evaluate_skip_conditions
+from app.questionnaire.rules import evaluate_skip_conditions, is_goto_rule, evaluate_goto
 from app.keys import KEY_PURPOSE_SUBMISSION
 from app.storage.storage_encryption import StorageEncryption
 from app.submitter.converter import convert_answers
@@ -556,7 +556,7 @@ def update_questionnaire_store_with_form_data(questionnaire_store, location, ans
                 latest_answer_store_hash = questionnaire_store.answer_store.get_hash()
                 questionnaire_store.answer_store.add_or_update(answer)
                 if latest_answer_store_hash != questionnaire_store.answer_store.get_hash():
-                    _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store)
+                    _remove_completed_blocks_based_on_answer_change(answer, questionnaire_store, location.group_instance)
             else:
                 _remove_answer_from_questionnaire_store(answer_id, questionnaire_store)
 
@@ -574,13 +574,33 @@ def _return_date_answer_value(answer_value):
     return None
 
 
+def _remove_completed_blocks_based_on_answer_change(answer, questionnaire_store, group_instance):
+    """
+    If answer value is a list containing a dictionary then it is an
+    answer made up of multiple answers
+    If it's a multi answer split the dictionary within into it's individual answer_ids for evaluation.
+    :param answer: the answer that has changed
+    :param questionnaire_store: holds the completed blocks
+    :param group_instance: the group instance of the answer that has changed
+    :return:
+    """
+    if answer.value and isinstance(answer.value, list) and isinstance(answer.value[0], dict):
+        answer_ids = answer.value[0].keys()
+    else:
+        answer_ids = [answer.answer_id]
+
+    for answer_id in answer_ids:
+        _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store)
+        _remove_routed_to_block_from_completed_blocks(answer_id, questionnaire_store, group_instance)
+
+
 def _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store):
     """
     Gets a list of answers ids that are dependent on the answer_id passed in.
     Then for each dependent answer it will remove it's block from those completed.
     This will therefore force the respondent to revisit that block.
     The dependent answers themselves remain untouched.
-    :param answer_id: the answer that has changed
+    :param answer_id: the id of the answer that has changed
     :param questionnaire_store: holds the completed blocks
     :return: None
     """
@@ -588,8 +608,40 @@ def _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_sto
     for dependency in dependencies:
         group_block = g.schema.get_group_and_block_id_by_answer_id(dependency)
         location = Location(group_block['group'], 0, group_block['block'])
-        if location in questionnaire_store.completed_blocks:
-            questionnaire_store.completed_blocks.remove(location)
+        _remove_block_from_completed_blocks(location, questionnaire_store)
+
+
+def _remove_routed_to_block_from_completed_blocks(answer_id, questionnaire_store, group_instance):
+    """
+    Check the answer's block for routing rules.
+    If they exist evaluate which block is being routed to and remove it from the completed blocks
+    This will therefore force the respondent to resubmit that block.
+    :param answer_id: the id of the answer that has changed
+    :param group_instance: the group instance of the answer that has changed
+    :param questionnaire_store: holds the completed blocks
+    :return: None
+    """
+    group_block = g.schema.get_group_and_block_id_by_answer_id(answer_id)
+    if group_block is None:
+        return
+
+    answer_block = g.schema.get_block(group_block['block'])
+
+    if 'routing_rules' in answer_block:
+        metadata = get_metadata(current_user)
+        for rule in filter(is_goto_rule, answer_block['routing_rules']):
+            if 'block' in rule['goto']:
+                if evaluate_goto(rule['goto'], metadata, questionnaire_store.answer_store, group_instance):
+                    goto_block_id = rule['goto']['block']
+                    goto_group_id = g.schema.get_section_and_group_id_by_block_id(goto_block_id)['group']
+                    location = Location(goto_group_id, group_instance, goto_block_id)
+                    _remove_block_from_completed_blocks(location, questionnaire_store)
+                    break
+
+
+def _remove_block_from_completed_blocks(location, questionnaire_store):
+    if location in questionnaire_store.completed_blocks:
+        questionnaire_store.completed_blocks.remove(location)
 
 
 def _remove_answer_from_questionnaire_store(answer_id, questionnaire_store):
@@ -625,7 +677,10 @@ def update_questionnaire_store_with_answer_data(questionnaire_store, location, a
     survey_answer_ids = g.schema.get_answer_ids_for_block(location.block_id)
 
     for answer in [a for a in answers if a.answer_id in survey_answer_ids]:
+        latest_answer_store_hash = questionnaire_store.answer_store.get_hash()
         questionnaire_store.answer_store.add_or_update(answer)
+        if latest_answer_store_hash != questionnaire_store.answer_store.get_hash():
+            _remove_completed_blocks_based_on_answer_change(answer, questionnaire_store, location.group_instance)
 
     if location not in questionnaire_store.completed_blocks:
         questionnaire_store.completed_blocks.append(location)
