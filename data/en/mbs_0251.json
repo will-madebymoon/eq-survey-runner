@@ -7,6 +7,7 @@
     "data_version": "0.0.1",
     "legal_basis": "StatisticsOfTradeAct",
     "description": "mbs",
+    "form_type": "0251",
     "view_submitted_response": {
         "enabled": true,
         "duration": 900
@@ -62,6 +63,15 @@
                                     ]
                                 },
                                 {
+                                    "question": "Value of exports",
+                                    "content": [{
+                                        "description": "Include:",
+                                        "list": [
+                                            "all countries outside of England, Scotland, Wales and Northern Ireland"
+                                        ]
+                                    }]
+                                },
+                                {
                                     "question": "Changes in turnover",
                                     "content": [{
                                         "description": "Include:",
@@ -72,15 +82,6 @@
                                             "weather",
                                             "price effects",
                                             "currency effects (increase/decrease in the currency value)"
-                                        ]
-                                    }]
-                                },
-                                {
-                                    "question": "Value of exports",
-                                    "content": [{
-                                        "description": "Include:",
-                                        "list": [
-                                            "all countries outside of England, Scotland, Wales and Northern Ireland"
                                         ]
                                     }]
                                 },
@@ -220,7 +221,7 @@
                     {
                         "id": "turnover-block",
                         "type": "Question",
-                        "title": "Turnover",
+                        "title": "Total turnover",
                         "questions": [{
                             "guidance": {
                                 "content": [{
@@ -254,7 +255,8 @@
                                 "currency": "GBP",
                                 "decimal_places": 2,
                                 "q_code": "40",
-                                "mandatory": true
+                                "mandatory": false,
+                                "default": 0
                             }],
                             "type": "General",
                             "title": "For the period {{ format_conditional_date (answers['period-from'], exercise.start_date)}} to {{ format_conditional_date (answers['period-to'], exercise.end_date)}}, what was the value of {{respondent.trad_as_or_ru_name}}’s <em>turnover</em>, excluding VAT?"
@@ -278,7 +280,7 @@
                     },
                     {
                         "type": "ConfirmationQuestion",
-                        "title": "Turnover",
+                        "title": "Total turnover",
                         "id": "confirm-zero-turnover-block",
                         "skip_conditions": [{
                             "when": [{
@@ -350,7 +352,7 @@
                                 }
                             }],
                             "type": "General",
-                            "title": "Of the <em>{{answers['turnover-answer']}}</em> total turnover, what was the value of <em>exports?</em>"
+                            "title": "Of the <em>{{answers['turnover-answer']|format_currency}}</em> total turnover, what was the value of <em>exports?</em>"
                         }],
                         "title": "Exports"
                     },
