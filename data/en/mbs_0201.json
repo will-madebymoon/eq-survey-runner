@@ -72,7 +72,7 @@
                                     }]
                                 },
                                 {
-                                    "question": "Changes in turnover",
+                                    "question": "Changes in total turnover",
                                     "content": [{
                                         "description": "Include:",
                                         "list": [
@@ -205,24 +205,8 @@
                                 "default": 0
                             }],
                             "type": "General",
-                            "title": "For the period {{ format_conditional_date (answers['period-from'], exercise.start_date)}} to {{ format_conditional_date (answers['period-to'], exercise.end_date)}}, what was the value of {{respondent.trad_as_or_ru_name}}’s <em>turnover</em>, excluding VAT?"
-                        }],
-                        "routing_rules": [{
-                                "goto": {
-                                    "when": [{
-                                        "value": 0,
-                                        "id": "turnover-answer",
-                                        "condition": "equals"
-                                    }],
-                                    "block": "confirm-zero-turnover-block"
-                                }
-                            },
-                            {
-                                "goto": {
-                                    "block": "exports-block"
-                                }
-                            }
-                        ]
+                            "title": "For the period {{ format_conditional_date (answers['period-from'], exercise.start_date)}} to {{ format_conditional_date (answers['period-to'], exercise.end_date)}}, what was the value of {{respondent.trad_as_or_ru_name}}’s <em>total turnover</em>, excluding VAT?"
+                        }]
                     },
                     {
                         "type": "ConfirmationQuestion",
@@ -306,7 +290,7 @@
                         "id": "changes-in-turnover-block",
                         "type": "Question",
                         "questions": [{
-                            "title": "Did any significant changes occur to the turnover for {{respondent.trad_as_or_ru_name}}?",
+                            "title": "Did any significant changes occur to the total turnover for {{respondent.trad_as_or_ru_name}}?",
                             "id": "changes-in-turnover-question",
                             "description": "<p>Please note: what constitutes a ‘significant change’ is dependent on your own interpretation in relation to {{respondent.trad_as_or_ru_name}}’s figures from the previous reporting period and the same reporting period last year. </p><p>This information will help us to validate your data and should reduce the need to query any figures with you. </p>",
                             "answers": [{
@@ -339,7 +323,7 @@
                             },
                             "type": "General"
                         }],
-                        "title": "Changes in turnover",
+                        "title": "Changes in total turnover",
                         "routing_rules": [{
                                 "goto": {
                                     "when": [{
@@ -361,7 +345,7 @@
                         "id": "changes-in-turnover-block-2",
                         "type": "Question",
                         "questions": [{
-                            "title": "Please indicate the reasons for any changes in the turnover for {{respondent.trad_as_or_ru_name}}",
+                            "title": "Please indicate the reasons for any changes in the total turnover for {{respondent.trad_as_or_ru_name}}",
                             "answers": [{
                                 "options": [{
                                         "q_code": "146a",
@@ -406,20 +390,20 @@
                             "type": "General",
                             "id": "changes-in-turnover-question-2"
                         }],
-                        "title": "Changes in turnover"
+                        "title": "Changes in total turnover"
                     },
                     {
                         "type": "Question",
                         "id": "changes-in-turnover-block-3",
-                        "title": "Changes in turnover",
+                        "title": "Changes in total turnover",
                         "questions": [{
                             "type": "General",
                             "id": "changes-in-turnover-question-3",
-                            "title": "Please describe the changes in turnover for {{respondent.trad_as_or_ru_name}} in more detail",
+                            "title": "Please describe the changes in total turnover for {{respondent.trad_as_or_ru_name}} in more detail",
                             "answers": [{
                                 "guidance": {
-                                    "hide_guidance": "Hide examples of commentary on changes to turnover",
-                                    "show_guidance": "Show examples of commentary on changes to turnover",
+                                    "hide_guidance": "Hide examples of commentary on changes to total turnover",
+                                    "show_guidance": "Show examples of commentary on changes to total turnover",
                                     "content": [{
                                             "list": [],
                                             "title": "‘Change in level of business activity’",
