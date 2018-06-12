@@ -1,53 +1,59 @@
-{% set not_answered = 'No answer provided' %}
+<div class="summary">
+	{% for group in content.summary.groups %}
+        {% if group.title %}
+            <h2 class="summary__title neptune" id="{{ group.id }}">{{ group.title }}</h2>
+        {% endif %}
 
-<div>
-  <div class="summary">
+        <div class="summary__block">
+            {% for block in group.blocks %}
+                {% for question in block.questions %}
 
-    {% for group in content.summary.groups %}
-      {% if group.title %}
-        <h2 class="summary__title saturn" id="{{group.id}}">{{group.title}}</h2>
-      {% endif %}
-      <div class="summary__block">
+                    {% set has_textarea = has_answer_type(question, 'textarea') %}
+                    {% set has_multiple_answers = question.answers|length > 1 %}
 
-        {% for block in group.blocks %}
+                    <div class="summary__item {{ 'summary__item--multiple' if has_multiple_answers }}">
+                        <div class="grid">
+                            <div class="grid__col {{ 'col-12@m' if has_multiple_answers else 'col-12@xs' }} {{ 'col-10@m' if has_textarea else 'col-6@m' }}">
+                                <div class="summary__question mars" id="{{ question.id }}" data-qa="summary-question-title">{{ question.number or ''}} {{question.title|striptags }}</div>
+                            </div>
+                    {{ '</div>' if has_multiple_answers }}
 
-          <div class="summary__items">
+                    {% for answer in question.answers %}
 
-            {% for question in block.questions %}
+                        {% set is_textarea = has_answer_type(answer, 'textarea') %}
+                        {% set has_answer = answer.value is none or answer.value == '' %}
 
-              <div class="summary__question" id="{{question.id}}" data-qa="summary-question-title">
-                {{question.number or ''}} {{question.title|striptags}}
-              </div>
+                        {% if has_multiple_answers %}
+                            <div class="grid">
+                                <div class="grid__col col-12@xs {{ 'col-10@m' if is_textarea else 'col-6@m' }}">
+                                    <div class="summary__label mars">{{ answer.label|striptags }}</div>
+                                </div>
+                        {% endif %}
 
-              {% for answer in question.answers %}
-                {% if question.answers|length > 1 and answer.label %}
-                  <div class="summary__question summary__question--sub">
-                    {{answer.label|striptags}}
-                  </div>
-                {% endif %}
+                        {% if not is_textarea %}
+                            {% include theme(['partials/summary/display-answer.html']) %}
+                        {% endif %}
 
-                <div class="summary__answer">
-                  <div class="summary__answer-text" id="{{answer.id}}-answer" data-qa="{{answer.id}}-answer">
-                    {%- if answer.value is none or answer.value == '' -%}
-                      {{not_answered}}
-                    {%- else -%}
-                      {% include theme(['partials/summary/' ~ answer.type ~ '.html', 'partials/summary/default.html']) %}
-                     {%- endif -%}
-                   </div>
+                        {% if content.summary.answers_are_editable %}
+                            {% include theme(['partials/summary/edit-link.html']) %}
+                        {% endif %}
 
-                  {% if content.summary.answers_are_editable %}
-                    <div class="summary__edit">
-                      <a href="{{ block.link }}#{{answer.id}}" class="summary__edit-link" aria-describedby="{{answer.id}} {{answer.id}}-answer" data-qa="{{answer.id}}-edit" {{helpers.track('click', 'Summary', 'Edit click')}}>Edit <span class="u-vh">your answer</span></a>
-                    </div>
-                  {% endif %}
-                </div>
-              {% endfor %}
+                        {{ '</div>' if has_multiple_answers or is_textarea or (not has_multiple_answers and not is_textarea) }}
+
+                        {% if is_textarea %}
+                            <div class="grid {{ 'u-mt-s' if not has_multiple_answers }}">
+                                {% include theme(['partials/summary/display-answer.html']) %}
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+
+                        </div>
+
+                {% endfor %}
+
             {% endfor %}
+        </div>
 
-          </div>
-
-        {% endfor %}
-      </div>
-    {% endfor %}
-  </div>
+	{% endfor %}
 </div>

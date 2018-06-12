@@ -170,6 +170,13 @@ def format_household_member_name_possessive(names):
     return name + '’s'
 
 
+@blueprint.app_template_filter()
+def has_answer_type(questions, answer_type):
+    if questions.get('answers'):
+        return any(answer for answer in questions['answers'] if answer['type'] == answer_type.lower())
+    return questions['type'] == answer_type.lower()
+
+
 @evalcontextfilter
 @blueprint.app_template_filter()
 def format_unordered_list(context, list_items):
@@ -267,6 +274,11 @@ def get_question_title_processor():
 @blueprint.app_context_processor
 def get_answer_label_processor():
     return dict(get_answer_label=get_answer_label)
+
+
+@blueprint.app_context_processor
+def has_answer_type_processor():
+    return dict(has_answer_type=has_answer_type)
 
 
 @blueprint.app_context_processor

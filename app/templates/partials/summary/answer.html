@@ -1,0 +1,7 @@
+{% set not_answered = 'No answer provided' %}
+
+{%- if has_answer -%}
+    {{ not_answered }}
+{%- else -%}
+    {% include theme(['partials/summary/' ~ answer.type ~ '.html', 'partials/summary/default.html']) %}
+{%- endif -%}
