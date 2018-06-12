@@ -555,7 +555,7 @@ def update_questionnaire_store_with_form_data(questionnaire_store, location, ans
                 latest_answer_store_hash = questionnaire_store.answer_store.get_hash()
                 questionnaire_store.answer_store.add_or_update(answer)
                 if latest_answer_store_hash != questionnaire_store.answer_store.get_hash():
-                    _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store)
+                    _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store, location.group_instance)
             else:
                 _remove_answer_from_questionnaire_store(
                     answer_id,
@@ -576,7 +576,7 @@ def _return_date_answer_value(answer_value):
     return None
 
 
-def _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store):
+def _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_store, group_instance):
     """
     Gets a list of answers ids that are dependent on the answer_id passed in.
     Then for each dependent answer it will remove it's block from those completed.
@@ -593,6 +593,8 @@ def _remove_dependent_answers_from_completed_blocks(answer_id, questionnaire_sto
         block = g.schema.get_block(question['parent_id'])
 
         location = Location(block['parent_id'], 0, block['id'])
+        if location.group_instance != group_instance:
+            continue
         if location in questionnaire_store.completed_blocks:
             questionnaire_store.completed_blocks.remove(location)
 
