@@ -8,7 +8,7 @@
             {% for block in group.blocks %}
                 {% for question in block.questions %}
 
-                    {% set has_textarea = has_answer_type(question, 'textarea') %}
+                    {% set has_textarea = question_has_answer_type(question, 'textarea') %}
                     {% set has_multiple_answers = question.answers|length > 1 %}
 
                     <div class="summary__item {{ 'summary__item--multiple' if has_multiple_answers }}">
@@ -20,7 +20,7 @@
 
                     {% for answer in question.answers %}
 
-                        {% set is_textarea = has_answer_type(answer, 'textarea') %}
+                        {% set is_textarea = answer_has_answer_type(answer, 'textarea') %}
                         {% set has_answer = answer.value is none or answer.value == '' %}
 
                         {% if has_multiple_answers %}

@@ -171,10 +171,13 @@ def format_household_member_name_possessive(names):
 
 
 @blueprint.app_template_filter()
-def has_answer_type(questions, answer_type):
-    if questions.get('answers'):
-        return any(answer for answer in questions['answers'] if answer['type'] == answer_type.lower())
-    return questions['type'] == answer_type.lower()
+def question_has_answer_type(question, answer_type):
+    return any(answer for answer in question['answers'] if answer['type'] == answer_type.lower())
+
+
+@blueprint.app_template_filter()
+def answer_has_answer_type(answer, answer_type):
+    return answer['type'] == answer_type.lower()
 
 
 @evalcontextfilter
@@ -277,8 +280,13 @@ def get_answer_label_processor():
 
 
 @blueprint.app_context_processor
-def has_answer_type_processor():
-    return dict(has_answer_type=has_answer_type)
+def question_has_answer_type_processor():
+    return dict(question_has_answer_type=question_has_answer_type)
+
+
+@blueprint.app_context_processor
+def answer_has_answer_type_processor():
+    return dict(answer_has_answer_type=answer_has_answer_type)
 
 
 @blueprint.app_context_processor
