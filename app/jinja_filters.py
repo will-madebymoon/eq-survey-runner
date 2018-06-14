@@ -172,11 +172,27 @@ def format_household_member_name_possessive(names):
 
 @blueprint.app_template_filter()
 def question_has_answer_type(question, answer_type):
+    """
+    :param question:
+    :param answer_type:
+    :return: true if any answer type matches given input
+    'RepeatingAnswer' question type return 'answers' as an object, and dict for all other question types.
+    """
+    if question['type'] == 'RepeatingAnswer':
+        return any(answer for answer in question['answers'] if answer.type == answer_type.lower())
     return any(answer for answer in question['answers'] if answer['type'] == answer_type.lower())
 
 
 @blueprint.app_template_filter()
-def answer_has_answer_type(answer, answer_type):
+def answer_is_type(answer, answer_type):
+    """
+    :param answer:
+    :param answer_type:
+    :return: true if the answer type matches given input
+    'RepeatingAnswer' question type return 'answers' as an object, and dict for all other question types.
+    """
+    if not isinstance(answer, dict):
+        return answer.type == answer_type.lower()
     return answer['type'] == answer_type.lower()
 
 
@@ -285,8 +301,8 @@ def question_has_answer_type_processor():
 
 
 @blueprint.app_context_processor
-def answer_has_answer_type_processor():
-    return dict(answer_has_answer_type=answer_has_answer_type)
+def answer_is_type_processor():
+    return dict(answer_is_type=answer_is_type)
 
 
 @blueprint.app_context_processor

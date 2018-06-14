@@ -20,7 +20,7 @@
 
                     {% for answer in question.answers %}
 
-                        {% set is_textarea = answer_has_answer_type(answer, 'textarea') %}
+                        {% set is_textarea = answer_is_type(answer, 'textarea') %}
                         {% set has_answer = answer.value is none or answer.value == '' %}
 
                         {% if has_multiple_answers %}
