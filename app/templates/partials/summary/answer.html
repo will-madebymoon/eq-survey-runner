@@ -1,6 +1,8 @@
 {% set not_answered = 'No answer provided' %}
 
-{%- if has_answer -%}
+{% set has_no_answer = answer.value is none or answer.value == '' %}
+
+{%- if has_no_answer -%}
     {{ not_answered }}
 {%- else -%}
     {% include theme(['partials/summary/' ~ answer.type ~ '.html', 'partials/summary/default.html']) %}
