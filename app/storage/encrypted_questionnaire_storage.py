@@ -23,7 +23,7 @@ class EncryptedQuestionnaireStorage:
         questionnaire_state = self._find_questionnaire_state()
         if questionnaire_state:
             logger.debug('updating questionnaire data', user_id=self._user_id)
-            questionnaire_state.state = encrypted_data_json
+            questionnaire_state.q_state = encrypted_data_json
             questionnaire_state.version = version
         else:
             logger.debug('creating questionnaire data', user_id=self._user_id)
@@ -34,7 +34,7 @@ class EncryptedQuestionnaireStorage:
     def get_user_data(self):
         questionnaire_state = self._find_questionnaire_state()
         if questionnaire_state:
-            data = json.loads(questionnaire_state.state)
+            data = json.loads(questionnaire_state.q_state)
             version = questionnaire_state.version or 0
 
             if 'data' in data:

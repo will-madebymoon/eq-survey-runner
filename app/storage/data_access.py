@@ -12,12 +12,14 @@ TABLE_CONFIG = {
     app_models.QuestionnaireState: {
         'table_name_key': 'EQ_QUESTIONNAIRE_STATE_TABLE_NAME',
         'key_field': 'user_id',
+        'immutable_attributes': {'created_at'},
         'schema': app_models.QuestionnaireStateSchema,
         'sql_model': models.QuestionnaireState,
     },
     app_models.EQSession: {
         'table_name_key': 'EQ_SESSION_TABLE_NAME',
         'key_field': 'eq_session_id',
+        'immutable_attributes': {'created_at'},
         'schema': app_models.EQSessionSchema,
         'sql_model': models.EQSession,
     },
@@ -103,14 +105,12 @@ def put(model, overwrite=True, force_rds=False):
     else:
         item, _ = schema.dump(model)
 
-        # pylint: disable=fixme
-        # TODO: update updated_at time
-        # TODO: set created_at time
         table_name = _get_table_name(config)
-        dynamo_api.put_item(
-            table_name,
-            item,
-            overwrite=overwrite)
+
+        key_name = config['key_field']
+        key = {key_name: item[key_name]}
+
+        dynamo_api.update_item(table_name, key, item, config.get('immutable_attributes'))
 
 
 def delete(model, force_rds=False):

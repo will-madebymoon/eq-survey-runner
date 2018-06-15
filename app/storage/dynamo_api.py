@@ -6,19 +6,33 @@ from app.globals import get_dynamodb
 logger = get_logger()
 
 
-def put_item(table, item, overwrite=True):
-    """Insert an item to table"""
+def update_item(table, key, item, immutable_attributes=None, overwrite=True):
+
     if isinstance(table, str):
         table = get_table(table)
 
-    put_kwargs = {'Item': item}
+    immutable_attributes = immutable_attributes or {}
+
+    attributes = {k: v for (k, v) in item.items() if k not in key.keys()}
+
+    expression = ['{path} = :{path}'.format(path=k)
+                  for k in attributes.keys() if k not in immutable_attributes]
+    expression += ['{path} = if_not_exists({path}, :{path})'.format(path=k)
+                   for k in immutable_attributes]
+    expression_values = {':{}'.format(k): v for (k, v) in attributes.items()}
+
+    update_kwargs = {
+        'Key': key,
+        'UpdateExpression': 'SET {}'.format(', '.join(expression)),
+        'ExpressionAttributeValues': expression_values
+    }
+
     if not overwrite:
-        first_key = next(iter(item.keys()))
-        put_kwargs['ConditionExpression'] = 'attribute_not_exists({first_key})'.format(
+        first_key = next(iter(key.keys()))
+        update_kwargs['ConditionExpression'] = 'attribute_not_exists({first_key})'.format(
             first_key=first_key)
 
-    response = table.put_item(
-        **put_kwargs)['ResponseMetadata']['HTTPStatusCode']
+    response = table.update_item(**update_kwargs)['ResponseMetadata']['HTTPStatusCode']
     return response == 200
 
 
@@ -29,6 +43,7 @@ def get_item(table, key):
 
     response = table.get_item(Key=key)
     item = response.get('Item', None)
+
     return item
 
 

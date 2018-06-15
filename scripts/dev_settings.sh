@@ -49,11 +49,23 @@ if [ -z "$EQ_USED_JTI_CLAIM_TABLE_NAME" ]; then
 fi
 
 if [ -z "$EQ_DYNAMODB_ENABLED" ]; then
-  export EQ_DYNAMODB_ENABLED=False
+  export EQ_DYNAMODB_ENABLED=True
 fi
 
 if [ -z "$EQ_DYNAMODB_ENDPOINT" ]; then
   export EQ_DYNAMODB_ENDPOINT="http://localhost:6060"
+fi
+
+if [ -z "$AWS_DEFAULT_REGION" ]; then
+  export AWS_DEFAULT_REGION=local
+fi
+
+if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+  export AWS_ACCESS_KEY_ID=dummy-access-key
+fi
+
+if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+  export AWS_SECRET_ACCESS_KEY=dummy-secret-key
 fi
 
 export FLASK_DEBUG=1

@@ -1,32 +1,40 @@
 import datetime
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, post_load, pre_dump
 
 
 class QuestionnaireState:
-    def __init__(self, user_id, state, version):
+    def __init__(self, user_id, q_state, version, created_at=None, updated_at=None):
         self.user_id = user_id
-        self.state = state
+        self.q_state = q_state
         self.version = version
+        self.updated_at = updated_at
+        self.created_at = created_at
 
 
 class EQSession:
-    def __init__(self, eq_session_id, user_id, session_data=None):
+    def __init__(self, eq_session_id, user_id, session_data=None, created_at=None, updated_at=None):
         self.eq_session_id = eq_session_id
         self.user_id = user_id
         self.session_data = session_data
+        self.updated_at = updated_at
+        self.created_at = created_at
 
 
 class UsedJtiClaim:
-    def __init__(self, jti_claim, used_at=None):
+    def __init__(self, jti_claim, used_at=None, created_at=None, updated_at=None):
         self.jti_claim = jti_claim
         self.used_at = used_at or datetime.datetime.now()
+        self.updated_at = updated_at
+        self.created_at = created_at
 
 
 class SubmittedResponse:
-    def __init__(self, tx_id, data, valid_until):
+    def __init__(self, tx_id, data, valid_until, created_at=None, updated_at=None):
         self.tx_id = tx_id
         self.data = data
         self.valid_until = valid_until
+        self.updated_at = updated_at
+        self.created_at = created_at
 
 
 # pylint: disable=no-self-use
@@ -44,17 +52,20 @@ class LoadObjectMixin:
         return self.load(data)
 
 
-# pylint: disable=fixme
 class DateTimeSchemaMixin:
-    # TODO: implement
-    # created_at = fields.DateTime()
-    # updated_at = fields.DateTime()
-    pass
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
+
+    @pre_dump
+    def set_dates(self, data):
+        data.created_at = datetime.datetime.now()
+        data.updated_at = datetime.datetime.now()
+        return data
 
 
 class QuestionnaireStateSchema(Schema, LoadObjectMixin, DateTimeSchemaMixin):
     user_id = fields.Str()
-    state = fields.Str()
+    q_state = fields.Str()
     version = fields.Integer()
 
     @post_load
