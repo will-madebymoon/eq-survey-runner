@@ -416,7 +416,7 @@ def _store_viewable_submission(answers, metadata, submitted_time):
 
 
 def is_view_submitted_response_enabled(schema):
-    if is_dynamodb_enabled():
+    if is_dynamodb_enabled(SubmittedResponse):
         view_submitted_response = schema.get('view_submitted_response')
         if view_submitted_response:
             return view_submitted_response['enabled']

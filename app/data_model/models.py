@@ -2,6 +2,7 @@ import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from structlog import get_logger
+from app.data_model import app_models
 
 logger = get_logger()
 db = SQLAlchemy()
@@ -21,9 +22,12 @@ class QuestionnaireState(db.Model):
         self.state = state
         self.version = version
 
+    def to_new_model(self):
+        return app_models.QuestionnaireState(self.user_id, self.state, self.version, self.created_at, self.updated_at)
+
     @classmethod
     def from_new_model(cls, model):
-        return cls(model.user_id, model.state, model.version)
+        return cls(model.user_id, model.q_state, model.version)
 
 
 # pylint: disable=maybe-no-member
@@ -39,6 +43,9 @@ class EQSession(db.Model):
         self.eq_session_id = eq_session_id
         self.user_id = user_id
         self.session_data = session_data
+
+    def to_new_model(self):
+        return app_models.EQSession(self.eq_session_id, self.user_id, self.session_data, self.created_at, self.updated_at)
 
     @classmethod
     def from_new_model(cls, model):
@@ -57,6 +64,9 @@ class UsedJtiClaim(db.Model):
     def __init__(self, jti_claim, used_at=None):
         self.jti_claim = jti_claim
         self.used_at = used_at or datetime.datetime.now()
+
+    def to_new_model(self):
+        return app_models.UsedJtiClaim(self.jti_claim, self.used_at)
 
     @classmethod
     def from_new_model(cls, model):

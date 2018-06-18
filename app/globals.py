@@ -104,5 +104,11 @@ def get_dynamodb():
     return dynamodb
 
 
-def is_dynamodb_enabled():
-    return current_app.config['EQ_DYNAMODB_ENABLED']
+def is_dynamodb_enabled(model_type=None):
+    if not current_app.config['EQ_DYNAMODB_ENABLED']:
+        return False
+
+    if model_type:
+        return model_type.__name__ in current_app.config['EQ_DYNAMODB_ENABLED_MODELS']
+
+    return True

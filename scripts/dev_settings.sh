@@ -52,6 +52,10 @@ if [ -z "$EQ_DYNAMODB_ENABLED" ]; then
   export EQ_DYNAMODB_ENABLED=True
 fi
 
+if [ -z "$EQ_DYNAMODB_ENABLED_MODELS" ]; then
+  export EQ_DYNAMODB_ENABLED_MODELS=SubmittedResponse
+fi
+
 if [ -z "$EQ_DYNAMODB_ENDPOINT" ]; then
   export EQ_DYNAMODB_ENDPOINT="http://localhost:6060"
 fi

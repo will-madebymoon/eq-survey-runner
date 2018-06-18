@@ -45,6 +45,7 @@ def get_by_key(model_type, key_value, force_rds=False):
     :param key_value: the value of the model's key
     :param force_rds: if true will forcibly try and get object from RDS
     """
+
     config = TABLE_CONFIG[model_type]
     schema = config['schema'](strict=True)
     key_name = config['key_field']
@@ -52,7 +53,7 @@ def get_by_key(model_type, key_value, force_rds=False):
     model = None
     key = {key_name: key_value}
 
-    if is_dynamodb_enabled() and not force_rds:
+    if is_dynamodb_enabled(model_type) and not force_rds:
         # find in dynamo
         table_name = _get_table_name(config)
         returned_data = dynamo_api.get_item(table_name, key)
@@ -72,7 +73,7 @@ def get_by_key(model_type, key_value, force_rds=False):
 
         returned_data = sql_model.query.filter_by(**key).first()
         if returned_data:
-            model, _ = schema.load_object(returned_data)
+            model = returned_data.to_new_model()
             setattr(model, '_use_rds', True)
 
     return model
@@ -92,7 +93,7 @@ def put(model, overwrite=True, force_rds=False):
     if (
             force_rds or
             getattr(model, '_use_rds', False) or
-            not is_dynamodb_enabled()):
+            not is_dynamodb_enabled(type(model))):
         if config['sql_model']:
             sql_model = config['sql_model'].from_new_model(model)
 
@@ -126,7 +127,7 @@ def delete(model, force_rds=False):
     if (
             force_rds or
             getattr(model, '_use_rds', False) or
-            not is_dynamodb_enabled()):
+            not is_dynamodb_enabled(type(model))):
         if config['sql_model']:
             sql_model = config['sql_model'].from_new_model(model)
 

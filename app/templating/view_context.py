@@ -1,6 +1,7 @@
 from flask import g
 from flask_wtf import FlaskForm
 
+from app.data_model.app_models import SubmittedResponse
 from app.globals import is_dynamodb_enabled
 from app.helpers.form_helper import get_form_for_location
 from app.templating.summary_context import build_summary_rendering_context
@@ -122,7 +123,7 @@ def build_view_context_for_summary(metadata, answer_store, schema_context, block
 
 
 def is_view_submitted_response_enabled(schema):
-    if not is_dynamodb_enabled():
+    if not is_dynamodb_enabled(SubmittedResponse):
         view_submitted_response = schema.get('view_submitted_response')
         if view_submitted_response:
             return view_submitted_response['enabled']

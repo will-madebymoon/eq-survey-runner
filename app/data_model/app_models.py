@@ -21,20 +21,16 @@ class EQSession:
 
 
 class UsedJtiClaim:
-    def __init__(self, jti_claim, used_at=None, created_at=None, updated_at=None):
+    def __init__(self, jti_claim, used_at=None):
         self.jti_claim = jti_claim
         self.used_at = used_at or datetime.datetime.now()
-        self.updated_at = updated_at
-        self.created_at = created_at
 
 
 class SubmittedResponse:
-    def __init__(self, tx_id, data, valid_until, created_at=None, updated_at=None):
+    def __init__(self, tx_id, data, valid_until):
         self.tx_id = tx_id
         self.data = data
         self.valid_until = valid_until
-        self.updated_at = updated_at
-        self.created_at = created_at
 
 
 # pylint: disable=no-self-use
