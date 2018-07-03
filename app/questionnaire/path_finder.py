@@ -1,5 +1,8 @@
 import copy
+
+from flask import g
 from structlog import get_logger
+from app.questionnaire.completeness import Completeness
 from app.questionnaire.location import Location
 from app.questionnaire.rules import (
     evaluate_goto,
@@ -208,10 +211,12 @@ class PathFinder:
             return routing_path[current_location_index + 1]
 
     def _is_survey_completed(self, routing_path):
-        # Check all blocks on routing path are complete
-        for location in routing_path[:-1]:  # Don't evaluate end block (Summary or Confirmation)
+        # Check all question blocks on routing path are complete
+        # Don't evaluate end block (Introduction, Interstitial, SectionSummary, Summary, Confirmation)
+        for location in routing_path:
             if location not in self.completed_blocks:
-                return False
+                if g.schema.get_block(location.block_id)['type'] in Completeness.BLOCKS_FOR_COMPLETION:
+                    return False
 
         return True
 

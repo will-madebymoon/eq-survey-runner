@@ -9,6 +9,7 @@ class Completeness:
     SKIPPED = 'SKIPPED'
     COMPLETED = 'COMPLETED'
     INVALID = 'INVALID'
+    BLOCKS_FOR_COMPLETION = ['Question', 'ConfirmationQuestion']
 
     # for the purposes of deriving completeness all of the following states
     # allow a block to be marked as complete so long as at least
@@ -190,4 +191,4 @@ class Completeness:
     def _is_valid_for_completeness(self, block, location):
         """Returns True if the given block should be checked for completeness
         """
-        return block['type'] in ('Question', 'ConfirmationQuestion') and location in self.routing_path
+        return block['type'] in self.BLOCKS_FOR_COMPLETION and location in self.routing_path
