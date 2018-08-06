@@ -1,5 +1,5 @@
 <div class="summary">
-    {%- if metadata.form_type == '0005' and content.summary.summary_type == 'Summary' -%}
+    {%- if content.summary.collapsible -%}
         {%- include 'partials/summary/final-summary.html' -%}
     {%- else -%}
         {%- for group in content.summary.groups -%}
