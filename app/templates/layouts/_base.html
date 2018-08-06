@@ -85,7 +85,6 @@
 
         {% endblock %}
         {% block subheader_container %}
-        {% if previous_location or navigation %}
         <div class="page__subheader">
           <div class="container">
             {% block subheader %}
@@ -98,7 +97,6 @@
             {% endblock subheader %}
           </div>
         </div>
-        {% endif %}
         {% endblock subheader_container %}
         <div class="page__container container">
           {% block content %}
