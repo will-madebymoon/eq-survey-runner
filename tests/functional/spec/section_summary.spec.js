@@ -55,6 +55,7 @@ describe('Section Summary', function() {
 
     it('When I select edit from Final Summary, Then I should be taken back to the Final Summary', function() {
       return browser
+        .click(FinalSummaryPage.showAllButton())
         .click(FinalSummaryPage.addressDurationAnswerEdit())
         .click(AddressDurationPage.no())
         .click(AddressDurationPage.submit())
@@ -63,6 +64,7 @@ describe('Section Summary', function() {
 
     it('When I edit from Final Summary but change routing, Then I should be taken back to the Section Summary', function() {
       return browser
+        .click(FinalSummaryPage.showAllButton())
         .click(FinalSummaryPage.insuranceTypeAnswerEdit())
         .click(InsuranceTypePage.buildings())
         .click(InsuranceTypePage.submit())

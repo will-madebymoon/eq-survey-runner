@@ -41,5 +41,7 @@ class PropertyDetailsSummaryPage extends QuestionPage {
 
   summaryGroupTitle() { return '#summary-group'; }
 
+  showAllButton() { return '[data-open-all-label="Show all"]'; }
+
 }
 module.exports = new PropertyDetailsSummaryPage();
