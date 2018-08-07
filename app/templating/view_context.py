@@ -101,13 +101,12 @@ def build_view_context_for_final_summary(metadata, schema, answer_store, schema_
                                          block_type, variables, csrf_token, rendered_block):
     section_list = renderer.render(schema.json, **schema_context)['sections']
 
-    collapsible = rendered_block.get('collapsible', False)
-
     context = build_view_context_for_summary(schema, section_list, answer_store, metadata,
-                                             csrf_token, block_type, variables, collapsible)
+                                             csrf_token, block_type, variables)
 
     context['summary'].update({
         'is_view_submission_response_enabled': is_view_submitted_response_enabled(schema.json),
+        'collapsible': _get_collapsible_final_summary(rendered_block),
     })
 
     return context
@@ -143,12 +142,13 @@ def build_view_context_for_calculated_summary(metadata, schema, answer_store, sc
                                                         metadata, current_location.group_instance, formatted_total),
         'title': get_question_title(rendered_block, answer_store, schema, metadata,
                                     current_location.group_instance) % dict(total=formatted_total),
+        'collapsible': _get_collapsible_final_summary(rendered_block),
     })
     return context
 
 
 def build_view_context_for_summary(schema, section_list, answer_store, metadata,
-                                   csrf_token, block_type, variables, collapsible=False):
+                                   csrf_token, block_type, variables):
     summary_rendering_context = build_summary_rendering_context(schema, section_list, answer_store, metadata)
 
     context = {
@@ -156,7 +156,6 @@ def build_view_context_for_summary(schema, section_list, answer_store, metadata,
         'summary': {
             'groups': summary_rendering_context,
             'answers_are_editable': True,
-            'collapsible': collapsible,
             'summary_type': block_type,
         },
         'variables': variables,
@@ -238,6 +237,12 @@ def _get_calculated_question(calculation, answer_store, schema, metadata, group_
             },
         ],
     }
+
+
+def _get_collapsible_final_summary(rendered_block):
+    collapsible = rendered_block.get('collapsible', False)
+
+    return collapsible
 
 
 def is_view_submitted_response_enabled(schema):
