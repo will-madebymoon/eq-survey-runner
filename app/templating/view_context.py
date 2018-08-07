@@ -148,7 +148,7 @@ def build_view_context_for_calculated_summary(metadata, schema, answer_store, sc
 
 
 def build_view_context_for_summary(schema, section_list, answer_store, metadata,
-                                   csrf_token, block_type, variables, collapsible):
+                                   csrf_token, block_type, variables, collapsible=False):
     summary_rendering_context = build_summary_rendering_context(schema, section_list, answer_store, metadata)
 
     context = {

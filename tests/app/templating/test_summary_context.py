@@ -65,6 +65,12 @@ class TestSummaryContext(TestStandardSummaryContext):
             'metadata': self.metadata
         }
         self.block_type = 'Summary'
+        self.rendered_block = {
+            'parent_id': 'summary-group',
+            'id': 'summary',
+            'type': 'Summary',
+            'collapsible': True
+        }
 
     def test_build_summary_rendering_context(self):
         sections = self.schema.sections
@@ -91,10 +97,11 @@ class TestSummaryContext(TestStandardSummaryContext):
         variables = None
 
         context = build_view_context_for_final_summary(self.metadata, self.schema, self.answer_store,
-                                                       self.schema_context, self.block_type, variables, csrf_token)
+                                                       self.schema_context, self.block_type, variables, csrf_token,
+                                                       self.rendered_block)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 4)
+        self.assertEqual(len(context['summary']), 5)
         self.assertTrue('is_view_submission_response_enabled' in context['summary'])
 
 
@@ -132,7 +139,7 @@ class TestSectionSummaryContext(TestStandardSummaryContext):
                                                          csrf_token, current_location.group_id)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 4)
+        self.assertEqual(len(context['summary']), 5)
         self.assertTrue('title' in context['summary'])
 
 
@@ -178,7 +185,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 6)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -203,7 +210,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 6)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -228,7 +235,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 6)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -253,7 +260,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 6)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -286,7 +293,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                                 variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 6)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
