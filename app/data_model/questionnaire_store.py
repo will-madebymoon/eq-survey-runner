@@ -5,7 +5,7 @@ from app.questionnaire.location import Location
 
 
 class QuestionnaireStore:
-    LATEST_VERSION = 1
+    LATEST_VERSION = 2
 
     def __init__(self, storage, version=None):
         self._storage = storage
@@ -25,13 +25,23 @@ class QuestionnaireStore:
     def get_latest_version_number(self):
         return self.LATEST_VERSION
 
+    def ensure_latest_version(self, schema):
+        """ If the code has been updated, the data being loaded may need
+        transforming to match the latest code. """
+        new_version = self.get_latest_version_number()
+        if self.version < new_version:
+            self.answer_store.upgrade(self.version, schema)
+            self.version = new_version
+
+        return self
+
     def _deserialise(self, data):
         json_data = json.loads(data, use_decimal=True)
         # pylint: disable=maybe-no-member
         completed_blocks = [Location.from_dict(location_dict=completed_block) for completed_block in
                             json_data.get('COMPLETED_BLOCKS', [])]
         self.metadata = json_data.get('METADATA', {})
-        self.answer_store.answers = json_data.get('ANSWERS', [])
+        self.answer_store = AnswerStore(existing_answers=json_data.get('ANSWERS', []))
         self.completed_blocks = completed_blocks
 
     def _serialise(self):

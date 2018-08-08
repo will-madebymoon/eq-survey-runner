@@ -39,7 +39,9 @@ def get_group_instance_id(schema, answer_store, location):
 
     group_answer_ids = schema.get_answer_ids_for_group(location.group_id)
     existing_answers = answer_store.filter(answer_ids=group_answer_ids, group_instance=location.group_instance)
-    if existing_answers:
+
+    # If there are existing answers with a group_instance_id
+    if existing_answers and [x for x in existing_answers if x.get('group_instance_id')]:
         return existing_answers[0]['group_instance_id']
 
     return '-'.join([location.group_id, str(uuid4())])

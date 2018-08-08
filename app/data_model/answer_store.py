@@ -3,6 +3,9 @@ import re
 from datetime import datetime
 from jinja2 import escape
 import simplejson as json
+from structlog import get_logger
+
+logger = get_logger()
 
 
 class Answer:
@@ -216,21 +219,18 @@ class AnswerStore:
         return hash(json.dumps(self.answers, sort_keys=True))
 
     def upgrade(self, current_version, schema):
+        """
+            Upgrade the answer_store to the latest version
 
-        # Upgrade from version 0 to version 1
-        if current_version == 0:
-            # Update Date formats
-            for answer in self.answers:
-                answer_schema = schema.get_answer(answer['answer_id'])
+            :param current_version: The current version integer of the answer store
+            :param schema: The new schema
+        """
+        desired_version = len(UPGRADE_TRANSFORMS)
 
-                if answer_schema:
-                    if answer_schema['type'] == 'Date':
-                        answer['value'] = datetime.strptime(answer['value'], '%d/%m/%Y').strftime('%Y-%m-%d')
-                        continue
-
-                    if answer_schema['type'] == 'MonthYearDate':
-                        answer['value'] = datetime.strptime(answer['value'], '%m/%Y').strftime('%Y-%m')
-                        continue
+        for version in range(current_version, desired_version):
+            transform = UPGRADE_TRANSFORMS[version]
+            logger.info('Upgrading answer store version', current_version=current_version, new_version=version, transform=transform.__name__)
+            transform(self, schema)
 
 
 def number_else_string(text):
@@ -245,3 +245,47 @@ def natural_order(key):
     :return:
     """
     return [number_else_string(c) for c in re.split(r'(\d+)', key)]
+
+
+def upgrade_0_to_1_update_date_formats(answer_store, schema):
+    """ Updates the date format """
+    for answer in answer_store.answers:
+        answer_schema = schema.get_answer(answer['answer_id'])
+
+        if answer_schema:
+            if answer_schema['type'] == 'Date':
+                answer['value'] = datetime.strptime(answer['value'], '%d/%m/%Y').strftime('%Y-%m-%d')
+                continue
+
+            if answer_schema['type'] == 'MonthYearDate':
+                answer['value'] = datetime.strptime(answer['value'], '%m/%Y').strftime('%Y-%m')
+                continue
+
+
+def upgrade_1_to_2_add_group_instance_id(answer_store, schema):
+    """ Answers should have a `group_instance_id` ready for more complex group repeat rules. """
+    from app.questionnaire.location import Location
+    from app.helpers.schema_helpers import get_group_instance_id
+
+    for answer in answer_store.answers:
+        # Happily, parent_id's are patched on to the schema for each nested level, so we can
+        # retrieve the block_id and group_id for the answer we're processing here.
+        answer_schema = schema.get_answer(answer['answer_id'])
+        question = schema.get_question(answer_schema['parent_id'])
+        block_id = question['parent_id']
+        block = schema.get_block(question['parent_id'])
+        group_id = block['parent_id']
+
+        location = Location(
+            group_id=group_id,
+            group_instance=answer['group_instance'],
+            block_id=block_id,
+        )
+        # `get_group_instance_id` handles providing a consistent group_instance_id
+        answer['group_instance_id'] = get_group_instance_id(schema, answer_store, location)
+
+
+UPGRADE_TRANSFORMS = (
+    upgrade_0_to_1_update_date_formats,
+    upgrade_1_to_2_add_group_instance_id,
+)
