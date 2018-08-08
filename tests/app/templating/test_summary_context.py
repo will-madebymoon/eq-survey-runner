@@ -139,7 +139,7 @@ class TestSectionSummaryContext(TestStandardSummaryContext):
                                                          csrf_token, current_location.group_id)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 5)
+        self.assertEqual(len(context['summary']), 4)
         self.assertTrue('title' in context['summary'])
 
 
