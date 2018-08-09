@@ -103,6 +103,7 @@ class TestSummaryContext(TestStandardSummaryContext):
         self.check_context(context)
         self.assertEqual(len(context['summary']), 5)
         self.assertTrue('is_view_submission_response_enabled' in context['summary'])
+        self.assertTrue('collapsible' in context['summary'])
 
 
 class TestSectionSummaryContext(TestStandardSummaryContext):
@@ -185,7 +186,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 6)
+        self.assertEqual(len(context['summary']), 5)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -210,7 +211,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 6)
+        self.assertEqual(len(context['summary']), 5)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -235,7 +236,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 6)
+        self.assertEqual(len(context['summary']), 5)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -260,7 +261,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                             variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 6)
+        self.assertEqual(len(context['summary']), 5)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],
@@ -293,7 +294,7 @@ class TestCalculatedSummaryContext(TestStandardSummaryContext):
                                                                 variables, csrf_token, current_location)
 
         self.check_context(context)
-        self.assertEqual(len(context['summary']), 6)
+        self.assertEqual(len(context['summary']), 5)
         context_summary = context['summary']
         self.assertTrue('title' in context_summary)
         self.assertEqual(context_summary['title'],

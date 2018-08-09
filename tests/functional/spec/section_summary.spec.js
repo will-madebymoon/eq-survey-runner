@@ -87,4 +87,46 @@ describe('Section Summary', function() {
     });
   });
 
+  describe('Given I start a Test Section Summary survey and complete to a Section Summary', function() {
+    it('When I select edit from Section Summary but change routing, Then I should be stepped through the section', function() {
+      return helpers.openQuestionnaire('test_section_summary.json').then(() => {
+        return browser
+          .click(InsuranceTypePage.both())
+          .click(InsuranceTypePage.submit())
+          .click(InsuranceAddressPage.submit())
+          .click(PropertyDetailsSummaryPage.insuranceTypeAnswerEdit())
+          .click(InsuranceTypePage.contents())
+          .click(InsuranceTypePage.submit())
+          .getUrl().should.eventually.contain(InsuranceAddressPage.pageName);
+      });
+    });
+  });
+
+  describe('Given I start a Test Section Summary survey and complete to the Final Summary', function() {
+
+    beforeEach(function() {
+      return helpers.openQuestionnaire('test_section_summary.json').then(() => {
+        return browser
+          .click(InsuranceTypePage.contents())
+          .click(InsuranceTypePage.submit())
+          .click(InsuranceAddressPage.submit())
+          .click(AddressDurationPage.submit())
+          .click(PropertyDetailsSummaryPage.submit())
+          .setValue(HouseHoldCompositionPage.firstName(), 'John')
+          .click(HouseHoldCompositionPage.submit())
+          .getUrl().should.eventually.contain(FinalSummaryPage.pageName);
+      });
+    });
+
+    it('When I click edit an accordion to change an answer from Final Summary then I should see the question to change', function() {
+      return browser
+        .click(FinalSummaryPage.propertyDetailsDropDownButton())
+        .getText(FinalSummaryPage.insuranceTypeAnswer()).should.eventually.contain('Contents')
+        .click(FinalSummaryPage.propertyDetailsDropDownChangeLink())
+        .getUrl().should.eventually.contain(InsuranceTypePage.pageName)
+        .click(InsuranceTypePage.buildings())
+        .click(InsuranceTypePage.submit())
+        .getText(PropertyDetailsSummaryPage.insuranceTypeAnswer()).should.eventually.contain('Buildings');
+    });
+  });
 });

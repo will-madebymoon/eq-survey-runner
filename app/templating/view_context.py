@@ -106,7 +106,7 @@ def build_view_context_for_final_summary(metadata, schema, answer_store, schema_
 
     context['summary'].update({
         'is_view_submission_response_enabled': is_view_submitted_response_enabled(schema.json),
-        'collapsible': _get_collapsible_final_summary(rendered_block),
+        'collapsible': rendered_block.get('collapsible', False),
     })
 
     return context
@@ -142,7 +142,6 @@ def build_view_context_for_calculated_summary(metadata, schema, answer_store, sc
                                                         metadata, current_location.group_instance, formatted_total),
         'title': get_question_title(rendered_block, answer_store, schema, metadata,
                                     current_location.group_instance) % dict(total=formatted_total),
-        'collapsible': _get_collapsible_final_summary(rendered_block),
     })
     return context
 
@@ -237,12 +236,6 @@ def _get_calculated_question(calculation, answer_store, schema, metadata, group_
             },
         ],
     }
-
-
-def _get_collapsible_final_summary(rendered_block):
-    collapsible = rendered_block.get('collapsible', False)
-
-    return collapsible
 
 
 def is_view_submitted_response_enabled(schema):

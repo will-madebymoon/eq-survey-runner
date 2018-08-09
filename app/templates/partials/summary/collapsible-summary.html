@@ -9,7 +9,7 @@
             {%- set outer_loop = loop -%}
                 <h3 class="accordion__title js-accordion-title u-cf icon--accordion" data-js-accordion-event-label="{{group.title}}">
                     <span class="accordion__title-text">{{group.title}}</span>
-                    <button class="btn btn--secondary btn--small accordion__title-right accordion-unhide@m js-accordion-toggle u-wa--@xs" data-close-label="{{ _("Hide") }}" data-open-label="{{ _("Show") }}" aria-hidden="true">{{ _("Show") }}</button>
+                    <button class="btn btn--secondary btn--small accordion__title-right accordion-unhide@m js-accordion-toggle u-wa--@xs" id="{{ group.id }}-button" data-close-label="{{ _("Hide") }}" data-open-label="{{ _("Show") }}" aria-hidden="true">{{ _("Show") }}</button>
                 </h3>
             {%- endif -%}
 

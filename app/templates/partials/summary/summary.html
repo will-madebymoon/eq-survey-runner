@@ -1,6 +1,6 @@
 <div class="summary">
     {%- if content.summary.collapsible -%}
-        {%- include 'partials/summary/final-summary.html' -%}
+        {%- include 'partials/summary/collapsible-summary.html' -%}
     {%- else -%}
         {%- for group in content.summary.groups -%}
             {%- if group.title -%}
