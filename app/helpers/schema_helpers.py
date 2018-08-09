@@ -28,6 +28,11 @@ def with_schema(function):
 
 
 def get_group_instance_id(schema, answer_store, location):
+    """Return a group instance_id if required, or None if not"""
+    if not schema.group_has_dependent_repeat_groups(location.group_id) and \
+        not schema.group_has_group_repeat_rule(location.group_id):
+        return None
+
     repeat_rule = _get_group_repeat_rule(schema, location)
     if repeat_rule:
         group_instance_ids = []

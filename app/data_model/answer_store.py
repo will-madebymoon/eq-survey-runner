@@ -29,6 +29,7 @@ class Answer:
         """
         return self.answer_id == answer.answer_id and \
             self.group_instance_id == answer.group_instance_id and \
+            self.group_instance == answer.group_instance and \
             self.answer_instance == answer.answer_instance
 
     def matches_dict(self, answer_dict):

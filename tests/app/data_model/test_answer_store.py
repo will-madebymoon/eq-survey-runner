@@ -451,6 +451,18 @@ class TestAnswerStore(unittest.TestCase):  # pylint: disable=too-many-public-met
                             ]
                         }]
                     }]
+                },
+                {
+                    'id': 'group-2',
+                    'blocks': [{
+                        'id': 'block-2',
+                    }],
+                    'routing_rules':[{
+                        'repeat': {
+                            'type': 'group',
+                            'group_ids': ['group1']
+                        }
+                    }]
                 }]
             }]
         }
