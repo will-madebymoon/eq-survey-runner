@@ -53,6 +53,7 @@ def get_form_for_location(schema, block_json, location, answer_store, metadata, 
     mapped_answers = get_mapped_answers(
         schema,
         answer_store,
+        group_instance=location.group_instance,
         group_instance_id=group_instance_id,
         block_id=location.block_id,
     )
@@ -119,7 +120,7 @@ def clear_other_text_field(data, questions_for_block):
     return form_data
 
 
-def get_mapped_answers(schema, answer_store, block_id, group_instance_id):
+def get_mapped_answers(schema, answer_store, block_id, group_instance, group_instance_id):
     """
     Maps the answers in an answer store to a dictionary of key, value answers. Keys include instance
     id's when the instance id is non zero.
@@ -129,12 +130,14 @@ def get_mapped_answers(schema, answer_store, block_id, group_instance_id):
     :param group_id:
     :param answer_instance:
     :param group_instance:
+    :param group_instance_id:
     :return:
     """
     answer_ids = schema.get_answer_ids_for_block(block_id)
 
     result = {}
     for answer in answer_store.filter(answer_ids=answer_ids,
+                                      group_instance=group_instance,
                                       group_instance_id=group_instance_id):
         answer_id = answer['answer_id']
         answer_id += '_' + str(answer['answer_instance']) if answer['answer_instance'] > 0 else ''

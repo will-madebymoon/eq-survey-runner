@@ -377,7 +377,7 @@ class TestGetMappedAnswers(unittest.TestCase):
             'answer1_1': 65
         }
 
-        self.assertEqual(get_mapped_answers(schema, self.store, block_id='block1', group_instance_id='group-1'), expected_answers)
+        self.assertEqual(get_mapped_answers(schema, self.store, block_id='block1', group_instance=1, group_instance_id='group-1'), expected_answers)
 
     def test_returns_ordered_map(self):
 
@@ -419,7 +419,7 @@ class TestGetMappedAnswers(unittest.TestCase):
 
         self.assertEqual(len(self.store.answers), 100)
 
-        mapped = get_mapped_answers(schema, self.store, block_id='block1', group_instance_id='group-1')
+        mapped = get_mapped_answers(schema, self.store, block_id='block1', group_instance=1, group_instance_id='group-1')
 
         for key, _ in mapped.items():
             pos = key.find('_')
