@@ -62,21 +62,21 @@ class TestRepeatingRelationship(IntegrationTestCase):
                 'answer_id': 'who-is-related',
                 'answer_instance': 0,
                 'group_instance': 0,
-                'group_instance_id': 'household-relationships-4',
+                'group_instance_id': 'household-relationships-3',
                 'value': 'Husband or wife'
             },
             {
                 'answer_id': 'who-is-related',
                 'answer_instance': 1,
                 'group_instance': 0,
-                'group_instance_id': 'household-relationships-4',
+                'group_instance_id': 'household-relationships-3',
                 'value': 'Relation - other'
             },
             {
                 'answer_id': 'who-is-related',
                 'answer_instance': 0,
                 'group_instance': 1,
-                'group_instance_id': 'household-relationships-8',
+                'group_instance_id': 'household-relationships-7',
                 'value': 'Brother or sister'
             }
         ]

@@ -244,8 +244,7 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
         """ get answer ids associated with a specific question_id """
         return list(self._get_answers_by_id_for_question(question_id).keys())
 
-
-    def _get_groups_used_in_repeat_over_groups(self, groups_by_id):
+    def _get_groups_used_in_repeat_over_groups(self, groups_by_id):  # pylint: disable=no-self-use
         """Creates a map of group_id to any repeat rules on the group"""
 
         groups_used_in_group_repeat = defaultdict(list)
@@ -266,6 +265,7 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
                         _add_group_ids_to_map(routing_rule, group_id)
 
         return groups_used_in_group_repeat
+
 
 def get_nested_schema_objects(parent_object, list_key):
     """
