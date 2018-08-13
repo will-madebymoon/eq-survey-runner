@@ -44,9 +44,10 @@ class EQSession(db.Model):
     updated_at = db.Column('updated_at', db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     expires_at = db.Column('expires_at', db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-    def __init__(self, eq_session_id, user_id, session_data=None):
+    def __init__(self, eq_session_id, user_id, expires_at, session_data=None):
         self.eq_session_id = eq_session_id
         self.user_id = user_id
+        self.expires_at = expires_at
         self.session_data = session_data
 
     def to_app_model(self):

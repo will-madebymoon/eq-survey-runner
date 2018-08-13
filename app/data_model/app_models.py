@@ -27,13 +27,13 @@ class QuestionnaireState:
 
 
 class EQSession:
-    def __init__(self, eq_session_id, user_id, session_data=None):
+    def __init__(self, eq_session_id, user_id, expires_at, session_data=None):
         self.eq_session_id = eq_session_id
         self.user_id = user_id
         self.session_data = session_data
         self.created_at = datetime.datetime.now(tz=tzutc())
         self.updated_at = datetime.datetime.now(tz=tzutc())
-        self.expires_at = None
+        self.expires_at = self.updated_at + datetime.timedelta(seconds=600)
 
 
 class UsedJtiClaim:
@@ -87,11 +87,9 @@ class EQSessionSchema(Schema, DateTimeSchemaMixin):
     def make_model(self, data):
         created_at = data.pop('created_at', None)
         updated_at = data.pop('updated_at', None)
-        expires_at = data.pop('expires_at', None)
         model = EQSession(**data)
         model.created_at = created_at
         model.updated_at = updated_at
-        model.expires_at = expires_at
         return model
 
 
