@@ -1,7 +1,20 @@
 import datetime
+import time
 
 from dateutil.tz import tzutc
+from flask import g
 from marshmallow import Schema, fields, post_load, pre_dump
+
+
+# pylint: disable=no-self-use
+class Timestamp(fields.Field):
+    def _serialize(self, value, attr, obj):
+        if value:
+            return int(value.strftime('%s'))
+
+    def _deserialize(self, value, attr, data):
+        if value:
+            return datetime.datetime.utcfromtimestamp(value).replace(tzinfo=tzutc())
 
 
 class QuestionnaireState:
@@ -20,6 +33,7 @@ class EQSession:
         self.session_data = session_data
         self.created_at = datetime.datetime.now(tz=tzutc())
         self.updated_at = datetime.datetime.now(tz=tzutc())
+        self.expires_at = None
 
 
 class UsedJtiClaim:
@@ -36,18 +50,10 @@ class SubmittedResponse:
         self.valid_until = valid_until
 
 
-# pylint: disable=no-self-use
-class Timestamp(fields.Field):
-    def _serialize(self, value, attr, obj):
-        return int(value.strftime('%s'))
-
-    def _deserialize(self, value, attr, data):
-        return datetime.datetime.utcfromtimestamp(value).replace(tzinfo=tzutc())
-
-
 class DateTimeSchemaMixin:
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
+    expires_at = Timestamp()
 
     @pre_dump
     def set_date(self, data):
@@ -64,9 +70,11 @@ class QuestionnaireStateSchema(Schema, DateTimeSchemaMixin):
     def make_model(self, data):
         created_at = data.pop('created_at', None)
         updated_at = data.pop('updated_at', None)
+        expires_at = data.pop('expires_at', None)
         model = QuestionnaireState(**data)
         model.created_at = created_at
         model.updated_at = updated_at
+        model.expires_at = expires_at
         return model
 
 
@@ -79,9 +87,11 @@ class EQSessionSchema(Schema, DateTimeSchemaMixin):
     def make_model(self, data):
         created_at = data.pop('created_at', None)
         updated_at = data.pop('updated_at', None)
+        expires_at = data.pop('expires_at', None)
         model = EQSession(**data)
         model.created_at = created_at
         model.updated_at = updated_at
+        model.expires_at = expires_at
         return model
 
 

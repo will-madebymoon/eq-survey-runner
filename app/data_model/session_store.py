@@ -1,3 +1,9 @@
+import datetime
+import time
+from time import sleep
+
+from dateutil.tz import tzutc
+from flask import g
 from structlog import get_logger
 import simplejson as json
 
@@ -40,6 +46,18 @@ class SessionStore:
             self._eq_session.session_data = \
                 StorageEncryption(self.user_id, self.user_ik, self.pepper).encrypt_data(vars(self.session_data))
 
+            # self.update_session_time()
+
+            data_access.put(self._eq_session)
+
+        return self
+
+    def update_session_time(self):
+
+        if self._eq_session:
+            self._eq_session.updated_at = datetime.datetime.now(tz=tzutc())
+            self._eq_session.expires_at = self._eq_session.updated_at + datetime.timedelta(seconds=600)
+
             data_access.put(self._eq_session)
 
         return self
@@ -70,6 +88,8 @@ class SessionStore:
                     .decrypt_data(encrypted_session_data)
 
                 self.session_data = json.loads(session_data, object_hook=lambda d: SessionData(**d))
+
+                self.update_session_time()
 
             logger.debug('found matching eq_session for eq_session_id in database',
                          session_id=self._eq_session.eq_session_id,

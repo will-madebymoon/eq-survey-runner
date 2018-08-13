@@ -13,7 +13,7 @@ from sdc.crypto.encrypter import encrypt
 
 from structlog import get_logger
 
-from app.globals import get_session_store, get_completeness
+from app.globals import get_session_store, get_completeness, update_session_availability
 from app.data_model.answer_store import Answer, AnswerStore
 from app.data_model.app_models import SubmittedResponse
 from app.globals import get_answer_store, get_completed_blocks, get_metadata, get_questionnaire_store
@@ -146,6 +146,8 @@ def get_block(routing_path, schema, metadata, answer_store, eq_id, form_type, co
 
     block = _get_block_json(current_location, schema, answer_store, metadata)
     context = _get_context(routing_path, block, current_location, schema)
+
+    update_session_availability()
 
     return _render_page(block['type'], context, current_location, schema, answer_store, metadata, routing_path)
 

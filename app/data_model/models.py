@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from flask_sqlalchemy import SQLAlchemy
 from structlog import get_logger
@@ -41,6 +42,7 @@ class EQSession(db.Model):
     session_data = db.Column('session_data', db.String)
     created_at = db.Column('created_at', db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column('updated_at', db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    expires_at = db.Column('expires_at', db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     def __init__(self, eq_session_id, user_id, session_data=None):
         self.eq_session_id = eq_session_id
@@ -51,6 +53,7 @@ class EQSession(db.Model):
         model = app_models.EQSession(self.eq_session_id, self.user_id, self.session_data)
         model.created_at = self.created_at
         model.updated_at = self.updated_at
+        model.expires_at = self.expires_at
         return model
 
     @classmethod
