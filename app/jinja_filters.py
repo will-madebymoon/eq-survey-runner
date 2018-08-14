@@ -143,6 +143,70 @@ def format_conditional_date(context, date1=None, date2=None):
 
 
 @blueprint.app_template_filter()
+def calculate_offset_date(input_date, offset_days, day_of_week='SU'):
+    """
+    Offset a date from a particular day of the week in the previous week.
+
+    Intended to be used to generate reference date ranges around a particular date
+    The offsets will always be based on one day of the week in the previous Mon-Sun
+
+    :param (any) input_date: The date to offset
+    :param (int) offset_days: The number of days to offset this date`
+    :param (str) day_of_week: The day of the previous week to offset from (two letter abbreviation)
+    :returns (str): The offset date
+    """
+    input_datetime = convert_to_datetime(input_date)
+
+    weekdays = ('MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU')
+
+    try:
+        day_of_week_index = weekdays.index(day_of_week)
+    except ValueError:
+        raise Exception('Invalid day of week passed to calculate_offset_date')
+
+    day_of_week_offset = relativedelta.relativedelta(days=(-input_datetime.weekday() - (7 - day_of_week_index)))
+    day_of_last_week = input_datetime + day_of_week_offset
+
+    offset_date = day_of_last_week + relativedelta.relativedelta(days=offset_days)
+
+    return datetime.strftime(offset_date, '%Y-%m-%d')
+
+@evalcontextfunction
+@blueprint.app_template_filter()
+def format_reference_date(context, input_date, show_day_of_week, show_month, show_year):
+    """
+    Output a formatted date. Includes options for showing day of week, month and year
+
+    Build formatted date up to e.g. Tuesday 14 August 2018
+
+    :param (str) input_date:
+    :param (bool) show_day_of_week: Whether to include the day of the week in the output.
+    :param (bool) show_month: Whether to include the month in the output.
+    :param (bool) show_year: Whether to include the year in the output.
+    :return: Formatted date as per the options
+    """
+    input_datetime = convert_to_datetime(input_date)
+    format_options = []
+
+    if show_day_of_week:
+        format_options.append('EEEE')
+
+    format_options.append('d')
+
+    if show_month:
+        format_options.append('MMMM')
+    if show_year:
+        format_options.append('YYYY')
+
+    date_format_string = " ".join(format_options)
+
+    result = "<span class='date'>{date}</span>".format(
+        date=flask_babel.format_date(input_datetime, format=date_format_string))
+
+    return mark_safe(context, result)
+
+
+@blueprint.app_template_filter()
 def calculate_years_difference(from_str, to_str):
     if from_str is None or to_str is None:
         raise Exception('Valid date(s) not passed to calculate_years_difference filter')
