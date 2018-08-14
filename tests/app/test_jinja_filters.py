@@ -16,7 +16,7 @@ from app.jinja_filters import (
     format_household_member_name_possessive, concatenated_list,
     calculate_years_difference, get_current_date, as_london_tz, max_value,
     min_value, get_question_title, get_answer_label,
-    format_duration, calculate_offset_date, format_reference_date)
+    format_duration, calculate_offset_date, format_date_custom)
 from tests.app.app_context_test_case import AppContextTestCase
 
 
@@ -781,17 +781,17 @@ class TestJinjaFilters(AppContextTestCase):  # pylint: disable=too-many-public-m
         with self.assertRaises(Exception):
             calculate_offset_date('2018-08-10', 0, 'BA')
 
-    def test_format_reference_date(self):
+    def test_format_date_custom(self):
         test_cases = [
             # Input Date, show day week, show month, show year
-            ('2018-08-14', True, True, True, 'Tuesday 14 August 2018'),
-            ('2018-08-14', True, True, False, 'Tuesday 14 August'),
-            ('2018-08-14', True, False, False, 'Tuesday 14'),
-            ('2018-08-14', False, True, True, '14 August 2018'),
-            ('2018-08-14', False, False, False, '14'),
+            ('2018-08-14', 'EEEE d MMMM YYYY', 'Tuesday 14 August 2018'),
+            ('2018-08-14', 'EEEE d MMMM', 'Tuesday 14 August'),
+            ('2018-08-14', 'EEEE d', 'Tuesday 14'),
+            ('2018-08-14', 'd MMMM YYYY', '14 August 2018'),
         ]
 
         with self.app_request_context('/'):
             for case in test_cases:
-                assert format_reference_date(self.autoescape_context, *case[0:4]) == \
-                       "<span class='date'>{}</span>".format(case[4])
+                assert format_date_custom(self.autoescape_context, *case[0:2]) == \
+                       "<span class='date'>{}</span>".format(case[2])
+

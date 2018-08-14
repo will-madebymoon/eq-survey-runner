@@ -110,6 +110,14 @@ def format_date(context, value):
 
     return mark_safe(context, result)
 
+@evalcontextfilter
+@blueprint.app_template_filter()
+def format_date_custom(context, value, date_format="EEEE d MMMM YYYY"):
+
+    london_date = datetime.strptime(value, '%Y-%m-%d')
+    result = "<span class='date'>{date}</span>".format(date=flask_babel.format_datetime(london_date,
+                                                                                        format=date_format))
+    return mark_safe(context, result)
 
 @evalcontextfilter
 @blueprint.app_template_filter()
@@ -170,40 +178,6 @@ def calculate_offset_date(input_date, offset_days, day_of_week='SU'):
     offset_date = day_of_last_week + relativedelta.relativedelta(days=offset_days)
 
     return datetime.strftime(offset_date, '%Y-%m-%d')
-
-@evalcontextfunction
-@blueprint.app_template_filter()
-def format_reference_date(context, input_date, show_day_of_week, show_month, show_year):
-    """
-    Output a formatted date. Includes options for showing day of week, month and year
-
-    Build formatted date up to e.g. Tuesday 14 August 2018
-
-    :param (str) input_date:
-    :param (bool) show_day_of_week: Whether to include the day of the week in the output.
-    :param (bool) show_month: Whether to include the month in the output.
-    :param (bool) show_year: Whether to include the year in the output.
-    :return: Formatted date as per the options
-    """
-    input_datetime = convert_to_datetime(input_date)
-    format_options = []
-
-    if show_day_of_week:
-        format_options.append('EEEE')
-
-    format_options.append('d')
-
-    if show_month:
-        format_options.append('MMMM')
-    if show_year:
-        format_options.append('YYYY')
-
-    date_format_string = " ".join(format_options)
-
-    result = "<span class='date'>{date}</span>".format(
-        date=flask_babel.format_date(input_datetime, format=date_format_string))
-
-    return mark_safe(context, result)
 
 
 @blueprint.app_template_filter()
