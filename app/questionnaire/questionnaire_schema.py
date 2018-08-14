@@ -1,10 +1,11 @@
 import itertools
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 
 from flask_babel import force_locale
 
 from app.validation.error_messages import error_messages
-from app.questionnaire.answer_dependencies import get_dependencies
+from app.questionnaire.answer_dependencies import get_answer_dependencies
+from app.questionnaire.group_dependencies import get_group_dependencies
 
 
 DEFAULT_LANGUAGE_CODE = 'en'
@@ -37,8 +38,12 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
         return self._answers_by_id.values()
 
     @property
-    def dependencies(self):
+    def answer_dependencies(self):
         return self._answer_dependencies
+
+    @property
+    def group_dependencies(self):
+        return self._group_dependencies.group_dependencies
 
     def get_section(self, section_id):
         return self._sections_by_id.get(section_id)
@@ -135,17 +140,25 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
                 options_with_children.update(answer_options_with_children)
         return options_with_children
 
-    def group_has_dependent_repeat_groups(self, group_id):
-        """ Given a group_id return True if any other group repeats over this group
-            in a `repeat_rule.[].repeat.groups`.
-            Otherwise return False (including for non-existant group_id arguments)"""
-        return bool(self._groups_used_in_repeating_groups[group_id])
+    def get_group_dependencies(self, group_id):
+        return self.group_dependencies.get(group_id)
 
-    def group_has_group_repeat_rule(self, group_id):
-        """ Returns True if a group has group dependencies on it's repeat rule, otherwise False"""
-        rule = self.get_repeat_rule(self.get_group(group_id))
-        if rule and rule.get('group_ids'):
-            return True
+    def get_group_dependencies_group_drivers(self):
+        return self.group_dependencies['group_drivers']
+
+    def get_group_dependencies_block_drivers(self):
+        return self.group_dependencies['block_drivers']
+
+    def location_requires_group_instance(self, location):
+        return bool(self.group_dependencies.get(location.group_id) or
+                    location.group_id in self.get_group_dependencies_group_drivers() or
+                    location.block_id in self.get_group_dependencies_block_drivers())
+
+    def is_block_relationship_type(self, block_id):
+        block = self.get_block(block_id)
+        for question in block.get('questions', []):
+            if question['type'] == 'Relationship':
+                return True
         return False
 
     @staticmethod
@@ -213,8 +226,8 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
         self._questions_by_id = get_nested_schema_objects(self._blocks_by_id, 'questions')
         self._answers_by_id = get_nested_schema_objects(self._questions_by_id, 'answers')
         self.error_messages = self._get_error_messages()
-        self._answer_dependencies = get_dependencies(self)
-        self._groups_used_in_repeating_groups = self._get_groups_used_in_repeat_over_groups(self._groups_by_id)
+        self._answer_dependencies = get_answer_dependencies(self)
+        self._group_dependencies = get_group_dependencies(self)
 
     def _get_sections_by_id(self):
         return OrderedDict(
@@ -243,28 +256,6 @@ class QuestionnaireSchema:  # pylint: disable=too-many-public-methods
     def get_answer_ids_for_question(self, question_id):
         """ get answer ids associated with a specific question_id """
         return list(self._get_answers_by_id_for_question(question_id).keys())
-
-    def _get_groups_used_in_repeat_over_groups(self, groups_by_id):  # pylint: disable=no-self-use
-        """Creates a map of group_id to any repeat rules on the group"""
-
-        groups_used_in_group_repeat = defaultdict(list)
-
-        def _add_group_ids_to_map(routing_rule, repeating_group_id):
-            for group_id in routing_rule['repeat']['group_ids']:
-                groups_used_in_group_repeat[group_id].append(repeating_group_id)
-
-        def _routing_rule_has_group_repeat(routing_rule):
-            if routing_rule.get('repeat') and routing_rule.get('repeat').get('type') == 'group':
-                return True
-            return False
-
-        for group_id, group in groups_by_id.items():
-            if group.get('routing_rules'):
-                for routing_rule in group['routing_rules']:
-                    if _routing_rule_has_group_repeat(routing_rule):
-                        _add_group_ids_to_map(routing_rule, group_id)
-
-        return groups_used_in_group_repeat
 
 
 def get_nested_schema_objects(parent_object, list_key):

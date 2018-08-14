@@ -38,7 +38,7 @@ def get_form_for_location(schema, block_json, location, answer_store, metadata, 
 
     group_instance_id = get_group_instance_id(schema, answer_store, location)
 
-    if location.block_id in ['relationships', 'household-relationships']:
+    if schema.is_block_relationship_type(location.block_id):
         answer_ids = schema.get_answer_ids_for_block(location.block_id)
         answers = answer_store.filter(answer_ids, location.group_instance)
 
@@ -79,7 +79,7 @@ def post_form_for_location(schema, block_json, location, answer_store, metadata,
     if location.block_id == 'household-composition':
         return generate_household_composition_form(schema, block_json, request_form, metadata, location.group_instance)
 
-    if location.block_id in ['relationships', 'household-relationships']:
+    if schema.is_block_relationship_type(location.block_id):
         relationship_choices = build_relationship_choices(answer_store, location.group_instance)
         group_instance_id = get_group_instance_id(schema, answer_store, location)
         form = generate_relationship_form(schema, block_json, relationship_choices, request_form, location.group_instance, group_instance_id)

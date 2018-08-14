@@ -441,6 +441,7 @@ class TestAnswerStore(unittest.TestCase):  # pylint: disable=too-many-public-met
                     'id': 'group1',
                     'blocks': [{
                         'id': 'block1',
+                        'type': 'Question',
                         'questions': [{
                             'id': 'question1',
                             'answers': [
@@ -455,6 +456,7 @@ class TestAnswerStore(unittest.TestCase):  # pylint: disable=too-many-public-met
                     'id': 'group-2',
                     'blocks': [{
                         'id': 'block-2',
+                        'type': 'Question'
                     }],
                     'routing_rules':[{
                         'repeat': {

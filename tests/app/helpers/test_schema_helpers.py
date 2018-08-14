@@ -19,6 +19,7 @@ class TestFormHelper(AppContextTestCase):
                                 'id': 'block1',
                                 'questions': [{
                                     'id': 'question1',
+                                    'type': 'Question',
                                     'answers': [
                                         {
                                             'id': 'answer1',
@@ -36,6 +37,7 @@ class TestFormHelper(AppContextTestCase):
                                 'id': 'block2',
                                 'questions': [{
                                     'id': 'question2',
+                                    'type': 'Question',
                                     'answers': [
                                         {
                                             'id': 'answer2',

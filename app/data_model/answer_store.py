@@ -283,7 +283,7 @@ def upgrade_1_to_2_add_group_instance_id(answer_store, schema):
             block_id=block_id,
         )
         # `get_group_instance_id` handles providing a consistent group_instance_id
-        answer['group_instance_id'] = get_group_instance_id(schema, answer_store, location)
+        answer['group_instance_id'] = get_group_instance_id(schema, answer_store, location, answer['answer_instance'])
 
 
 UPGRADE_TRANSFORMS = (

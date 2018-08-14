@@ -542,7 +542,7 @@ def remove_empty_household_members_from_answer_store(answer_store, schema):
 def _update_questionnaire_store(current_location, form, schema):
     questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
 
-    if current_location.block_id in ['relationships', 'household-relationships']:
+    if schema.is_block_relationship_type(current_location.block_id):
         update_questionnaire_store_with_answer_data(questionnaire_store, current_location,
                                                     form.serialise(), schema)
     else:
@@ -569,7 +569,7 @@ def update_questionnaire_store_with_form_data(questionnaire_store, location, ans
 
                 latest_answer_store_hash = questionnaire_store.answer_store.get_hash()
                 questionnaire_store.answer_store.add_or_update(answer)
-                if latest_answer_store_hash != questionnaire_store.answer_store.get_hash() and schema.dependencies[answer_id]:
+                if latest_answer_store_hash != questionnaire_store.answer_store.get_hash() and schema.answer_dependencies[answer_id]:
                     _remove_dependent_answers_from_completed_blocks(answer_id, location.group_instance, questionnaire_store, schema)
             else:
                 _remove_answer_from_questionnaire_store(
@@ -592,7 +592,7 @@ def _remove_dependent_answers_from_completed_blocks(answer_id, group_instance, q
     :return: None
     """
     answer_in_repeating_group = schema.answer_is_in_repeating_group(answer_id)
-    dependencies = schema.dependencies[answer_id]
+    dependencies = schema.answer_dependencies[answer_id]
 
     for dependency in dependencies:
         dependency_in_repeating_group = schema.answer_is_in_repeating_group(dependency)
@@ -622,6 +622,7 @@ def update_questionnaire_store_with_answer_data(questionnaire_store, location, a
     survey_answer_ids = schema.get_answer_ids_for_block(location.block_id)
 
     for answer in [a for a in answers if a.answer_id in survey_answer_ids]:
+        answer.group_instance_id = get_group_instance_id(schema, questionnaire_store.answer_store, location, answer.answer_instance)
         questionnaire_store.answer_store.add_or_update(answer)
 
     if location not in questionnaire_store.completed_blocks:
