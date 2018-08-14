@@ -26,6 +26,8 @@ class TemplateRenderer:
         env.globals['get_current_date'] = filters.get_current_date
         env.globals['min_value'] = filters.min_value
         env.globals['max_value'] = filters.max_value
+        env.filters['format_date_custom'] = filters.format_date_custom
+        env.globals['calculate_offset_date'] = filters.calculate_offset_date
         self.environment = env
 
     def render(self, renderable, **context):

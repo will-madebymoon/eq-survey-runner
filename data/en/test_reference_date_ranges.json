@@ -3,19 +3,13 @@
     "schema_version": "0.0.1",
     "data_version": "0.0.1",
     "survey_id": "023",
-    "title": "Reference Date Ranges",
-    "description": "A test schema for reference date ranges",
+    "title": "Date formats",
+    "description": "A test schema for different date formats",
     "theme": "default",
     "legal_basis": "StatisticsOfTradeAct",
     "metadata": [{
-        "name": "user_id",
-        "validator": "string"
-    }, {
         "name": "started_at",
         "validator": "date"
-    }, {
-        "name": "ru_name",
-        "validator": "string"
     }],
     "sections": [{
         "id": "default-section",
@@ -23,10 +17,10 @@
             "blocks": [{
                 "type": "Question",
                 "id": "date-block",
-                "description": "A test to see if dates display correctly",
+                "description": "",
                 "questions": [{
                     "answers": [{
-                        "id": "job-offer-answer",
+                        "id": "test-radio",
                         "mandatory": true,
                         "options": [{
                             "label": "Yes",
@@ -36,33 +30,13 @@
                             "value": "No"
                         }],
                         "type": "Radio"
-                    }]
+                    }],
                     "description": "",
                     "id": "date-pipe-question",
-                    "title": "Did you have a paid job, either as an employee or self-employed, in the week {{ calculate_offset_datetime(metadata['started_at'], -6) | format_datetime( 'EEEE d MMMM YYYY' ) }}",
+                    "title": "Did you have a paid job, either as an employee or self-employed, in the week {{ calculate_offset_date(metadata['started_at'], -6) | format_date_custom( 'EEEE d MMMM YYYY' ) }} to {{ calculate_offset_date(metadata['started_at'], 0) | format_date_custom( 'EEEE d MMMM YYYY' ) }}",
                     "type": "DateRange"
                 }],
                 "title": "Date Examples"
-            }, {
-                "type": "Question",
-                "id": "date-value-test",
-                "description": "A test to see if dates are correctly passed",
-                "questions": [{
-                    "answers": [{
-                        "id": "date-test-answer",
-                        "label": "Piped dates",
-                        "mandatory": false,
-                        "q_code": "20",
-                        "type": "Number"
-                    }],
-                    "id": "total-retail-turnover-question",
-                    "title": "For the period {{ format_conditional_date (answers['date-start-from'], metadata['ref_p_start_date'])}} to {{ format_conditional_date (answers['date-end-to'], metadata['ref_p_end_date'])}}, what was the value of the business\u2019s total retail turnover?",
-                    "type": "General"
-                }],
-                "title": "Conditional Date Validation"
-            }, {
-                "type": "Summary",
-                "id": "summary"
             }],
             "id": "dates",
             "title": ""
