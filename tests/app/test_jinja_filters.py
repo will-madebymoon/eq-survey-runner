@@ -773,7 +773,7 @@ class TestJinjaFilters(AppContextTestCase):  # pylint: disable=too-many-public-m
             ('2018-08-06', -1, 'SU', '2018-08-04'), # Previous sunday with -1 offset
             ('2018-08-05', 7, 'SU', '2018-08-05'), # Previous sunday with +7 offset, back to input
             ('2018-08-10', 0, 'FR', '2018-08-03'), # Friday outputs previous Friday
-            ('2018-08-10T13:32:20.365665+00:00', 0, 'FR', '2018-08-03'), # Ensure we can handle datetime input
+            ('2018-08-10T13:32:20.365665', 0, 'FR', '2018-08-03'), # Ensure we can handle datetime input
 
         ]
         for case in test_cases:

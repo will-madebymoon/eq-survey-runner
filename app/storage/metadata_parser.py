@@ -91,6 +91,8 @@ def _validate_metadata_is_present(metadata, required_metadata):
         elif name == 'started_at':
             # started_at will not normally be passed to us, so we can't really validate immediately.
             valid = True
+            if not metadata.get('started_at'):
+                metadata['started_at'] = datetime.utcnow().isoformat()
         else:
             # Validate that the value is one of:
             # a) A boolean value

@@ -158,12 +158,15 @@ def calculate_offset_date(input_datetime, offset_days, day_of_week='SU'):
     Intended to be used to generate reference date ranges around a particular date
     The offsets will always be based on one day of the week in the previous Mon-Sun
 
-    :param (str) input_datetime: The datetime to offset
+    :param (str) input_datetime: The datetime (or date) to offset
     :param (int) offset_days: The number of days to offset this date`
     :param (str) day_of_week: The day of the previous week to offset from (two letter abbreviation)
     :returns (str): The offset date
     """
-    parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S.%f')
+    if 'T' in input_datetime:
+        parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S.%f')
+    else:
+        parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%d')
 
     weekdays = ('MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU')
 
@@ -216,7 +219,7 @@ def format_date_range_no_repeated_month_year(context, start_date, end_date, date
 
     Assumptions:
         - The date format uses space as a seperator
-        - The date format can have leading and trailing spaces stripped
+        - The date format can have leading and trailing whitespace stripped
 
     :param (jinja2.nodes.EvalContext) context: Evaluation context.
     :param (str) start_date : The date format that should be used for output. MMMM, YYYY will be removed if necessary
