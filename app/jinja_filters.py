@@ -151,19 +151,19 @@ def format_conditional_date(context, date1=None, date2=None):
 
 
 @blueprint.app_template_filter()
-def calculate_offset_date(input_date, offset_days, day_of_week='SU'):
+def calculate_offset_date(input_datetime, offset_days, day_of_week='SU'):
     """
     Offset a date from a particular day of the week in the previous week.
 
     Intended to be used to generate reference date ranges around a particular date
     The offsets will always be based on one day of the week in the previous Mon-Sun
 
-    :param (any) input_date: The date to offset
+    :param (str) input_datetime: The datetime to offset
     :param (int) offset_days: The number of days to offset this date`
     :param (str) day_of_week: The day of the previous week to offset from (two letter abbreviation)
     :returns (str): The offset date
     """
-    input_datetime = convert_to_datetime(input_date)
+    parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S.%f')
 
     weekdays = ('MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU')
 
@@ -172,8 +172,8 @@ def calculate_offset_date(input_date, offset_days, day_of_week='SU'):
     except ValueError:
         raise Exception('Invalid day of week passed to calculate_offset_date')
 
-    day_of_week_offset = relativedelta.relativedelta(days=(-input_datetime.weekday() - (7 - day_of_week_index)))
-    day_of_last_week = input_datetime + day_of_week_offset
+    day_of_week_offset = relativedelta.relativedelta(days=(-parsed_datetime.weekday() - (7 - day_of_week_index)))
+    day_of_last_week = parsed_datetime + day_of_week_offset
 
     offset_date = day_of_last_week + relativedelta.relativedelta(days=offset_days)
 
