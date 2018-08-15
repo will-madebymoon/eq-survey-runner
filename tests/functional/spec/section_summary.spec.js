@@ -102,7 +102,7 @@ describe('Section Summary', function() {
     });
   });
 
-  describe('Given I start a Test Section Summary survey and complete to the Final Summary', function() {
+  describe('Given I am on the Final Summary page', function() {
 
     beforeEach(function() {
       return helpers.openQuestionnaire('test_section_summary.json').then(() => {
@@ -118,7 +118,7 @@ describe('Section Summary', function() {
       });
     });
 
-    it('When I click edit an accordion to change an answer from Final Summary then I should see the question to change', function() {
+    it('When I click change an answer, Then I should go to that answer', function() {
       return browser
         .click(FinalSummaryPage.propertyDetailsDropDownButton())
         .getText(FinalSummaryPage.insuranceTypeAnswer()).should.eventually.contain('Contents')
