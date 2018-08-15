@@ -27,6 +27,7 @@ class TemplateRenderer:
         env.globals['min_value'] = filters.min_value
         env.globals['max_value'] = filters.max_value
         env.filters['format_date_custom'] = filters.format_date_custom
+        env.globals['format_date_range_no_repeated_month_year'] = filters.format_date_range_no_repeated_month_year
         env.globals['calculate_offset_date'] = filters.calculate_offset_date
         self.environment = env
 

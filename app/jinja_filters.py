@@ -203,6 +203,52 @@ def format_date_range(context, start_date, end_date=None):
 
     return mark_safe(context, result)
 
+@evalcontextfunction
+def format_date_range_no_repeated_month_year(context, start_date, end_date, date_format = 'd MMMM YYYY'):
+    """
+    Format a date range, ensuring months and years are not repeated.
+
+    If the dates are in the same year, the first year (YYYY) will be removed.
+    If the dates are in the same month and year, the first year (YYYY) and month will be removed.
+
+    e.g. Friday 1 to Sunday 3 October
+    or   Thursday 30 September to Sunday 3 October
+
+    Assumptions:
+        - The date format uses space as a seperator
+        - The date format can have leading and trailing spaces stripped
+
+    :param (jinja2.nodes.EvalContext) context: Evaluation context.
+    :param (str) start_date : The date format that should be used for output. MMMM, YYYY will be removed if necessary
+    :param (str) end_date: The date format that should be used for output. MMMM, YYYY will be removed if necessary
+    :param (str) date_format: The date format that should be used for output. MMMM, YYYY will be removed if necessary
+    :returns (str): The formatted range.
+    """
+    start_datetime = convert_to_datetime(start_date)
+    end_datetime = convert_to_datetime(end_date)
+
+    first_date_format = date_format
+
+    if start_datetime.year == end_datetime.year:
+        first_date_format = date_format.replace('YYYY', '')
+
+        if start_datetime.month == end_datetime.month:
+            first_date_format = first_date_format.replace('MMMM', '')
+
+    # Cleanup any extra spaces in the new format string
+    first_date_format = first_date_format.replace('  ', ' ').strip()
+
+    if not first_date_format:
+        # If the date format was entirely removed, leave it alone
+        first_date_format = date_format
+
+    output = "{} to {}".format(
+        format_date_custom(context, start_date, first_date_format),
+        format_date_custom(context, end_date, date_format)
+    )
+
+    return mark_safe(context, output)
+
 
 @blueprint.app_template_filter()
 def format_household_member_name(names):
