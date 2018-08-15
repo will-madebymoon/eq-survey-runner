@@ -16,7 +16,8 @@ from app.jinja_filters import (
     format_household_member_name_possessive, concatenated_list,
     calculate_years_difference, get_current_date, as_london_tz, max_value,
     min_value, get_question_title, get_answer_label,
-    format_duration, calculate_offset_date, format_date_custom)
+    format_duration, calculate_offset_date, format_date_custom,
+    format_date_range_no_repeated_month_year)
 from tests.app.app_context_test_case import AppContextTestCase
 
 
@@ -772,6 +773,7 @@ class TestJinjaFilters(AppContextTestCase):  # pylint: disable=too-many-public-m
             ('2018-08-06', -1, 'SU', '2018-08-04'), # Previous sunday with -1 offset
             ('2018-08-05', 7, 'SU', '2018-08-05'), # Previous sunday with +7 offset, back to input
             ('2018-08-10', 0, 'FR', '2018-08-03'), # Friday outputs previous Friday
+            ('2018-08-10T13:32:20.365665+00:00', 0, 'FR', '2018-08-03'), # Ensure we can handle datetime input
 
         ]
         for case in test_cases:
@@ -783,7 +785,7 @@ class TestJinjaFilters(AppContextTestCase):  # pylint: disable=too-many-public-m
 
     def test_format_date_custom(self):
         test_cases = [
-            # Input Date, show day week, show month, show year
+            # Input Date, date format, show year
             ('2018-08-14', 'EEEE d MMMM YYYY', 'Tuesday 14 August 2018'),
             ('2018-08-14', 'EEEE d MMMM', 'Tuesday 14 August'),
             ('2018-08-14', 'EEEE d', 'Tuesday 14'),
@@ -795,3 +797,20 @@ class TestJinjaFilters(AppContextTestCase):  # pylint: disable=too-many-public-m
                 assert format_date_custom(self.autoescape_context, *case[0:2]) == \
                        "<span class='date'>{}</span>".format(case[2])
 
+    def test_format_date_range_no_repeated_month_year(self):
+        test_cases = [
+            # Start Date, End Date, Date Format, Output Expected First, Output Expected Second
+            ('2018-08-14', '2018-08-16', 'EEEE d MMMM YYYY', 'Tuesday 14', 'Thursday 16 August 2018'),
+            ('2018-07-31', '2018-08-16', 'EEEE d MMMM YYYY', 'Tuesday 31 July', 'Thursday 16 August 2018'),
+            ('2017-12-31', '2018-08-16', 'EEEE d MMMM YYYY', 'Sunday 31 December 2017', 'Thursday 16 August 2018'),
+            ('2017-12-31', '2018-08-16', 'MMMM YYYY', 'December 2017', 'August 2018'),
+            ('2018-08-14', '2018-08-16', 'MMMM YYYY', 'August 2018', 'August 2018'),
+            ('2017-12-31', '2018-08-16', 'YYYY', '2017', '2018'),
+            ('2017-07-31', '2018-08-16', 'YYYY', '2017', '2018'),
+            ('2018-08-14', '2018-08-16', 'EEEE d', 'Tuesday 14', 'Thursday 16')
+        ]
+
+        with self.app_request_context('/'):
+            for case in test_cases:
+                assert format_date_range_no_repeated_month_year(self.autoescape_context, *case[0:3]) == \
+                       "<span class='date'>{}</span> to <span class='date'>{}</span>".format(case[3], case[4])

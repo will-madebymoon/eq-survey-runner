@@ -9,18 +9,27 @@
     "legal_basis": "StatisticsOfTradeAct",
     "metadata": [{
         "name": "started_at",
-        "validator": "date"
+        "validator": "string"
+    }, {
+        "name": "user_id",
+        "validator": "string"
+    }, {
+        "name": "period_id",
+        "validator": "string"
+    }, {
+        "name": "ru_name",
+        "validator": "string"
     }],
     "sections": [{
         "id": "default-section",
         "groups": [{
             "blocks": [{
                 "type": "Question",
-                "id": "date-block",
+                "id": "manual-range-block",
                 "description": "",
                 "questions": [{
                     "answers": [{
-                        "id": "test-radio",
+                        "id": "manual-range-radio",
                         "mandatory": true,
                         "options": [{
                             "label": "Yes",
@@ -32,14 +41,61 @@
                         "type": "Radio"
                     }],
                     "description": "",
-                    "id": "date-pipe-question",
+                    "id": "manual-range-question",
                     "title": "Did you have a paid job, either as an employee or self-employed, in the week {{ calculate_offset_date(metadata['started_at'], -6) | format_date_custom( 'EEEE d MMMM YYYY' ) }} to {{ calculate_offset_date(metadata['started_at'], 0) | format_date_custom( 'EEEE d MMMM YYYY' ) }}",
-                    "type": "DateRange"
-                }],
-                "title": "Date Examples"
-            }],
+                    "type": "General"
+                }]
+            },{
+                "type": "Question",
+                "id": "date-separate-block",
+                "description": "",
+                "questions": [{
+                    "answers": [{
+                        "id": "date-separate-radio",
+                        "mandatory": true,
+                        "options": [{
+                            "label": "Yes",
+                            "value": "Yes"
+                        }, {
+                            "label": "No",
+                            "value": "No"
+                        }],
+                        "type": "Radio"
+                    }],
+                    "description": "",
+                    "id": "date-separate-question",
+                    "title": "If you had been offered a job in the week starting {{ calculate_offset_date(metadata['started_at'], -6) | format_date_custom( 'EEEE d MMMM' ) }} would you be able to start before {{ calculate_offset_date(metadata['started_at'], 8) | format_date_custom( 'EEEE d MMMM' ) }}",
+                    "type": "General"
+                }]
+            }, {
+                "type": "Question",
+                "id": "date-range-block",
+                "description": "",
+                "questions": [{
+                    "answers": [{
+                        "id": "date-range-radio",
+                        "mandatory": true,
+                        "options": [{
+                            "label": "Yes",
+                            "value": "Yes"
+                        }, {
+                            "label": "No",
+                            "value": "No"
+                        }],
+                        "type": "Radio"
+                    }],
+                    "description": "",
+                    "id": "date-range-question",
+                    "title": "In the 4 weeks between {{ format_date_range_no_repeated_month_year(calculate_offset_date(metadata['started_at'], -27), calculate_offset_date(metadata['started_at'], 0)) }} did you look for any paid work?",
+                    "type": "General"
+                }]
+            }, {
+                "type": "Summary",
+                "id": "summary"
+            }
+            ],
             "id": "dates",
-            "title": ""
+            "title": "Date Examples"
         }]
     }]
 }
