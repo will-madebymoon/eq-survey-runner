@@ -29,8 +29,7 @@
             "validator": "string"
         }
     ],
-    "sections": [
-        {
+    "sections": [{
             "id": "household-section",
             "title": "About the household",
             "groups": [{
@@ -2231,53 +2230,52 @@
                         "id": "have-second-job-main-job-job-type-w3-1",
                         "type": "Question",
                         "questions": [{
-                                "id": "have-second-job-main-job-employee-or-self-employed-question",
-                                "titles": [{
-                                        "value": "In <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name_possessive }}</em> main job, what is their employment status?",
-                                        "when": [{
-                                            "id": "proxy-check-answer",
-                                            "condition": "equals",
-                                            "value": "proxy"
-                                        }]
-                                    },
-                                    {
-                                        "value": "In your main job, what is your employment status?"
-                                    }
-                                ],
-                                "type": "General",
-                                "answers": [{
-                                        "id": "have-second-job-main-job-employee-or-self-employed-answer",
-                                        "mandatory": false,
-                                        "label": "Employee or self employed?",
-                                        "type": "Radio",
-                                        "options": [{
-                                                "label": "An employee",
-                                                "value": "employee"
-                                            },
-                                            {
-                                                "label": "Self-employed",
-                                                "value": "Self-employed"
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "id": "have-second-job-main-job-employment-full-or-part-time-answer",
-                                        "mandatory": false,
-                                        "label": "Full time or part time",
-                                        "type": "Radio",
-                                            "options": [{
-                                                "label": "Full time",
-                                                "value": "Full time"
-                                            },
-                                            {
-                                                "label": "Part time",
-                                                "value": "Part time"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
+                            "id": "have-second-job-main-job-employee-or-self-employed-question",
+                            "titles": [{
+                                    "value": "In <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name_possessive }}</em> main job, what is their employment status?",
+                                    "when": [{
+                                        "id": "proxy-check-answer",
+                                        "condition": "equals",
+                                        "value": "proxy"
+                                    }]
+                                },
+                                {
+                                    "value": "In your main job, what is your employment status?"
+                                }
+                            ],
+                            "type": "General",
+                            "answers": [{
+                                    "id": "have-second-job-main-job-employee-or-self-employed-answer",
+                                    "mandatory": false,
+                                    "label": "Employee or self employed?",
+                                    "type": "Radio",
+                                    "options": [{
+                                            "label": "An employee",
+                                            "value": "employee"
+                                        },
+                                        {
+                                            "label": "Self-employed",
+                                            "value": "Self-employed"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "have-second-job-main-job-employment-full-or-part-time-answer",
+                                    "mandatory": false,
+                                    "label": "Full time or part time",
+                                    "type": "Radio",
+                                    "options": [{
+                                            "label": "Full time",
+                                            "value": "Full time"
+                                        },
+                                        {
+                                            "label": "Part time",
+                                            "value": "Part time"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }]
                     },
                     {
                         "id": "have-second-job-second-job-employee-or-self-employed-w3-2",
@@ -2351,21 +2349,21 @@
                         "id": "no-second-job-main-job-job-type-w3",
                         "type": "Question",
                         "questions": [{
-                                "id": "no-second-job-main-job-employee-or-self-employed-question",
-                                "titles": [{
-                                        "value": "What is <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name_possessive }}</em> employment status?",
-                                        "when": [{
-                                            "id": "proxy-check-answer",
-                                            "condition": "equals",
-                                            "value": "proxy"
-                                        }]
-                                    },
-                                    {
-                                        "value": "What is your employment status?"
-                                    }
-                                ],
-                                "type": "General",
-                                "answers": [{
+                            "id": "no-second-job-main-job-employee-or-self-employed-question",
+                            "titles": [{
+                                    "value": "What is <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name_possessive }}</em> employment status?",
+                                    "when": [{
+                                        "id": "proxy-check-answer",
+                                        "condition": "equals",
+                                        "value": "proxy"
+                                    }]
+                                },
+                                {
+                                    "value": "What is your employment status?"
+                                }
+                            ],
+                            "type": "General",
+                            "answers": [{
                                     "id": "no-second-job-main-job-employee-or-self-employed-answer",
                                     "mandatory": false,
                                     "label": "Employee or self employed?",
@@ -2381,22 +2379,22 @@
                                     ]
                                 },
                                 {
-                                        "id": "no-second-job-main-job-employment-full-or-part-time-answer",
-                                        "mandatory": false,
-                                        "label": "Full time or part time?",
-                                        "type": "Radio",
-                                        "options": [{
-                                                "label": "Full time",
-                                                "value": "Full time"
-                                            },
-                                            {
-                                                "label": "Part time",
-                                                "value": "Part time"
-                                            }
-                                        ]
-                                    }]
-                            }
-                        ],
+                                    "id": "no-second-job-main-job-employment-full-or-part-time-answer",
+                                    "mandatory": false,
+                                    "label": "Full time or part time?",
+                                    "type": "Radio",
+                                    "options": [{
+                                            "label": "Full time",
+                                            "value": "Full time"
+                                        },
+                                        {
+                                            "label": "Part time",
+                                            "value": "Part time"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }],
                         "routing_rules": [{
                                 "goto": {
                                     "block": "which-kind-of-self-employed-self18",
@@ -2555,10 +2553,10 @@
                                 ]
                             }]
                         }],
-                        "routing_rules":  [{
-                                "goto": {
-                                    "block": "working-days-w5"
-                                }
+                        "routing_rules": [{
+                            "goto": {
+                                "block": "working-days-w5"
+                            }
                         }]
 
                     },
@@ -2941,11 +2939,9 @@
                                 "type": "Number"
                             }],
                             "guidance": {
-                                "content": [
-                                  {
+                                "content": [{
                                     "description": "If shift work then answer for the busiest week. Do not include overtime."
-                                  }
-                                ]
+                                }]
                             }
                         }],
                         "routing_rules": [{
@@ -3151,11 +3147,9 @@
                                 "label": "Hours"
                             }],
                             "guidance": {
-                                "content": [
-                                  {
+                                "content": [{
                                     "description": "If shift work then answer for the busiest week. Do not include overtime."
-                                  }
-                                ]
+                                }]
                             }
                         }]
                     },
@@ -3280,11 +3274,9 @@
                                 "label": "Hours"
                             }],
                             "guidance": {
-                                "content": [
-                                  {
+                                "content": [{
                                     "description": "If shift work then answer for the busiest week. Do not include overtime."
-                                  }
-                                ]
+                                }]
                             }
                         }]
                     },
@@ -3422,8 +3414,9 @@
                                 }]
                             },
                             {
-                            "value": "We calculate the total number of hours that you worked in your job, including overtime, to be %(total)s hours for the week Monday XXXX – Sunday XXXX September. Is this correct? "
-                        }],
+                                "value": "We calculate the total number of hours that you worked in your job, including overtime, to be %(total)s hours for the week Monday XXXX – Sunday XXXX September. Is this correct? "
+                            }
+                        ],
                         "calculation": {
                             "calculation_type": "sum",
                             "answers_to_calculate": [
@@ -3464,8 +3457,9 @@
                                 }]
                             },
                             {
-                            "value": "We calculate the total number of hours that you worked in your job, including overtime, to be %(total)s hours for the week Monday XXXX – Sunday XXXX September. Is this correct? "
-                        }],
+                                "value": "We calculate the total number of hours that you worked in your job, including overtime, to be %(total)s hours for the week Monday XXXX – Sunday XXXX September. Is this correct? "
+                            }
+                        ],
                         "calculation": {
                             "calculation_type": "sum",
                             "answers_to_calculate": [
@@ -3480,8 +3474,7 @@
                                 "value": "Total hours worked"
                             }]
                         },
-                        "routing_rules": [
-                            {
+                        "routing_rules": [{
                                 "goto": {
                                     "block": "reason-why-fewer-hours-than-usual-employee-w14-emp",
                                     "when": [{
@@ -3801,8 +3794,7 @@
                             "id": "main-job-when-start-working-current-business-question",
                             "titles": [{
                                     "value": "(In their main job) When did <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> start working for their current employer?",
-                                    "when": [
-                                        {
+                                    "when": [{
                                             "id": "proxy-check-answer",
                                             "condition": "equals",
                                             "value": "proxy"
@@ -3816,21 +3808,19 @@
                                 },
                                 {
                                     "value": "(In your main job) When did you start working for your current employer?",
-                                     "when": [{
-                                            "id": "second-job-answer",
-                                            "condition": "equals",
-                                            "value": "Yes"
-                                     }]
+                                    "when": [{
+                                        "id": "second-job-answer",
+                                        "condition": "equals",
+                                        "value": "Yes"
+                                    }]
                                 },
                                 {
                                     "value": "When did <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> start working for their current employer?",
-                                    "when": [
-                                        {
-                                            "id": "second-job-answer",
-                                            "condition": "equals",
-                                            "value": "Yes"
-                                        }
-                                    ]
+                                    "when": [{
+                                        "id": "second-job-answer",
+                                        "condition": "equals",
+                                        "value": "Yes"
+                                    }]
                                 },
                                 {
                                     "value": "When did you start working for your current employer?"
@@ -4272,34 +4262,34 @@
                         "id": "ever-had-a-paid-job-red-1",
                         "type": "Question",
                         "questions": [{
-                                "id": "ever-had-a-paid-job-question",
-                                "titles": [{
-                                        "value": "Has <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> ever had a paid job?",
-                                        "when": [{
-                                            "id": "proxy-check-answer",
-                                            "condition": "equals",
-                                            "value": "proxy"
-                                        }]
+                            "id": "ever-had-a-paid-job-question",
+                            "titles": [{
+                                    "value": "Has <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> ever had a paid job?",
+                                    "when": [{
+                                        "id": "proxy-check-answer",
+                                        "condition": "equals",
+                                        "value": "proxy"
+                                    }]
+                                },
+                                {
+                                    "value": "Have you ever had a paid job?"
+                                }
+                            ],
+                            "type": "General",
+                            "answers": [{
+                                "id": "ever-had-a-paid-job-answer",
+                                "mandatory": false,
+                                "type": "Radio",
+                                "options": [{
+                                        "label": "Yes",
+                                        "value": "Yes"
                                     },
                                     {
-                                        "value": "Have you ever had a paid job?"
+                                        "label": "No",
+                                        "value": "No"
                                     }
-                                ],
-                                "type": "General",
-                                "answers": [{
-                                    "id": "ever-had-a-paid-job-answer",
-                                    "mandatory": false,
-                                    "type": "Radio",
-                                    "options": [{
-                                            "label": "Yes",
-                                            "value": "Yes"
-                                        },
-                                        {
-                                            "label": "No",
-                                            "value": "No"
-                                        }
-                                    ]
-                                }]
+                                ]
+                            }]
                         }],
                         "routing_rules": [{
                                 "goto": {
@@ -4322,38 +4312,35 @@
                         "id": "when-left-last-paid-job-red-1-1",
                         "type": "Question",
                         "questions": [{
-                                "id": "when-left-last-paid-job-question",
-                                "titles": [{
-                                        "value": "When did <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> leave their last paid job?",
-                                        "when": [{
-                                            "id": "proxy-check-answer",
-                                            "condition": "equals",
-                                            "value": "proxy"
-                                        }]
-                                    },
-                                    {
-                                        "value": "When did you leave your last paid job?"
-                                    }
-                                ],
-                                "type": "General",
-                                "answers": [{
-                                    "id": "when-left-last-paid-job-answer",
-                                    "type": "MonthYearDate",
-                                    "mandatory": false,
-                                    "maximum": {
-                                        "value": "now"
-                                    }
-
-                                }]
-                            }
-                        ],
-                        "routing_rules": [
-                            {
-                                "goto": {
-                                    "block": "reason-leaving-paid-job-red4"
+                            "id": "when-left-last-paid-job-question",
+                            "titles": [{
+                                    "value": "When did <em>{{[answers['first-name'][group_instance], answers['last-name'][group_instance]] | format_household_name }}</em> leave their last paid job?",
+                                    "when": [{
+                                        "id": "proxy-check-answer",
+                                        "condition": "equals",
+                                        "value": "proxy"
+                                    }]
+                                },
+                                {
+                                    "value": "When did you leave your last paid job?"
                                 }
+                            ],
+                            "type": "General",
+                            "answers": [{
+                                "id": "when-left-last-paid-job-answer",
+                                "type": "MonthYearDate",
+                                "mandatory": false,
+                                "maximum": {
+                                    "value": "now"
+                                }
+
+                            }]
+                        }],
+                        "routing_rules": [{
+                            "goto": {
+                                "block": "reason-leaving-paid-job-red4"
                             }
-                        ]
+                        }]
                     },
                     {
                         "id": "reason-leaving-paid-job-red4",
@@ -4493,8 +4480,7 @@
                                 ]
                             }]
                         }],
-                        "routing_rules": [
-                             {
+                        "routing_rules": [{
                                 "goto": {
                                     "block": "course-type-qe2",
                                     "when": [{
