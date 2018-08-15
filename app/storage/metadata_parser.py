@@ -88,6 +88,9 @@ def _validate_metadata_is_present(metadata, required_metadata):
         if name == 'trad_as_or_ru_name':
             # either of 'trad_as' or 'ru_name' is required
             valid = bool(metadata.get('trad_as') or metadata.get('ru_name'))
+        elif name == 'started_at':
+            # started_at will not normally be passed to us, so we can't really validate immediately.
+            valid = True
         else:
             # Validate that the value is one of:
             # a) A boolean value

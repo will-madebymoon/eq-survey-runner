@@ -333,7 +333,7 @@ def get_view_submission(schema, eq_id, form_type):  # pylint: disable=unused-arg
 def _set_started_at_metadata_if_required(form, metadata):
     questionnaire_store = get_questionnaire_store(current_user.user_id, current_user.user_ik)
     if not questionnaire_store.answer_store.answers and len(form.data) > 1:
-        started_at = datetime.now(timezone.utc).isoformat()
+        started_at = datetime.utcnow().isoformat()
         logger.info('first answer about to be stored. writing started_at time to metadata',
                     started_at=started_at)
         metadata['started_at'] = started_at
