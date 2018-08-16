@@ -50,6 +50,7 @@ blinker = "*"
 humanize = "*"
 flask-talisman = "*"
 marshmallow = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.4"

@@ -164,7 +164,11 @@ def calculate_offset_date(input_datetime, offset_days, day_of_week='SU'):
     :returns (str): The offset date
     """
     if 'T' in input_datetime:
-        parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S.%f')
+        if '.' in input_datetime:
+            parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S.%f')
+        else:
+            # Freezegun doesn't support microseconds.
+            parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S')
     else:
         parsed_datetime = datetime.strptime(input_datetime, '%Y-%m-%d')
 
