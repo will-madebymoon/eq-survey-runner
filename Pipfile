@@ -24,6 +24,7 @@ httmock = "*"
 "flake8-tuple" = "*"
 moto = "*"
 google-compute-engine = "*"
+freezegun = "*"
 
 [packages]
 colorama = "*"
@@ -50,7 +51,6 @@ blinker = "*"
 humanize = "*"
 flask-talisman = "*"
 marshmallow = "*"
-freezegun = "*"
 
 [requires]
 python_version = "3.4"
